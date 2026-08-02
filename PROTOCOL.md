@@ -48,21 +48,65 @@ min-entropy. At ~120 rolls, a split more lopsided than about 70/50
 is suspect — demote that die to non-security duty. This threshold
 catches gross defects, not subtle ones: a genuinely 55/45 die
 passes it most of the time. Bounding bias that small takes roughly
-800 rolls, not 120 — more rolls only tighten the bound on the
-aggregate. This is an assurance check, not an entropy guarantee;
-casino-grade dice are doing the real work. (The bias trade-off is
-discussed in HARDCORE.md §2.)
+800 rolls, not 120 — which is why we don't ask you to; more rolls
+only tighten the bound on the aggregate. This is an assurance
+check, not an entropy guarantee; casino-grade dice are doing the
+real work. (The bias trade-off is discussed in HARDCORE.md §2.)
 
 ## Phase 2 — Author the key [READY: paper only, zero chips]
 
 Alone. Curtains drawn. No phones in the room — not silenced, absent.
 
-1. For each of 11 words: roll 11 bits (1,2,3 → 0; 4,5,6 → 1),
-   write the bit pattern, find it in the printed table, write the
-   word. Double-check each lookup before moving on.
-2. Roll 7 more bits and record them — the human half of word 12.
-3. You now hold 128 bits of entropy authored entirely by your hands.
-   Nothing electronic has been in the room yet.
+```
+ ONE WORD  =  11 ROLLS.  DO THIS 11 TIMES.
+
+ roll ─────────────────────────────────────────────┐
+   ▼                                               │
+ ┌──────────────────────────────────────────────┐  │
+ │  see 1, 2, or 3  →  write 0                  │  │
+ │  see 4, 5, or 6  →  write 1                  │  │
+ └──────────────────────────────────────────────┘  │
+   │                                               │
+   │  11 bits yet?  ── no ─────────────────────────┘
+   │
+   yes
+   ▼
+ ┌──────────────────────────────────────────────┐
+ │  read your 11 bits left to right             │
+ │  find that exact pattern in table.txt        │
+ │  write the word next to it                   │
+ └──────────────────────────────────────────────┘
+   │
+   ▼
+ ┌──────────────────────────────────────────────┐
+ │  CHECK IT: cover the word. read the bits     │
+ │  off your sheet again. look it up again.     │
+ │  same word? then move on.                    │
+ └──────────────────────────────────────────────┘
+
+ WORKED EXAMPLE — word 1
+
+   rolls:   3  5  1  6  2  2  4  1  3  6  5
+   bits:    0  1  0  1  0  0  1  0  0  1  1
+   pattern: 01010010011
+   table.txt says:  → (the word on that line)
+
+ EXAMPLE ONLY. Your dice, not these. Never reuse
+ any pattern printed in any document, ever.
+```
+
+```
+ THE FULL AUTHORING RUN
+
+  words 1–11      11 rolls each  = 121 rolls  →  11 words
+  final 7 bits     7 rolls        =   7 rolls  →  half of word 12
+                                    ─────────
+                                     128 rolls = 128 bits, all yours
+
+  then, and only then, a machine gets involved:
+  it computes the checksum and names word 12.
+  it has zero choices. you authored everything.
+```
 
 ## Phase 3 — The forced move [READY: dice2words.py]
 
