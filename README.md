@@ -13,6 +13,8 @@ years.*
 > have broken and repaired this. That's not a disclaimer, it's the
 > development model.
 
+![Dice Math Steel — the protocol at a glance](img/dice-math-steel-reply.png)
+
 ## The idea
 
 The July failure wasn't a bug in a product; it was a flaw in a
