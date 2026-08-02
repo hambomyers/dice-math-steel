@@ -40,8 +40,11 @@ DELETIONS in this version, deliberately:
 
 KNOWN TRUSTED PARTS, stated instead of hidden:
   - The Python runtime under these ~150 lines is millions of lines we
-    did not audit. Defense: run this on TWO unrelated machines; outputs
-    must match exactly. We cross-examine computers, we do not trust them.
+    did not audit. Defense here: this program's output is loud -- a
+    wrong final word is an invalid mnemonic every wallet rejects -- so
+    one machine suffices for this step. Dual unrelated machines are
+    reserved for silent steps (derivation, signing), where a wrong
+    answer looks right. We cross-examine computers, we do not trust them.
   - english.txt (official BIP39 wordlist) is verified by SHA-256 below
     and kept as a separate file on purpose: the PRINTED wordlist is
     load-bearing in this protocol, so the file must exist to be printed
@@ -110,9 +113,10 @@ def finish(wordlist):
     # The forced move: 7 of your bits + 4 checksum bits = one legal word.
     final = wordlist[int(bits[121:] + checksum_bits(entropy), 2)]
     print(f"\nThe only valid 12th word for your sequence:\n\n    12. {final}\n")
-    print("Run this SAME input on your second machine. It must name the")
-    print("same word. Then confirm the full 12 words in an unrelated")
-    print("wallet app -- an invalid checksum will be rejected instantly.")
+    print("No second machine is needed for this step -- the output is")
+    print("loud: a wrong word is an invalid mnemonic. What IS mandatory:")
+    print("confirm the full 12 words in an unrelated wallet app -- an")
+    print("invalid checksum will be rejected instantly.")
 
 
 def check(wordlist):

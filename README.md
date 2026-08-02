@@ -25,51 +25,96 @@ the one place it was ever dangerous:
 1. **Physics authors the secret.** You derive all 128 seed bits
    yourself with dice and a printed table. No RNG, no firmware, no
    vendor in the room.
-2. **Machines are cross-examined, never trusted.** Every
-   computation runs on two unrelated junk computers and must match
-   byte-for-byte. A computer in this protocol has zero choices —
-   it can only be right, or be caught.
+2. **Machines are cross-examined, never trusted.** Silent
+   computations run on two unrelated junk computers and must match
+   byte-for-byte. Honesty about what that buys: two identical
+   machines are a fault detector, not a lie detector — two copies
+   of the same CD-R image will agree on the same wrong answer.
+   Catching lies takes independent implementations, which is why
+   the signing milestone (roadmap 3) requires two independent
+   codebases with byte-identical output — a hard requirement, not
+   an option.
 3. **Hardware is worthless, capability-stripped, and short-lived.**
    $20 thrift-store machines with no radios and no disk, holding
    the secret only in RAM, only for minutes, then destroyed.
 
-```
-════════════════════════════════
- "Trust nothing that cannot
-      be caught lying."
-════════════════════════════════
+One distinction runs the whole ceremony: loud versus silent
+outputs. A loud output fails visibly — a wrong 12th word is an
+invalid checksum every wallet on earth rejects — so it needs one
+machine. A silent output looks right when it is wrong — address
+derivation, signing — so it needs two, byte-identical or stop.
 
- 1 BORN   · dice + printed table
-            all 128 bits by hand.
-            zero chips present.
- 2 LIVES  ·  ┌───────┐ ┌───────┐
-             │STEEL A│ │STEEL B│
-             │ words │ │passph │
-             └───────┘ └───────┘
-            two places; neither
-            alone can spend.
- 3 CHECK  ·  ┌────┐     ┌────┐
-             │PC 1│═MUST═│PC 2│
-             └────┘MATCH └────┘
-            junk PCs, no radios,
-            no disk, CD-R boot,
-            secret in RAM only.
- 4 PAPER  · both derive 50 receive
-            addresses & must agree.
-            can't spend a coin —
-            guard it anyway: lose
-            it = trusting screens
-            again; show it = shown
-            your balances.
- 5 DEATH  · power off, RAM fades,
-            sledge through chips.
-            ceremony, not load-
-            bearing: nothing left
-            to kill.
- 6 SPEND  · years later: two NEW
-            junk PCs sign; sigs
-            byte-identical or you
-            caught a liar.
+```
+DICE  ·  MATH  ·  STEEL
+          "trust nothing that cannot be caught lying"
+
+           the one rule:  LOUD steps → one machine
+                          SILENT steps → two machines
+                          (identical twins catch FAULTS;
+                           catching LIES needs independent code)
+
+ ┌──────────────────────────────────────────────────────────┐
+ │ 1 AUTHOR      physics writes the key                     │
+ │               dice + printed table → all 128 bits, by    │
+ │               hand. zero chips in the room.              │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 2 FORCED MOVE                                  [LOUD]    │
+ │               one junk PC names word 12. it has zero     │
+ │               choices — a wrong answer is an invalid     │
+ │               mnemonic every wallet on earth rejects.    │
+ │               loud failure → one machine suffices.       │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 3 DERIVE      xpub + first addresses          [SILENT]   │
+ │               a wrong address looks right. so: two       │
+ │               unrelated junk PCs, byte-identical or      │
+ │               stop. (this catches faults; the signer     │
+ │               roadmap requires independent code to       │
+ │               catch lies.)                               │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 4 STEEL       stamp the 12 words. every factor ×2 —      │
+ │               no single fire, flood, or forgotten        │
+ │               hole is fatal.                             │
+ │               passphrase: optional, diced, also ×2.      │
+ │               (no checksum exists for it — see 5.)       │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 5 PROVE FROM STEEL — before burning any paper            │
+ │               read the plates, not the paper. re-derive  │
+ │               address #1 in a SECOND wallet app. match?  │
+ │               only now do secrets burn.                  │
+ │               (paper-sourced checks are circular.)       │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 6 PAPER       5–10 receive addresses, hand-copied,       │
+ │               verified once → trusted forever. no        │
+ │               screen in the receive path again.          │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 7 DEATH       power off. RAM fades. (sledge optional —   │
+ │               ritual, not load-bearing.)                 │
+ └────────────────────────────┬─────────────────────────────┘
+                              ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ 8 YEARS LATER two junk PCs sign the same PSBT with TWO   │
+ │               INDEPENDENT programs (roadmap M3).         │
+ │               same program twice → caught a fault.       │
+ │               independent code agreeing → caught a liar. │
+ │               rehearse annually: self-error, not theft,  │
+ │               is how bitcoin dies.                       │
+ └──────────────────────────────────────────────────────────┘
+
+     coercion (wrench attack): see HARDCORE — duress/decoy
+     passphrase, cryptographically deniable. deliberate
+     choice, not a default.
 ```
 
 The full ceremony, phase by phase, with honest status flags for
@@ -124,8 +169,9 @@ typo detector, not a lock. Author vs. proofreader, made literal.
 1. ~~Dice → mnemonic with human authorship~~ (v0.2, done)
 2. BIP32/BIP84 derivation + address generation — same style: tiny,
    stdlib-only, vector-tested (closes PROTOCOL.md Phase 5's gap)
-3. PSBT signing with RFC 6979 deterministic nonces + the
-   dual-machine byte-identical signature check (closes Phase 7)
+3. PSBT signing with RFC 6979 deterministic nonces, byte-identical
+   across two independent implementations — hard requirement, not
+   an option: identical copies only catch faults (closes Phase 7)
 4. Bootable 32-bit live-CD image that runs all of it on
    twenty-year-old junk
 5. Review. Especially review. **Break this.**
@@ -148,6 +194,12 @@ dual-machine byte-identical determinism as the only trust mechanism;
 write-once CD-R as immutable software distribution; RAM-only key
 ephemerality; paper as the permanent root of truth for receiving;
 and a vendor model that ships no electronics at all.
+
+## Credits
+
+v0.3's changes come from post-launch adversarial review (red-team
+audit → adjudication → steelman). Critics are credited here by name
+or handle as their findings land.
 
 ## License
 

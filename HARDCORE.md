@@ -52,9 +52,34 @@ evidence they help on 2004-era DRAM, not vibes.
 
 ## 6. Things we assert and want attacked
 - "Nobody can pre-position an implant in a random dead thrift-store PC."
-- "Byte-identical RFC 6979 signatures across two machines close nonce
-  covert channels."
+- "Byte-identical RFC 6979 signatures from two INDEPENDENT
+  implementations close nonce covert channels." (Independence is the
+  load-bearing word: two copies of the same malicious signer agree on
+  the same malicious nonce and pass the check.)
 - "Pre-2006 hardware has no management engine and no radios."
 - "1,2,3→0 / 4,5,6→1 is the least error-prone hand mapping."
 Break any of these and you improve the protocol more than a thousand
 retweets would.
+
+## 7. Duress / decoy passphrase
+The coercion answer (the wrench attack). Same seed, second
+passphrase: a low-value, surrenderable wallet lives behind the decoy
+passphrase; the real funds live behind yours. Cryptographically
+deniable — a BIP39 passphrase leaves no trace on the seed, so nobody
+can prove a second one exists. Honest costs, stated up front: it is
+a second checksumless secret with its own silent-failure surface (a
+wrong decoy also derives some valid-looking wallet), it adds steel
+and rehearsal burden, and it assumes the coercer leaves satisfied —
+a wrench wielded by someone who knows about decoys defeats it. This
+is a deliberate opt-in, not a default; the mainline ceremony stays
+minimal (PROTOCOL.md, Phase 4).
+
+## 8. Geographic 2-of-2 split (moved from mainline)
+Seed plates in one location, passphrase plates in another: a thief
+must compromise two sites to spend. What it costs: loss probability
+rises (any unreachable site strands the funds — which is why every
+factor must still be stamped ×2, the redundancy rule bends for
+nothing), and inheritance now requires someone who is not you to
+find, reach, and understand both sites. Mainline v0.3 keeps both
+factors reachable by you; the split is for people whose threat model
+earns it.

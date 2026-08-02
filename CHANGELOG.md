@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.3-draft — August 2026
+Changes from post-launch adversarial review (red-team → adjudication
+→ steelman). Critics credited in the README as findings land.
+- Honesty reframe: dual identical machines relabeled a fault
+  detector, not a lie detector — two copies of the same CD-R image
+  agree on the same wrong answer. Catching lies requires independent
+  implementations, now a hard requirement for the signing milestone.
+- Loud/silent distinction adopted: loud outputs (invalid checksum,
+  rejected everywhere) get one machine — the forced move now uses a
+  single PC plus the mandatory unrelated-wallet confirmation; silent
+  outputs (derivation, signing) keep two.
+- Passphrase now optional, diced if used. Stated plainly that a
+  BIP39 passphrase has no checksum: a wrong one silently derives a
+  valid, empty wallet.
+- Ceremony reorder: paper burns only after a recovery check sourced
+  from the stamped steel re-derives address #1 in a second wallet
+  app and matches the printed sheet.
+- Redundancy rule: every factor stamped ×2. Geographic 2-of-2 split
+  and duress/decoy passphrase moved to HARDCORE.md as deliberate
+  opt-ins.
+- Dice test now measures the aggregate {1,2,3} vs {4,5,6} split;
+  relabeled an assurance check, not an entropy guarantee.
+- Address sheet: 5–10 hand-copied addresses, with derivation path
+  and tool version recorded on the sheet; sledgehammer optional.
+
 ## v0.2 — August 2026
 - Authorship inverted: the human derives all 128 entropy bits at a
   table with dice and the printed lookup table (`table.txt`); the

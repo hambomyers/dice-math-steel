@@ -35,16 +35,23 @@ catches up.*
 - **Steel:** stainless plates or washers and a letter/number stamp
   set, hardware store. Two sets: one for the words, one for the
   passphrase.
-- **A sledgehammer.** Ceremonial by design (see Phase 6), mandatory
-  by tradition.
+- **A sledgehammer.** Optional and ceremonial (see Phase 6);
+  traditional nonetheless.
 
 ## Phase 1 — Test the dice [READY: needs only the dice]
 
-Roll each die ~120 times, tallying faces. You are looking for gross
-defects only: any face under ~12 or over ~28 counts is suspect —
-demote that die to non-security duty. The protocol's 1-bit-per-roll
-mapping plus excess entropy tolerates small bias; this test catches
-big bias. (The bias trade-off is discussed in HARDCORE.md §2.)
+Roll each die ~120 times, but tally what the protocol actually
+uses: the {1,2,3} vs {4,5,6} split, not per-face counts. Per-face
+bands can look healthy while hiding a 55/45 lean on the bit
+boundary — and a 55/45 die costs roughly 18 of your 128 bits of
+min-entropy. At ~120 rolls, a split more lopsided than about 70/50
+is suspect — demote that die to non-security duty. This threshold
+catches gross defects, not subtle ones: a genuinely 55/45 die
+passes it most of the time. Bounding bias that small takes roughly
+800 rolls, not 120 — more rolls only tighten the bound on the
+aggregate. This is an assurance check, not an entropy guarantee;
+casino-grade dice are doing the real work. (The bias trade-off is
+discussed in HARDCORE.md §2.)
 
 ## Phase 2 — Author the key [READY: paper only, zero chips]
 
@@ -59,30 +66,40 @@ Alone. Curtains drawn. No phones in the room — not silenced, absent.
 
 ## Phase 3 — The forced move [READY: dice2words.py]
 
-Boot junk machine #1 from the CD-R (hard drive unplugged). Run:
+Boot one junk machine from the CD-R (hard drive unplugged). Run:
 
     python3 dice2words.py --test     # must pass before anything else
     python3 dice2words.py finish     # enter your 11 words + 7 bits
 
 The machine names the single word that can legally complete your
-sequence — it computes the checksum and chooses nothing. Repeat the
-identical input on machine #2. **The word must match.** Then run
-`check` with all 12 words on both machines: both must say VALID.
-Any mismatch anywhere: stop, diagnose, restart Phase 2 with fresh
-rolls if in doubt.
+sequence — it computes the checksum and chooses nothing. One
+machine suffices here, because this output is loud: a wrong word is
+an invalid mnemonic every wallet on earth rejects. The second check
+is not a second machine but the **mandatory confirmation of all 12
+words in an unrelated wallet app**, which rejects an invalid
+checksum instantly. Run `check` with all 12 words; it must say
+VALID. Any failure: stop, diagnose, restart Phase 2 with fresh
+rolls if in doubt. (Two machines are reserved for silent outputs —
+derivation, signing — where a wrong answer looks right. See
+Phase 5.)
 
 Optional purity variants (hand-computed SHA-256, blind brute force
 of the final word) are in HARDCORE.md §1.
 
-## Phase 4 — Passphrase [READY: paper only]
+## Phase 4 — Passphrase (optional) [READY: paper only]
 
-Generate a passphrase from fresh dice rolls (e.g., five words via
-the same table, or Diceware). Never a human-invented phrase. Use at
-least five words (~55–64 bits) and treat that as the floor, not the
-target: the passphrase must stand alone against an attacker who
-already holds steel A. Six words buys comfortable margin. This
-splits your secret into two factors stored apart; either alone is
-useless. Record on paper for now.
+Optional as of v0.3 — the mainline stays minimal. A passphrase buys
+a second factor at the price of a second checksumless secret;
+decide deliberately. If you use one, dice it from fresh rolls
+(e.g., five words via the same table, or Diceware). Never a
+human-invented phrase. Five words (~55–64 bits) is the floor, not
+the target; six buys comfortable margin: the passphrase must stand
+alone against an attacker who already holds the seed plates. And
+know this plainly: **a BIP39 passphrase has NO checksum.** A wrong
+passphrase does not fail — it silently derives a valid, empty
+wallet. That is why the steel-sourced check in Phase 6 exists; do
+not skip it. Record on paper for now. (A duress/decoy passphrase —
+the coercion answer — is a deliberate variant: HARDCORE.md §7.)
 
 ## Phase 5 — Addresses and verification [GAP: uses outside tools]
 
@@ -91,13 +108,20 @@ README.md). Until it does, use a well-known open-source wallet, run
 offline on both ceremony machines from your verified boot media —
 e.g., Electrum in offline mode, or SeedSigner/Krux code — to:
 
-1. Enter the 12 words + passphrase on machine #1; derive the
-   account xpub and the first 50 receiving addresses.
+1. Enter the 12 words (+ passphrase, if you chose one) on machine
+   #1; derive the account xpub and the first 5–10 receiving
+   addresses.
 2. Repeat independently on machine #2. **Every address must match.**
-3. Copy the address list to paper (both machines' screens agree, so
-   hand-copy from one and verify against the other), or print it if
-   a printer you accept is available. This sheet becomes your
-   permanent receive list — the root of truth.
+   This output is silent — a wrong address looks exactly like a
+   right one — which is why this step, unlike Phase 3, gets two
+   machines.
+3. Hand-copy the addresses to paper (both machines' screens agree,
+   so copy from one and verify against the other). On the same
+   sheet, record the derivation path (BIP84) and the wallet/tool
+   and version used — none of that is secret, and it prevents a
+   future path mismatch. This sheet becomes your permanent receive
+   list — the root of truth: verified once, then trusted, so no
+   screen sits in your receive path again.
 4. Optional third check: reconstruct watch-only from the xpub on an
    ordinary online machine later; addresses must match again.
 
@@ -105,18 +129,32 @@ The address sheet cannot spend a coin, but guard it anyway: lose it
 and you're back to trusting screens; show it and you've shown your
 balances.
 
-## Phase 6 — Steel, then death [READY: hands only]
+## Phase 6 — Steel, prove from steel, then death [GAP: the steel check uses Phase 5's outside tools]
 
-1. Stamp the 12 words on steel set A; stamp the passphrase on steel
-   set B. Verify each stamping against paper twice, out loud.
-2. Burn all paper that carries secrets (rolls, words, passphrase).
-   The address sheet is not a secret and survives.
-3. Power off both machines. The secret existed only in RAM and is
-   now fading charge. Then the sledge, through the chips — ceremony,
-   not load-bearing: there was nothing left to kill. Recycle the
-   wreckage yourself.
-4. Steel A and steel B travel to separate locations. Neither alone
-   can spend. No location's holder should be able to reach the other.
+1. Stamp every factor twice: two plates for the 12 words, and two
+   more for the passphrase if you chose one. No single fire, flood,
+   or forgotten hiding hole may be fatal. Verify each stamping
+   against paper twice, out loud.
+2. Prove from steel — before burning anything. Turn the paper face
+   down. Reading only from the plates, re-enter the words (and
+   passphrase) in a SECOND, different wallet app and re-derive
+   address #1. It must match the printed sheet. From the plates,
+   not the paper: a paper-sourced check is circular and proves
+   nothing about the steel. The different app matters too: it
+   catches wallet-specific divergence such as NFC/NFKD passphrase
+   normalization. Honest label: this is a point-in-time check, not
+   a standing checksum — steel has no self-test.
+3. Only now burn all paper that carries secrets (rolls, words,
+   passphrase). The address sheet is not a secret and survives.
+4. Power off both machines. The secret existed only in RAM and is
+   now fading charge. The sledgehammer is optional — ritual, not
+   load-bearing: there is nothing left to kill. If you swing it,
+   recycle the wreckage yourself.
+5. Store the duplicate plates apart from each other, but keep both
+   reachable by you. The geographic 2-of-2 split (seed and
+   passphrase in locations that can never meet) is an advanced,
+   deliberate opt-in with real loss and inheritance costs:
+   HARDCORE.md §8.
 
 ## Phase 7 — Prove it end to end [GAP: signing uses outside tools]
 
