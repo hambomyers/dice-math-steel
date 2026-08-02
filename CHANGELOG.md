@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.3 — August 2026
+- Receive sheet 5–10 -> 20, with the reason stated: reuse links
+  payments permanently, and 20 matches the wallet gap limit.
+- Both launch images regenerated. The reply card claimed 50
+  addresses and "100+ rolls" where the key is 128, and carried the
+  pre-v0.3 "never trusted, only cross-examined" overclaim; the
+  poster repeated those and still footed itself v0.2. The poster is
+  now claim-free — motto and pointer only — so it cannot go stale
+  again.
+- img/reply-card.txt and img/poster.txt added so claims inside
+  images are greppable.
+
 ## v0.3-draft — August 2026
 Changes from post-launch adversarial review (red-team → adjudication
 → steelman). Critics credited in the README as findings land.

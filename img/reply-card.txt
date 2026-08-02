@@ -1,0 +1,38 @@
+# Text of img/dice-math-steel-reply.png — keep in sync.
+# Claims inside an image are invisible to grep; this file is
+# how they stay catchable.
+
+DICE MATH STEEL
+math has no firmware
+
+  DICE          you author every bit:
+   |            128 rolls, printed
+   v            table, 12 words.
+  STEEL         no RNG. no firmware.
+   |
+   v
+  2 JUNK PCs    $20, thrift store,
+  MUST AGREE    no radios, no disk.
+  BYTE-FOR-BYTE identical twins catch
+   |            faults. catching lies
+   |            takes independent code.
+   v
+  PAPER         20 addresses, agreed
+   |            on two machines. use
+   |            them in order. never
+   |            reuse one.
+   v
+  STEEL AGAIN   prove it from the
+   |            plates before any
+   |            paper burns.
+   v
+  SLEDGE        optional. the key never
+                lived inside anything
+                that could leak it.
+
+  ────────────────────────────────
+  "Trust nothing that cannot
+        be caught lying."
+
+  rough draft · open source · break it
+  github.com/hambomyers/dice-math-steel

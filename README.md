@@ -93,8 +93,9 @@ DICE  ·  MATH  ·  STEEL
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ 6 PAPER       5–10 receive addresses, hand-copied,       │
- │               verified once → trusted forever. no        │
+ │ 6 PAPER       20 receive addresses, hand-copied,         │
+ │               verified once → trusted forever. use       │
+ │               them in order; never reuse one. no         │
  │               screen in the receive path again.          │
  └────────────────────────────┬─────────────────────────────┘
                               ▼

@@ -153,7 +153,7 @@ offline on both ceremony machines from your verified boot media —
 e.g., Electrum in offline mode, or SeedSigner/Krux code — to:
 
 1. Enter the 12 words (+ passphrase, if you chose one) on machine
-   #1; derive the account xpub and the first 5–10 receiving
+   #1; derive the account xpub and the first 20 receiving
    addresses.
 2. Repeat independently on machine #2. **Every address must match.**
    This output is silent — a wrong address looks exactly like a
@@ -165,7 +165,13 @@ e.g., Electrum in offline mode, or SeedSigner/Krux code — to:
    and version used — none of that is secret, and it prevents a
    future path mismatch. This sheet becomes your permanent receive
    list — the root of truth: verified once, then trusted, so no
-   screen sits in your receive path again.
+   screen sits in your receive path again. Use them in order, and
+   never reuse one. Two payments to the same address are linked
+   publicly and permanently — that is the real cost of running out.
+   Twenty also matches the ~20-address gap limit most wallets scan
+   during recovery, so a sheet used in order can never outrun a
+   recovering wallet. When you exhaust the sheet, run a fresh
+   ceremony rather than reusing.
 4. Optional third check: reconstruct watch-only from the xpub on an
    ordinary online machine later; addresses must match again.
 

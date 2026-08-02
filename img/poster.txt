@@ -1,0 +1,23 @@
+# Text of img/dice-math-steel-poster.png — keep in sync.
+# Claims inside an image are invisible to grep; this file is
+# how they stay catchable.
+
+DICE MATH STEEL
+math has no firmware
+
+    DICE
+     |
+     v
+    MATH
+     |
+     v
+    STEEL
+
+"Trust nothing that cannot
+      be caught lying."
+
+the full ceremony, the code, and
+the arguments live in the repo:
+
+rough draft · open source · break it
+github.com/hambomyers/dice-math-steel
