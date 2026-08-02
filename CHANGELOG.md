@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.3.4 — August 2026
+- Version self-descriptions deleted from PROTOCOL.md and
+  dice2words.py headers — CHANGELOG carries versions; a number in
+  a file header goes stale every commit.
+- `check_docs.py` added: fails the commit on retracted wording,
+  disagreeing numbers, missing image text-twins, or a file naming
+  its own version. Run beside `dice2words.py --test`.
+- CONTRIBUTING.md: when a claim changes, grep the repo for the old
+  wording; image words come from committed text, never hand-edits.
+
 ## v0.3.3 — August 2026
 - Receive sheet 5–10 -> 20, with the reason stated: reuse links
   payments permanently, and 20 matches the wallet gap limit.

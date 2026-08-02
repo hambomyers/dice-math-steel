@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-dice2words.py v0.2 -- the machine checks your homework. It never does it.
+dice2words.py -- the machine checks your homework. It never does it.
 
     WARNING -- EXPERIMENTAL, UNREVIEWED. Do NOT use with real funds.
     Signet or throwaway amounts only, until strangers have broken this.

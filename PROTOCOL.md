@@ -1,4 +1,4 @@
-# The Ceremony — Dice Math Steel, v0.2
+# The Ceremony — Dice Math Steel
 
 *The complete protocol, start to finish. Read the whole thing before
 buying anything. Status flags are honest: [READY] means this repo's

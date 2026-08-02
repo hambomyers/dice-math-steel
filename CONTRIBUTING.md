@@ -20,6 +20,16 @@ rules that will not bend:
   reading Python for the first time because their money depends
   on it.
 
+**When a claim changes:** grep the whole repo for the old wording
+before you commit. Four commits here exist only because a claim was
+fixed in one place and left standing in another. `check_docs.py`
+automates the known retractions; it does not replace reading your
+own diff against the rest of the tree. Claims rendered into an
+image are invisible to grep, which is why both cards are generated
+from committed text (`img/reply-card.txt`, `img/poster.txt`).
+Change the text, regenerate the image, never hand-edit an image's
+words.
+
 **Exploitable vulnerabilities:** SECURITY.md, privately, first.
 
 **Style of argument:** attack the idea as hard as you like; the
