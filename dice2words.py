@@ -33,10 +33,11 @@ DELETIONS in this version, deliberately:
     experiments branch. *)
   - Hash-whitening of dice. Direct table mapping passes dice bias
     straight into the key; we accept that trade because casino dice
-    plus the tally test (PROTOCOL.md, Phase 1) make bias small, measurable, and
-    non-adversarial, while machine-authored keys are exactly the
-    adversarial category this protocol exists to escape. This is the
-    protocol's most attackable decision. Attack it.
+    keep bias small and non-adversarial, while machine-authored keys
+    are exactly the adversarial category this protocol exists to
+    escape. The tally test (PROTOCOL.md, Phase 1) catches gross
+    defects only — small bias is tolerated, not measured. This is
+    the protocol's most attackable decision. Attack it.
 
 KNOWN TRUSTED PARTS, stated instead of hidden:
   - The Python runtime under these ~150 lines is millions of lines we

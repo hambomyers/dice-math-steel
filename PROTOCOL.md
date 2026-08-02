@@ -198,7 +198,10 @@ balances.
    reachable by you. The geographic 2-of-2 split (seed and
    passphrase in locations that can never meet) is an advanced,
    deliberate opt-in with real loss and inheritance costs:
-   HARDCORE.md §8.
+   HARDCORE.md §8. Duplicates you can reach are duplicates a
+   coercer can reach — that is the trade this default makes
+   deliberately, choosing loss resistance over coercion resistance;
+   §7 and §8 are the other way.
 
 ## Phase 7 — Prove it end to end [GAP: signing uses outside tools]
 

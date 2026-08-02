@@ -152,11 +152,12 @@ typo detector, not a lock. Author vs. proofreader, made literal.
 ## Design decisions we expect to defend
 
 - **Direct dice→bit mapping, no hash-whitening.** Dice bias flows
-  into the key; we accept that because casino dice + the tally test
-  make bias small, measurable, and non-adversarial, while
-  machine-authored keys are exactly the adversarial category this
-  protocol exists to escape. Most attackable decision in the repo —
-  see HARDCORE.md §2 and attack it.
+  into the key; we accept that because casino dice keep bias small
+  and non-adversarial, while machine-authored keys are exactly the
+  adversarial category this protocol exists to escape. The tally
+  test catches gross defects only — small bias is tolerated, not
+  measured (see PROTOCOL.md Phase 1). Most attackable decision in
+  the repo — see HARDCORE.md §2 and attack it.
 - **12 words only.** 128 bits is sufficient; two modes is twice the
   mistakes. 24-word patch belongs in `experiments`.
 - **Python runtime is a known, stated trust.** ~150 lines of ours
@@ -190,7 +191,8 @@ What this draft adds is the system: hand-authored entropy with the
 machine demoted to proofreader; deliberately worthless heterogeneous
 hardware as a supply-chain defense (nobody counterfeits junk, nobody
 pre-positions an implant in a random dead thrift-store PC);
-dual-machine byte-identical determinism as the only trust mechanism;
+dual-machine byte-identical determinism, honestly bounded — a
+fault detector until the implementations are independent;
 write-once CD-R as immutable software distribution; RAM-only key
 ephemerality; paper as the permanent root of truth for receiving;
 and a vendor model that ships no electronics at all.
