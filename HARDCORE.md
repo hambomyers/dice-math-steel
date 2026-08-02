@@ -10,10 +10,14 @@ Two ways to delete the computer from even that:
 - **Hand SHA-256**: pencil, paper, printed constant tables. A few hours;
   hobbyists have done it. Fine as a one-time ritual, bad as standing
   practice (hand-hash errors are likelier than machine conspiracies).
-- **Blind brute force**: 1 word in 16 satisfies the checksum. Try
-  table-ordered candidate 12th words against an offline wallet until one
-  is accepted. No hash step at all. Note: which candidate succeeds leaks
-  nothing — the checksum contains no secret.
+- **Blind brute force**: exactly one of the 16 words whose first 7 bits
+  match your 7 rolled bits satisfies the checksum. Try only those 16, in
+  table order, against an offline wallet until one is accepted. No hash
+  step at all. Do NOT search all 2048 words: about 1 in 16 of them
+  completes some valid mnemonic, so an unrestricted search silently
+  replaces your rolled bits with a predictable word near the top of the
+  table. Within the correct 16, which candidate succeeds leaks nothing —
+  the checksum contains no secret.
 
 ## 2. Dice bias (the protocol's most attackable decision)
 v0.2 maps rolls directly to bits, so die bias flows into the key.

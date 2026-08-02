@@ -4,7 +4,7 @@
 
 *Cold storage with no trusted devices. A rough draft posted to be
 attacked, corrected, and improved — in reply to July 30, 2026, the
-day the most trusted hardware wallet in Bitcoin leaked ~$38M
+day the most trusted hardware wallet in Bitcoin cost its users ~$38M
 because its firmware silently generated weak randomness for five
 years.*
 
@@ -40,7 +40,7 @@ the one place it was ever dangerous:
 ════════════════════════════════
 
  1 BORN   · dice + printed table
-            = 12 words, by hand.
+            all 128 bits by hand.
             zero chips present.
  2 LIVES  ·  ┌───────┐ ┌───────┐
              │STEEL A│ │STEEL B│
@@ -54,7 +54,7 @@ the one place it was ever dangerous:
             junk PCs, no radios,
             no disk, CD-R boot,
             secret in RAM only.
- 4 PAPER  · both print 50 receive
+ 4 PAPER  · both derive 50 receive
             addresses & must agree.
             can't spend a coin —
             guard it anyway: lose

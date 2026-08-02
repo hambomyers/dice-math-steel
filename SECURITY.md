@@ -5,7 +5,7 @@ protocol logic): open a public issue. Public attack is this project's
 review process and you will be credited by name in the README.
 
 **Exploitable findings** (anything that could cost real users real
-funds — a flaw in `finish`/`check` logic, a poisoned dependency path):
+funds — a flaw in `finish`/`check` logic, a poisoned runtime or boot-media supply chain):
 contact the maintainer privately FIRST via hambomyers@gmail.com.
 You will be publicly credited when a fix ships. Please allow a
 reasonable window before public disclosure.

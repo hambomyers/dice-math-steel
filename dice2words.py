@@ -9,7 +9,7 @@ WHAT CHANGED FROM v0.1 (and why):
   v0.1 hashed your dice rolls into entropy. That made the COMPUTER the
   author of your key -- you could not verify one word without a second
   machine. v0.2 inverts authorship: YOU derive all 128 entropy bits at
-  a table, from dice and a printed wordlist (see TABLE.md). This program
+  a table, from dice and the printed lookup table (see table.txt). This program
   is demoted to two jobs, in both of which it has ZERO choices:
 
     finish : you type your 11 table-derived words + 7 final bits;
@@ -22,9 +22,10 @@ WHAT CHANGED FROM v0.1 (and why):
 
   (* Hardcore variant: even the checksum can be done without this
      program. By hand: SHA-256 with pencil and printed constant tables,
-     a few hours, done by hobbyists. Or blind brute force: 1 word in 16
-     passes the 4-bit checksum, so try table-ordered candidates against
-     an offline wallet until one is accepted. See HARDCORE.md. *)
+     a few hours, done by hobbyists. Or blind brute force: try only the
+     16 words whose first 7 bits match your 7 rolled bits, in table
+     order, against an offline wallet — exactly one will be accepted.
+     Never try all 2048; see HARDCORE.md §1 for why. *)
 
 DELETIONS in this version, deliberately:
   - 24-word mode. 128 bits is sufficient; two modes means twice the
@@ -32,7 +33,7 @@ DELETIONS in this version, deliberately:
     experiments branch. *)
   - Hash-whitening of dice. Direct table mapping passes dice bias
     straight into the key; we accept that trade because casino dice
-    plus the tally test (README) make bias small, measurable, and
+    plus the tally test (PROTOCOL.md, Phase 1) make bias small, measurable, and
     non-adversarial, while machine-authored keys are exactly the
     adversarial category this protocol exists to escape. This is the
     protocol's most attackable decision. Attack it.
@@ -60,7 +61,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 WORDLIST_SHA256 = "2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda"
 
-# Dice-to-bit convention, identical to TABLE.md: 1,2,3 -> 0   4,5,6 -> 1
+# Dice-to-bit convention, identical to table.txt: 1,2,3 -> 0   4,5,6 -> 1
 # One fair roll = exactly one uniform bit. No rejection, no arithmetic,
 # no bias from the 6-vs-2048 mismatch that plagues base-6 mappings.
 BIT = {"1": "0", "2": "0", "3": "0", "4": "1", "5": "1", "6": "1"}

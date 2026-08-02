@@ -6,7 +6,7 @@
   program is demoted to `finish` (compute the forced checksum word)
   and `check` (proofread) — zero choices in either.
 - Deleted 24-word mode (half the modes, half the mistakes) and
-  hash-whitening of dice (machine-authored keys judged the worse
+  hash-whitening of dice (machine-authored keys judged a worse
   enemy than measurable dice bias — see HARDCORE.md §2).
 - Added round-trip test proving the kitchen-table protocol and
   standard BIP39 are identical mathematics.

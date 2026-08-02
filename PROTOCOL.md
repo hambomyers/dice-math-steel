@@ -77,14 +77,17 @@ of the final word) are in HARDCORE.md §1.
 ## Phase 4 — Passphrase [READY: paper only]
 
 Generate a passphrase from fresh dice rolls (e.g., five words via
-the same table, or Diceware). Never a human-invented phrase. This
+the same table, or Diceware). Never a human-invented phrase. Use at
+least five words (~55–64 bits) and treat that as the floor, not the
+target: the passphrase must stand alone against an attacker who
+already holds steel A. Six words buys comfortable margin. This
 splits your secret into two factors stored apart; either alone is
 useless. Record on paper for now.
 
 ## Phase 5 — Addresses and verification [GAP: uses outside tools]
 
-This repo does not yet include key derivation (see ROADMAP in
-README). Until it does, use a well-known open-source wallet, run
+This repo does not yet include key derivation (see the Roadmap in
+README.md). Until it does, use a well-known open-source wallet, run
 offline on both ceremony machines from your verified boot media —
 e.g., Electrum in offline mode, or SeedSigner/Krux code — to:
 

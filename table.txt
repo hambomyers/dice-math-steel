@@ -1,7 +1,7 @@
 DICE-TO-WORD LOOKUP TABLE  (print me; I am the heart of the kit)
 Roll a die 11 times per word.  1,2,3 = 0    4,5,6 = 1
 Write the 11 bits, find the matching pattern below, take the word.
-Repeat for 11 words. Word 12: roll 7 more bits, then run finish.
+Repeat for 11 words. Word 12: roll 7 more bits, then run: python3 dice2words.py finish
 ================================================================
 00000000000  abandon
 00000000001  ability
