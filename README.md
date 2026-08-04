@@ -1,6 +1,3 @@
-A ground-up minimal rewrite is underway on the v0.5-minimal branch;
-v0.3.4 remains the reviewed reference until v0.5 code ships.
-
 # Dice Math Steel
 
 **Nothing believed. Everything agreed.**
