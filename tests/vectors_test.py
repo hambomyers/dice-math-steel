@@ -29,8 +29,11 @@ PINS = {
     "bip341_wallet_test_vectors.json":
         "403e19fb81dd1f31e745699216308f61fb403774b2aafa87b631b8f7c042d37f",
     "bip350_bech32m_vectors.json":
-        "f9ba099a9affdcb0bd55bc67ca56ede7ff57ac20992e8d99955425b5e7138834",
+        "00d5f8f1db6eac89ef87645355f8e06d5739140ac7e3fe1cc95d4121ee0f4ebc",
+    "sipa_bech32_tests.py":
+        "0d1cee7f1abd8543e13a190ffd87b65f126deb750df72d7d1d75857c3c419e1c",
 }
+
 
 
 def _sha256_file(path):
@@ -170,6 +173,20 @@ def test_bip341_sighash_and_sign():
             raise AssertionError("pico/duo signatures differ")
 
 
+def _bech32m_checksum_ok(mod, addr):
+    if hasattr(mod, "_polymod"):
+        charset, hrp_ex, polymod, const = (
+            mod._CHARSET, mod._hrp_expand, mod._polymod, 0x2bc830a3)
+    else:
+        charset, hrp_ex, polymod, const = (
+            mod._B32, mod._hrp_ex, mod._pm, mod._BECH32M)
+    low = addr.lower()
+    pos = low.rfind("1")
+    hrp = low[:pos]
+    data = [charset.index(c) for c in low[pos + 1:]]
+    return polymod(hrp_ex(hrp) + data) == const
+
+
 def test_bip350(mod):
     data = json.load(open(os.path.join(VECTORS, "bip350_bech32m_vectors.json")))
     for case in data["valid_segwit_bech32m"]:
@@ -180,17 +197,49 @@ def test_bip350(mod):
         hrp, ver, got = mod.bech32m_decode(case["address"])
         if hrp != case["hrp"] or ver != case["witver"] or got != prog:
             raise AssertionError("%s bech32m decode mismatch" % mod.__name__)
-    # BIP341 P2TR addresses already covered in tweak test; round-trip empty HRP cases
     for case in data["valid_bech32m"]:
-        if case["data"]:
-            continue
-        # empty payload encode/decode
-        addr = case["str"]
-        try:
-            hrp, ver, prog = mod.bech32m_decode(addr)
-        except Exception:
-            # our decoder is segwit-oriented (expects version+prog); skip empty-data generics
-            continue
+        if not _bech32m_checksum_ok(mod, case["str"]):
+            raise AssertionError("%s BIP350 bech32m checksum fail: %s" % (
+                mod.__name__, case["str"]))
+
+
+def _parse_sipa_lists(src):
+    # Extract VALID_BECH32M / VALID_ADDRESS without importing sipa's segwit_addr.
+    import ast
+    tree = ast.parse(src)
+    out = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            name = node.targets[0].id if isinstance(node.targets[0], ast.Name) else None
+            if name in ("VALID_BECH32M", "VALID_ADDRESS"):
+                out[name] = ast.literal_eval(node.value)
+    return out
+
+
+def test_sipa_bech32_crosscheck(mod):
+    # Pin file is the upstream referee; our JSON must not drift from it.
+    src = open(os.path.join(VECTORS, "sipa_bech32_tests.py"), encoding="utf-8").read()
+    lists = _parse_sipa_lists(src)
+    ours = json.load(open(os.path.join(VECTORS, "bip350_bech32m_vectors.json")))
+    ours_generic = {c["str"].lower() for c in ours["valid_bech32m"]}
+    for s in lists["VALID_BECH32M"]:
+        if s.lower() not in ours_generic:
+            raise AssertionError("BIP350 JSON missing sipa VALID_BECH32M %s" % s)
+        if not _bech32m_checksum_ok(mod, s):
+            raise AssertionError("%s rejects sipa VALID_BECH32M %s" % (mod.__name__, s))
+    for addr, spk_hex in lists["VALID_ADDRESS"]:
+        spk = bytes.fromhex(spk_hex)
+        witver = spk[0] - 0x50 if spk[0] else 0
+        if witver < 1:
+            continue  # v0 is bech32, not bech32m
+        prog = spk[2:]
+        hrp = "tb" if addr.lower().startswith("tb") else "bc"
+        got = mod.bech32m_encode(hrp, witver, prog)
+        if got.lower() != addr.lower():
+            raise AssertionError("%s sipa VALID_ADDRESS encode %s" % (mod.__name__, addr))
+        _h, v, p = mod.bech32m_decode(addr)
+        if v != witver or p != prog:
+            raise AssertionError("%s sipa VALID_ADDRESS decode %s" % (mod.__name__, addr))
 
 
 def test_birth_agreement():
@@ -242,6 +291,7 @@ def main():
         test_bip340(mod)
         test_bip341_tweak(mod)
         test_bip350(mod)
+        test_sipa_bech32_crosscheck(mod)
     test_bip341_sighash_and_sign()
     test_birth_agreement()
     test_sign_template_agreement()
