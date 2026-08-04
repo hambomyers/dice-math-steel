@@ -35,6 +35,12 @@ PINS = {
 }
 
 
+class _SilentDisplay:
+    """Mute OLED/confirm path so the harness prints only suite results."""
+
+    def show(self, text):
+        return None
+
 
 def _sha256_file(path):
     h = hashlib.sha256()
@@ -277,8 +283,9 @@ def test_sign_template_agreement():
         "destination": {"address": addr, "amount": 80000},
         "change": {"amount": 15000},
     }
-    r1 = sign_pico.sign_tx(k, tx, display=None, our_address=addr)
-    r2 = sign_duo.sign_tx(k, tx, ui=None, own_address=addr)
+    quiet = _SilentDisplay()
+    r1 = sign_pico.sign_tx(k, tx, display=quiet, our_address=addr)
+    r2 = sign_duo.sign_tx(k, tx, ui=quiet, own_address=addr)
     if r1["signatures"] != r2["signatures"]:
         raise AssertionError("template signatures differ")
     if r1["raw_tx_hex"] != r2["raw_tx_hex"]:
@@ -287,15 +294,22 @@ def test_sign_template_agreement():
 
 def main():
     check_pins()
+    print("OK pins")
     for mod in (pico, duo):
         test_bip340(mod)
+        print("OK bip340 (%s)" % mod.__name__)
         test_bip341_tweak(mod)
+        print("OK bip341 tweak (%s)" % mod.__name__)
         test_bip350(mod)
+        print("OK bip350 (%s)" % mod.__name__)
         test_sipa_bech32_crosscheck(mod)
+        print("OK sipa bech32 crosscheck (%s)" % mod.__name__)
     test_bip341_sighash_and_sign()
+    print("OK bip341 sighash+sign (both)")
     test_birth_agreement()
+    print("OK birth agreement")
     test_sign_template_agreement()
-    print("OK: BIP340 + BIP341 + BIP350 vectors pass on both implementations; births and signatures agree.")
+    print("OK sign template agreement")
     return 0
 
 
