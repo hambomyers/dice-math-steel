@@ -1,9 +1,10 @@
 # Text of img/dice-math-steel-poster.png — keep in sync.
 # Claims inside an image are invisible to grep; this file is
 # how they stay catchable.
+# NOTE: PNG may lag this twin until regenerated. Twin is authoritative.
 
 DICE MATH STEEL
-math has no firmware
+Nothing believed. Everything agreed.
 
     DICE
      |
@@ -12,9 +13,12 @@ math has no firmware
      |
      v
     STEEL
+     |
+     v
+    SPEND
 
-"Trust nothing that cannot
-      be caught lying."
+"Dice, steel, and two strangers
+        who must agree."
 
 the full ceremony, the code, and
 the arguments live in the repo:
