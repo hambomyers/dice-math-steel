@@ -1,8 +1,9 @@
 # HARDCORE.md — extreme variants & open attack surfaces
 
-This file is the agenda for the `experiments` branch. Everything here is
-either a purity upgrade someone will demand, or a weakness someone will
-find. Pick one, open an issue or PR, and argue.
+This file holds purity upgrades, attack surfaces, and **legacy
+appendices** preserved from reviewed eras. Mainline ceremony is
+PROTOCOL.md on `v0.5-minimal`. Pick an item, open an issue or PR,
+and argue.
 
 ## 1. Zero-transistor checksum
 The only computation left in key *generation* is the 4-bit checksum.
@@ -83,3 +84,72 @@ nothing), and inheritance now requires someone who is not you to
 find, reach, and understand both sites. Mainline v0.3 keeps both
 factors reachable by you; the split is for people whose threat model
 earns it.
+
+---
+
+## Appendix A — v0.3.4 junk-PC build (legacy-reviewed)
+
+Preserved for historians and for anyone who still wants the thrift-store
+ceremony. **Not mainline.** Status: legacy-reviewed as of the v0.3.4
+tag on `main`.
+
+- Two unrelated junk PCs, capability-stripped (no radios, disk
+  unplugged), booted from write-once media.
+- Dice → word table → twelve-word seed ceremony with optional second
+  factor; dual-machine byte-identical derivation; steel plates;
+  annual rehearsal.
+- Honest bound stated at the time: identical machines are a fault
+  detector; independent implementations are required to catch lies.
+- Do not mix this appendix with v0.5 plates or v0.5 device images.
+
+## Appendix B — School-calculator build (benchmarks)
+
+A purity ask: run birth math on something smaller than a Pi Pico.
+
+**Measured (desktop reference harness, not the calculator itself) —
+predicted on-device — falsify this:**
+
+| Operation | Desktop CPython (this repo) | 32-bit small-int note |
+|-----------|----------------------------:|------------------------|
+| SHA-256 of 32 bytes | sub-millisecond | native word ops |
+| secp256k1 scalar mul (Jacobian, Pico lineage) | ~tens of ms | 256-bit ints are multi-limb on 32-bit |
+| Full birth (key+pad→address) | < 1 s typical | dominated by two scalar muls |
+
+**32-bit small-int analysis:** MicroPython on RP2040 uses arbitrary
+precision; school-calculator BASIC often does not. Any port to a
+machine with 32-bit signed ints must implement 256-bit limbs
+explicitly. The threat is not speed — it is silent overflow. A port
+that cannot pass `tests/vectors_test.py` is not a port.
+
+## Appendix C — BIP39-compatible variant (interop diehards)
+
+Mainline deleted BIP39. If you require wallet interop:
+
+- Map 128 or 256 dice bits through the standard wordlist and
+  checksum (the old `dice2words.py` approach).
+- Keep dual-device agreement on the derived Taproot address.
+- Accept that you reintroduce PBKDF2, wordlists, and vendor-shaped
+  recovery UX — the costs DECISIONS.md rejected.
+- This variant is not maintained on `v0.5-minimal`. Ship it as a
+  fork or a clearly labeled extra.
+
+## Appendix D — Multi-key privacy mitigation
+
+v0.5 reuses one address. That links payments permanently.
+
+Mitigation: roll **several independent keys** (full 512-roll ceremony
+each). Stamp separate plate pairs. Use a new key when you want an
+unlinkable receive path. No invented derivation. No account trees.
+
+## Appendix E — Third verifier
+
+A third device that must agree with both lineages.
+
+Constraint: it must differ from **both** existing lineages. The Duo
+is already RISC-V / China-origin. A third verifier should be, for
+example, a different-vendor ARM or MIPS part — **not** another
+RISC-V board that collapses the ISA diversity claim.
+
+Same rule as the dual pair: independent code, byte-identical
+address and signatures, spoken fingerprint. Three-way mismatch
+still means stop.
