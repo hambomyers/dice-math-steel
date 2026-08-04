@@ -15,6 +15,13 @@ years.*
 > have broken and repaired this. That's not a disclaimer, it's the
 > development model.
 
+> **STATUS (pre-hardware):** All math passes the official BIP340/
+> BIP341/BIP350 vectors and was cross-verified by three
+> independent implementations. The code has NOT yet run on
+> physical Pico/Duo hardware, and the ceremony has not yet been
+> walked by a human. Those are the next milestones; predictions
+> in the claims table await falsification.
+
 ## The four verbs
 
 1. **BORN of dice** — 256 rolls make key `k`, 256 rolls make pad
