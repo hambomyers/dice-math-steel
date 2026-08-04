@@ -110,13 +110,6 @@ def _mul(k, x=Gx, y=Gy):
     return _from_j(X, Y, Z)
 
 
-def _even_y(pt):
-    x, y = pt
-    if y & 1:
-        y = P - y
-    return x, y
-
-
 def xonly_pubkey(d):
     # BIP340: lift secret, even-Y internal key
     if not (0 < d < N):
@@ -146,7 +139,7 @@ def taproot_output_key(internal_xonly):
     # add P + tG
     X, Y, Z = _jadd(Px, y, 1, qx, qy, 1)
     Q = _from_j(X, Y, Z)
-    Qx, Qy = _even_y(Q) if False else Q  # keep actual Q; x-only is x
+    # Output-key parity is irrelevant for the address — only x is encoded.
     return Q[0].to_bytes(32, "big"), t
 
 

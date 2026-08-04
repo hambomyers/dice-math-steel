@@ -77,7 +77,7 @@ are marked predicted.
 
 | Claim | Value | Status |
 |-------|------:|--------|
-| `birth_pico.py` non-comment lines | 244 | measured (`tools/linecount.py`) |
+| `birth_pico.py` non-comment lines | 238 | measured (`tools/linecount.py`) |
 | `birth_duo.py` non-comment lines | 232 | measured |
 | `sign_pico.py` non-comment lines | 180 | measured |
 | `sign_duo.py` non-comment lines | 149 | measured |
