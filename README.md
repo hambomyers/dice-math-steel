@@ -79,7 +79,7 @@ are marked predicted.
 |-------|------:|--------|
 | `birth_pico.py` non-comment lines | 244 | measured (`tools/linecount.py`) |
 | `birth_duo.py` non-comment lines | 232 | measured |
-| `sign_pico.py` non-comment lines | 181 | measured |
+| `sign_pico.py` non-comment lines | 180 | measured |
 | `sign_duo.py` non-comment lines | 149 | measured |
 | `io_pico.py` (I/O; excluded from crypto budget) | 33 | measured |
 | Ceremony die rolls (key + pad) | 512 | by design |

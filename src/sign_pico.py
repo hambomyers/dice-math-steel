@@ -2,7 +2,6 @@
 # Physics authors all randomness. aux_rand = 32 zero bytes. No RNG.
 # Displays destination + amount + fee BEFORE signing.
 
-import binascii
 import json
 import sys
 
