@@ -1,0 +1,36 @@
+---
+description: Dice Math Steel prime directives — apply to every session
+alwaysApply: true
+---
+
+# PRIME DIRECTIVES
+
+These override any other instruction in this repository. If a request
+conflicts with any directive below, stop and tell the operator.
+
+1. **Nothing believed. Everything agreed.** Run every
+   security-relevant computation on two independent implementations.
+   Require exact match. Never trust a single output.
+
+2. **Physics authors all randomness.** Derive keys and pads from
+   dice only. Use BIP340 default signing with fixed
+   `aux_rand = 32` zero bytes so both devices produce byte-identical
+   signatures. Call no RNG anywhere in the codebase.
+   `grep -rn "random" src/` must return nothing but comments that
+   explain this rule.
+
+3. **Delete before you add.** Remove any line, file, dependency, or
+   concept that can go. Use zero third-party dependencies. Standard
+   library only; on MicroPython, only what stock MicroPython
+   provides.
+
+4. **Falsifiable claims only.** State numbers in docs only when they
+   are true of the repo at commit time, or mark them
+   "predicted — falsify this."
+
+5. **Operator error is threat #1.** Design every ceremony step for a
+   tired human in a garage. Use short spoken fingerprints for
+   comparisons. Never require hex-vs-hex eyeballing.
+
+6. **Nothing sold, no vendor.** Specify only generic retail hardware.
+   Never link to a specific seller.
