@@ -1,42 +1,40 @@
 # The Ceremony — Dice Math Steel
 
 *The complete protocol, start to finish. Read the whole thing before
-buying anything. Status flags are honest: [READY] means this repo's
-code supports the step today; [GAP] means you currently need an
-outside open-source tool, named inline, until this repo's roadmap
-catches up.*
+buying anything.*
 
 > ⚠️ Rough draft. Unreviewed. Practice the entire ceremony with a
-> throwaway key and signet/testnet coins first. Do not put real funds
-> on this until the code has survived public review — and then start
+> throwaway key and signet coins first. Do not put real funds on
+> this until the code has survived public review — and then start
 > small anyway.
 
 ## Phase 0 — Sourcing (you buy everything; we sell nothing)
 
-- **Dice:** any casino-grade (sharp-edge) dice, any store, your
-  choice made that day. Two or more dice from different sources is
-  a free upgrade. The vendor of this protocol must never be your
-  dice vendor — that's the point.
-- **Two junk computers:** bought from different second-hand sources
-  (thrift store, surplus, yard sale), chosen on the spot. Spec is
-  about *absent capabilities*, not brand: no WiFi/Bluetooth hardware
-  (desktops usually win; remove cards if present), pre-2006-era
-  preferred (no management engine), working optical drive a plus,
-  hard drive will be unplugged anyway. Old machines fail — buy an
-  extra if they're $10.
-- **Boot media:** one write-once CD-R per machine with a minimal
-  offline Linux, burned and hash-verified beforehand, or a USB stick
-  prepared the same way if no optical drive (CD-R preferred:
-  write-once media cannot be reinfected).
-- **Paper kit:** printed `table.txt` (the dice-to-word table),
-  printed BIP39 wordlist (`english.txt`), roll-recording sheets,
-  pens. Print these from a machine and printer you consider clean;
-  the table's integrity can be re-checked on the ceremony machines.
-- **Steel:** stainless plates or washers and a letter/number stamp
-  set, hardware store. Two sets: one for the words, one for the
-  passphrase.
-- **A sledgehammer.** Optional and ceremonial (see Phase 6);
-  traditional nonetheless.
+Buy generic retail parts. This repo never links to a seller.
+
+- **Dice:** casino-grade (sharp-edge) dice, any store, chosen that
+  day. Two or more dice from different sources is a free upgrade.
+- **Device A:** Raspberry Pi Pico (RP2040). **Not Pico W** — no
+  radios on the ceremony board.
+- **Device B:** Milk-V Duo **base model**.
+
+  > **WARNING — Do not buy the Milk-V Duo S.** The Duo S has WiFi
+  > and Bluetooth. The ceremony requires the base Duo without
+  > radios. Same keypad/OLED wiring as the Pico, plus an SD card
+  > slot and a buildroot Linux image you build from source.
+
+- **Keypads:** matrix keypads for GPIO on both boards (same wiring
+  plan on A and B).
+- **OLEDs:** SSD1306 displays for both boards.
+- **Battery pack** for the Pico (USB is power-only after flash).
+- **SD card** for the Duo (unsigned tx in, signed tx out; public
+  data only).
+- **Steel:** stainless plates and a letter/number stamp set,
+  hardware store. Two plates: A (pad) and B (XOR + address +
+  fingerprint).
+- **A hammer.** Optional catharsis (Phase 7); not load-bearing.
+
+No wire ever connects A and B.
 
 ## Phase 1 — Test the dice [READY: needs only the dice]
 
@@ -53,178 +51,105 @@ only tighten the bound on the aggregate. This is an assurance
 check, not an entropy guarantee; casino-grade dice are doing the
 real work. (The bias trade-off is discussed in HARDCORE.md §2.)
 
-## Phase 2 — Author the key [READY: paper only, zero chips]
+## Phase 2 — Author (roll key + pad)
 
-Alone. Curtains drawn. No phones in the room — not silenced, absent.
+Alone. Curtains drawn. No phones in the room — not silenced,
+absent.
 
-```
- ONE WORD  =  11 ROLLS.  DO THIS 11 TIMES.
-
- roll ─────────────────────────────────────────────┐
-   ▼                                               │
- ┌──────────────────────────────────────────────┐  │
- │  see 1, 2, or 3  →  write 0                  │  │
- │  see 4, 5, or 6  →  write 1                  │  │
- └──────────────────────────────────────────────┘  │
-   │                                               │
-   │  11 bits yet?  ── no ─────────────────────────┘
-   │
-   yes
-   ▼
- ┌──────────────────────────────────────────────┐
- │  read your 11 bits left to right             │
- │  find that exact pattern in table.txt        │
- │  write the word next to it                   │
- └──────────────────────────────────────────────┘
-   │
-   ▼
- ┌──────────────────────────────────────────────┐
- │  CHECK IT: cover the word. read the bits     │
- │  off your sheet again. look it up again.     │
- │  same word? then move on.                    │
- └──────────────────────────────────────────────┘
-
- WORKED EXAMPLE — word 1
-
-   rolls:   3  5  1  6  2  2  4  1  3  6  5
-   bits:    0  1  0  1  0  0  1  0  0  1  1
-   pattern: 01010010011
-   table.txt says:  → (the word on that line)
-
- EXAMPLE ONLY. Your dice, not these. Never reuse
- any pattern printed in any document, ever.
-```
+Mapping: **1, 2, or 3 → bit 0. 4, 5, or 6 → bit 1.** One bit per
+roll.
 
 ```
- THE FULL AUTHORING RUN
-
-  words 1–11      11 rolls each  = 121 rolls  →  11 words
-  final 7 bits     7 rolls        =   7 rolls  →  half of word 12
-                                    ─────────
-                                     128 rolls = 128 bits, all yours
-
-  then, and only then, a machine gets involved:
-  it computes the checksum and names word 12.
-  it has zero choices. you authored everything.
+ KEY   =  256 rolls  →  256-bit integer k
+ PAD   =  256 rolls  →  256-bit integer p
+                         ─────────
+                          512 rolls total for the ceremony
 ```
 
-## Phase 3 — The forced move [READY: dice2words.py]
+Record rolls on paper as you go. After 256 key rolls, interpret
+the bit string as integer `k` (big-endian). If `k == 0` or
+`k >= n` (secp256k1 order), **reroll the key from scratch**. This
+occurs with probability < 2^-127. Same check is not required for
+the pad (the pad is not a scalar); still roll a full 256 bits.
 
-Boot one junk machine from the CD-R (hard drive unplugged). Run:
+There is no word list in this phase. The private key **is** `k`.
 
-    python3 dice2words.py --test     # must pass before anything else
-    python3 dice2words.py finish     # enter your 11 words + 7 bits
+## Phase 3 — Ceremony (two strangers must agree)
 
-The machine names the single word that can legally complete your
-sequence — it computes the checksum and chooses nothing. One
-machine suffices here, because this output is loud: a wrong word is
-an invalid mnemonic every wallet on earth rejects. The second check
-is not a second machine but the **mandatory confirmation of all 12
-words in an unrelated wallet app**, which rejects an invalid
-checksum instantly. Run `check` with all 12 words; it must say
-VALID. Any failure: stop, diagnose, restart Phase 2 with fresh
-rolls if in doubt. (Two machines are reserved for silent outputs —
-derivation, signing — where a wrong answer looks right. See
-Phase 5.)
+1. **Reflash both devices from this repo** before every ceremony.
+   Hardware is amnesiac, not sacrificial.
+2. Enter the same key rolls and pad rolls into **both** devices
+   (Pico and Duo). No wire between them.
+3. Each device computes: plate A = `p`, plate B = `k XOR p`, the
+   Taproot receive address, and a 4-word fingerprint of that
+   address.
+4. **Speak the fingerprint aloud.** Both devices must match. Then
+   speak or compare the address the same way (short, human
+   channels — not hex-vs-hex eyeballing of long strings alone).
+   Mismatch: stop. Reflash. Re-enter. Do not stamp.
+5. Stamp **plate A** with pad `p` (recorded in the form your stamp
+   set can cut — the devices display the value for stamping).
+6. Stamp **plate B** with `k XOR p`, the receive address (the
+   permanent checksum), and the 4-word fingerprint.
+7. Prove from steel before destroying paper: re-enter plate values
+   on a fresh reflash, recover `k = plate_B_xor XOR plate_A`,
+   re-derive the address, match the stamp. Only then burn roll
+   sheets.
+8. Power off. Secrets existed only in RAM. After key entry, the
+   Pico's USB stays power-only; the Duo never carries secrets on
+   SD.
 
-Optional purity variants (hand-computed SHA-256, blind brute force
-of the final word) are in HARDCORE.md §1.
+## Phase 4 — Rehearsal (mandatory before real funds)
 
-## Phase 4 — Passphrase (optional) [READY: paper only]
+Borrowed from the Glacier Protocol, with credit: run a **full
+cycle with pocket sats on the real chain** (or signet first, then
+mainnet dust) before any amount you would hate to lose.
 
-Optional as of v0.3 — the mainline stays minimal. A passphrase buys
-a second factor at the price of a second checksumless secret;
-decide deliberately. If you use one, dice it from fresh rolls
-(e.g., five words via the same table, or Diceware). Never a
-human-invented phrase. Five words (~55–64 bits) is the floor, not
-the target; six buys comfortable margin: the passphrase must stand
-alone against an attacker who already holds the seed plates. And
-know this plainly: **a BIP39 passphrase has NO checksum.** A wrong
-passphrase does not fail — it silently derives a valid, empty
-wallet. That is why the steel-sourced check in Phase 6 exists; do
-not skip it. Record on paper for now. (A duress/decoy passphrase —
-the coercion answer — is a deliberate variant: HARDCORE.md §7.)
+Deposit a trivial amount to the stamped address. Watch a
+confirmation. Then spend it out through Phase 6. If the rehearsal
+fails, the wallet has not earned real funds.
 
-## Phase 5 — Addresses and verification [GAP: uses outside tools]
+A worked signet transcript lives in
+`docs/rehearsal-signet.md`.
 
-This repo does not yet include key derivation (see the Roadmap in
-README.md). Until it does, use a well-known open-source wallet, run
-offline on both ceremony machines from your verified boot media —
-e.g., Electrum in offline mode, or SeedSigner/Krux code — to:
+## Phase 5 — Heirs
 
-1. Enter the 12 words (+ passphrase, if you chose one) on machine
-   #1; derive the account xpub and the first 20 receiving
-   addresses.
-2. Repeat independently on machine #2. **Every address must match.**
-   This output is silent — a wrong address looks exactly like a
-   right one — which is why this step, unlike Phase 3, gets two
-   machines.
-3. Hand-copy the addresses to paper (both machines' screens agree,
-   so copy from one and verify against the other). On the same
-   sheet, record the derivation path (BIP84) and the wallet/tool
-   and version used — none of that is secret, and it prevents a
-   future path mismatch. This sheet becomes your permanent receive
-   list — the root of truth: verified once, then trusted, so no
-   screen sits in your receive path again. Use them in order, and
-   never reuse one. Two payments to the same address are linked
-   publicly and permanently — that is the real cost of running out.
-   Twenty also matches the ~20-address gap limit most wallets scan
-   during recovery, so a sheet used in order can never outrun a
-   recovering wallet. When you exhaust the sheet, run a fresh
-   ceremony rather than reusing.
-4. Optional third check: reconstruct watch-only from the xpub on an
-   ordinary online machine later; addresses must match again.
+**Pattern public, arrangement private.**
 
-The address sheet cannot spend a coin, but guard it anyway: lose it
-and you're back to trusting screens; show it and you've shown your
-balances.
+Heirs must be able to find:
 
-## Phase 6 — Steel, prove from steel, then death [GAP: the steel check uses Phase 5's outside tools]
+1. Both plates (A and B),
+2. The one-page instruction: *XOR the plates, import the resulting
+   256-bit key into Bitcoin Core or Electrum as a Taproot key,
+   send.*
 
-1. Stamp every factor twice: two plates for the 12 words, and two
-   more for the passphrase if you chose one. No single fire, flood,
-   or forgotten hiding hole may be fatal. Verify each stamping
-   against paper twice, out loud.
-2. Prove from steel — before burning anything. Turn the paper face
-   down. Reading only from the plates, re-enter the words (and
-   passphrase) in a SECOND, different wallet app and re-derive
-   address #1. It must match the printed sheet. From the plates,
-   not the paper: a paper-sourced check is circular and proves
-   nothing about the steel. The different app matters too: it
-   catches wallet-specific divergence such as NFC/NFKD passphrase
-   normalization. Honest label: this is a point-in-time check, not
-   a standing checksum — steel has no self-test.
-3. Only now burn all paper that carries secrets (rolls, words,
-   passphrase). The address sheet is not a secret and survives.
-4. Power off both machines. The secret existed only in RAM and is
-   now fading charge. The sledgehammer is optional — ritual, not
-   load-bearing: there is nothing left to kill. If you swing it,
-   recycle the wreckage yourself.
-5. Store the duplicate plates apart from each other, but keep both
-   reachable by you. The geographic 2-of-2 split (seed and
-   passphrase in locations that can never meet) is an advanced,
-   deliberate opt-in with real loss and inheritance costs:
-   HARDCORE.md §8. Duplicates you can reach are duplicates a
-   coercer can reach — that is the trade this default makes
-   deliberately, choosing loss resistance over coercion resistance;
-   §7 and §8 are the other way.
+Rehearse the trail once **without the owner present**. If a
+non-owner cannot finish, fix the instructions — not the math.
 
-## Phase 7 — Prove it end to end [GAP: signing uses outside tools]
+## Phase 6 — Spend
 
-Before real funds: send a trivial amount to address #1. Watch it
-confirm via any explorer. Then perform a full recovery drill — fresh
-junk machine, boot media, steel plates only — re-derive, and sign a
-spend of that trivial amount back out (offline signing via the same
-outside open-source wallet for now; PSBT flow with dual-machine
-byte-identical signature comparison is the roadmap's milestone 3).
-Only after the round trip succeeds does the wallet earn real funds
-— and only after this repo survives review should "real" mean
-anything you'd hate to lose.
+Template only: **N inputs** (all owned by the one key) → **1
+destination** + optional **1 change** back to the same address.
 
-## Phase 8 — The rehearsal habit [READY: discipline only]
+1. Build the unsigned transaction on any online machine as the
+   documented JSON (outpoints, amounts, destination, optional
+   change). Copy it to the Duo's SD card. Public data only.
+2. On each device, enter `k` recovered from the plates (or still in
+   RAM only during a birth-and-spend rehearsal). Load the unsigned
+   JSON (Duo: SD; Pico: keyed or SD adapter per your build).
+3. **Screen confirmation before signing:** destination, amount,
+   fee. A tired human must be able to abort here.
+4. Both devices construct the BIP341 key-path sighash and BIP340
+   signature with `aux_rand` = 32 zero bytes. Signatures must be
+   **byte-identical**. Mismatch: stop.
+5. Write the signed raw transaction hex to SD (public). Broadcast
+   from any online machine. Power off.
 
-Annually: verify both steels exist and read cleanly; run a recovery
-drill with the trivial amount; confirm your heir instructions still
-decode for someone who is not you. Self-error, not theft, is how
-most bitcoin dies. This phase is the protocol's real security
-budget.
+No second wire. No vendor portal.
+
+## Phase 7 — Optional catharsis
+
+The hammer. Clearly labeled **ritual**. The security step was
+reflash-and-power-off. Smashing boards proves nothing to the
+chain; it may help the operator sleep. Recycle the wreckage if
+you swing.

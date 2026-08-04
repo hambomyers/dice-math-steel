@@ -1,38 +1,30 @@
 # Text of img/dice-math-steel-reply.png — keep in sync.
 # Claims inside an image are invisible to grep; this file is
 # how they stay catchable.
+# NOTE: PNG may lag this twin until regenerated. Twin is authoritative.
 
 DICE MATH STEEL
-math has no firmware
+Nothing believed. Everything agreed.
 
-  DICE          you author every bit:
-   |            128 rolls, printed
-   v            table, 12 words.
-  STEEL         no RNG. no firmware.
-   |
+  DICE          512 rolls: 256 key + 256 pad.
+   |            physics authors the secret.
    v
-  2 JUNK PCs    $20, thrift store,
-  MUST AGREE    no radios, no disk.
-  BYTE-FOR-BYTE identical twins catch
-   |            faults. catching lies
-   |            takes independent code.
+  TWO BOARDS    Pico + Milk-V Duo (not Duo S).
+  MUST AGREE    two ISAs, two nations, two
+   |            codebases. spoken fingerprint.
    v
-  PAPER         20 addresses, agreed
-   |            on two machines. use
-   |            them in order. never
-   |            reuse one.
+  STEEL         plate A = pad. plate B = XOR
+   |            + 1 receive address (checksum)
+   |            + 4-word fingerprint.
    v
-  STEEL AGAIN   prove it from the
-   |            plates before any
-   |            paper burns.
+  SPEND         fixed template. dual identical
+   |            Schnorr signatures. SD out.
    v
-  SLEDGE        optional. the key never
-                lived inside anything
-                that could leak it.
+  REFLASH       hardware amnesiac. hammer is
+                optional ritual.
 
   ────────────────────────────────
-  "Trust nothing that cannot
-        be caught lying."
+  "Nothing believed. Everything agreed."
 
   rough draft · open source · break it
   github.com/hambomyers/dice-math-steel

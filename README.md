@@ -3,7 +3,9 @@ v0.3.4 remains the reviewed reference until v0.5 code ships.
 
 # Dice Math Steel
 
-**math has no firmware.**
+**Nothing believed. Everything agreed.**
+
+*Dice, steel, and two strangers who must agree.*
 
 *Cold storage with no trusted devices. A rough draft posted to be
 attacked, corrected, and improved — in reply to July 30, 2026, the
@@ -16,198 +18,126 @@ years.*
 > have broken and repaired this. That's not a disclaimer, it's the
 > development model.
 
-![Dice Math Steel — the protocol at a glance](img/dice-math-steel-reply.png)
+> **STATUS (pre-hardware):** All math passes the official BIP340/
+> BIP341/BIP350 vectors and was cross-verified by three
+> independent implementations. The code has NOT yet run on
+> physical Pico/Duo hardware, and the ceremony has not yet been
+> walked by a human. Those are the next milestones; predictions
+> in the claims table await falsification.
 
-## The idea
+## The four verbs
 
-The July failure wasn't a bug in a product; it was a flaw in a
-paradigm — trusting devices with the one step nobody can verify
-from outside: randomness. So this protocol removes the device from
-the one place it was ever dangerous:
+1. **BORN of dice** — 256 rolls make key `k`, 256 rolls make pad
+   `p`. 512 rolls total. No RNG in the room.
+2. **CHECKED by strangers** — Raspberry Pi Pico and Milk-V Duo
+   (base model, not Duo S) must agree byte-for-byte and
+   fingerprint-for-fingerprint.
+3. **KEPT in steel** — plate A holds `p`; plate B holds `k XOR p`
+   plus the receive address (checksum) and a 4-word fingerprint.
+4. **SPENT in public** — fixed-template Taproot key-path spend;
+   dual identical Schnorr signatures; broadcast anywhere.
 
-1. **Physics authors the secret.** You derive all 128 seed bits
-   yourself with dice and a printed table. No RNG, no firmware, no
-   vendor in the room.
-2. **Machines are cross-examined, never trusted.** Silent
-   computations run on two unrelated junk computers and must match
-   byte-for-byte. Honesty about what that buys: two identical
-   machines are a fault detector, not a lie detector — two copies
-   of the same CD-R image will agree on the same wrong answer.
-   Catching lies takes independent implementations, which is why
-   the signing milestone (roadmap 3) requires two independent
-   codebases with byte-identical output — a hard requirement, not
-   an option.
-3. **Hardware is worthless, capability-stripped, and short-lived.**
-   $20 thrift-store machines with no radios and no disk, holding
-   the secret only in RAM, only for minutes, then destroyed.
-
-One distinction runs the whole ceremony: loud versus silent
-outputs. A loud output fails visibly — a wrong 12th word is an
-invalid checksum every wallet on earth rejects — so it needs one
-machine. A silent output looks right when it is wrong — address
-derivation, signing — so it needs two, byte-identical or stop.
+## Four layers
 
 ```
-DICE  ·  MATH  ·  STEEL
-          "trust nothing that cannot be caught lying"
-
-           the one rule:  LOUD steps → one machine
-                          SILENT steps → two machines
-                          (identical twins catch FAULTS;
-                           catching LIES needs independent code)
+ DICE  ·  MATH  ·  STEEL  ·  SPEND
+ "Nothing believed. Everything agreed."
 
  ┌──────────────────────────────────────────────────────────┐
- │ 1 AUTHOR      physics writes the key                     │
- │               dice + printed table → all 128 bits, by    │
- │               hand. zero chips in the room.              │
+ │ BORN        512 rolls. k and p from physics.             │
+ │             if k is 0 or ≥ n, reroll (< 2^-127).         │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ 2 FORCED MOVE                                  [LOUD]    │
- │               one junk PC names word 12. it has zero     │
- │               choices — a wrong answer is an invalid     │
- │               mnemonic every wallet on earth rejects.    │
- │               loud failure → one machine suffices.       │
+ │ CHECKED     two boards, two ISAs, two nations,           │
+ │             two codebases. address + 4-word fingerprint  │
+ │             spoken aloud. mismatch → stop.               │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ 3 DERIVE      xpub + first addresses          [SILENT]   │
- │               a wrong address looks right. so: two       │
- │               unrelated junk PCs, byte-identical or      │
- │               stop. (this catches faults; the signer     │
- │               roadmap requires independent code to       │
- │               catch lies.)                               │
+ │ KEPT        plate A = p. plate B = k⊕p + address +       │
+ │             fingerprint. one plate alone is worthless.   │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ 4 STEEL       stamp the 12 words. every factor ×2 —      │
- │               no single fire, flood, or forgotten        │
- │               hole is fatal.                             │
- │               passphrase: optional, diced, also ×2.      │
- │               (no checksum exists for it — see 5.)       │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ 5 PROVE FROM STEEL — before burning any paper            │
- │               read the plates, not the paper. re-derive  │
- │               address #1 in a SECOND wallet app. match?  │
- │               only now do secrets burn.                  │
- │               (paper-sourced checks are circular.)       │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ 6 PAPER       20 receive addresses, hand-copied,         │
- │               verified once → trusted forever. use       │
- │               them in order; never reuse one. no         │
- │               screen in the receive path again.          │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ 7 DEATH       power off. RAM fades. (sledge optional —   │
- │               ritual, not load-bearing.)                 │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ 8 YEARS LATER two junk PCs sign the same PSBT with TWO   │
- │               INDEPENDENT programs (roadmap M3).         │
- │               same program twice → caught a fault.       │
- │               independent code agreeing → caught a liar. │
- │               rehearse annually: self-error, not theft,  │
- │               is how bitcoin dies.                       │
+ │ SPENT       N inputs → 1 destination (+ optional change  │
+ │             to same address). screen confirm. dual       │
+ │             byte-identical BIP340 sigs. SD out.          │
  └──────────────────────────────────────────────────────────┘
 
-     coercion (wrench attack): see HARDCORE — duress/decoy
-     passphrase, cryptographically deniable. deliberate
-     choice, not a default.
+ Address reuse is accepted. One key, one Taproot address.
+ Multi-key privacy mitigation: HARDCORE.md.
 ```
 
-The full ceremony, phase by phase, with honest status flags for
-what this repo's code covers today: **[PROTOCOL.md](PROTOCOL.md)**.
+Ceremony detail: **[PROTOCOL.md](PROTOCOL.md)**. Reversals from the
+prior design: **[DECISIONS.md](DECISIONS.md)**.
 
-## Quick start (10 seconds of due diligence)
+## Quick start
 
-    python3 dice2words.py --test
+    python3 tests/vectors_test.py
+    python3 check_docs.py
+    python3 tools/linecount.py
 
-Runs this code against the official BIP39 reference vectors,
-including a round-trip proof that the kitchen-table hand protocol
-and standard BIP39 are the same mathematics. If it doesn't pass,
-don't use it. Don't trust us either way — read the file; it's short
-on purpose.
+If the vector test does not pass, do not use the code.
 
-Then:
+## Falsifiable claims
 
-    python3 dice2words.py finish   # your 11 words + 7 bits -> word 12
-    python3 dice2words.py check    # proofread any 12-word mnemonic
+Numbers below come from `tools/linecount.py` at commit time, or
+are marked predicted.
 
-`table.txt` is the printable dice-to-word lookup table (11 rolls
-per word; 1,2,3 → 0, 4,5,6 → 1; match the pattern, take the word).
+| Claim | Value | Status |
+|-------|------:|--------|
+| `birth_pico.py` non-comment lines | 238 | measured (`tools/linecount.py`) |
+| `birth_duo.py` non-comment lines | 232 | measured |
+| `sign_pico.py` non-comment lines | 180 | measured |
+| `sign_duo.py` non-comment lines | 149 | measured |
+| `io_pico.py` (I/O; excluded from crypto budget) | 33 | measured |
+| Ceremony die rolls (key + pad) | 512 | by design |
+| Receive addresses per key | 1 | by design (reuse accepted) |
+| Bill of materials | ~$60 | predicted — falsify this |
+| Birth ceremony wall-clock | ~45 min | predicted — falsify this |
+| Dual sign agreement (same JSON) | byte-identical | required by tests |
 
-## Why the machine only gets the last word
+Target budgets in the prompt were ≤150 (birth) and ≤230 (sign).
+Birth landed above 150; the table states the honest count. Sign
+landed under 230.
 
-A 12-word mnemonic is 128 entropy bits + a 4-bit checksum. The
-first 11 words and 7 bits of word 12 — all 128 entropy bits — come
-from your dice. The checksum (first 4 bits of SHA-256 of your
-entropy) determines the rest of word 12, and once your dice have
-spoken there is exactly ONE legal final word. The machine names it
-or is provably wrong: a wrong answer is an invalid mnemonic every
-wallet on earth rejects. The checksum contains no secret — it's a
-typo detector, not a lock. Author vs. proofreader, made literal.
+## Residual trust
 
-## Design decisions we expect to defend
+Both sides are modern silicon. The claim is not "trust nothing."
+The claim is that a successful lie requires two companies, two
+nations, two ISAs, and two codebases to emit the same false
+address or the same false signature on the same day — and that
+**operator error remains threat #1**. Spoken fingerprints exist
+because tired humans fail hex comparison.
 
-- **Direct dice→bit mapping, no hash-whitening.** Dice bias flows
-  into the key; we accept that because casino dice keep bias small
-  and non-adversarial, while machine-authored keys are exactly the
-  adversarial category this protocol exists to escape. The tally
-  test catches gross defects only — small bias is tolerated, not
-  measured (see PROTOCOL.md Phase 1). Most attackable decision in
-  the repo — see HARDCORE.md §2 and attack it.
-- **12 words only.** 128 bits is sufficient; two modes is twice the
-  mistakes. 24-word patch belongs in `experiments`.
-- **Python runtime is a known, stated trust.** ~150 lines of ours
-  sit on millions of CPython's. The defense is dual-machine
-  cross-examination, not pretending the audit surface is 150 lines.
-  Smaller-runtime ports are HARDCORE.md §4.
+## Help wanted
 
-## Roadmap (help wanted, in order)
-
-1. ~~Dice → mnemonic with human authorship~~ (v0.2, done)
-2. BIP32/BIP84 derivation + address generation — same style: tiny,
-   stdlib-only, vector-tested (closes PROTOCOL.md Phase 5's gap)
-3. PSBT signing with RFC 6979 deterministic nonces, byte-identical
-   across two independent implementations — hard requirement, not
-   an option: identical copies only catch faults (closes Phase 7)
-4. Bootable 32-bit live-CD image that runs all of it on
-   twenty-year-old junk
-5. Review. Especially review. **Break this.**
-
-See CONTRIBUTING.md for how, SECURITY.md for exploitable findings,
-HARDCORE.md for the extreme-variant agenda (`experiments` branch).
+1. **Independent rewrite of implementation #2** (`birth_duo.py`,
+   `sign_duo.py`). Same-session dual authorship is a seat-warmer;
+   see DECISIONS.md. This is the top ask.
+2. Buildroot image recipe for the Milk-V Duo base model, reproducible
+   from source.
+3. Physical wiring notes and photos for keypad + SSD1306 on both
+   boards (no seller links).
+4. Adversarial review of the fixed transaction template and the
+   OTP plate encoding format.
+5. Break the dice-bias story (HARDCORE.md §2) with measured math.
 
 ## Prior art, credited gladly
 
-The Glacier Protocol (paranoid procedural cold storage), SeedSigner
-and Krux (stateless DIY signing), SeedPicker and the printed
-dice-table tradition, and the community's long-standing dice-seed
-practice — which is exactly what protected people on July 30.
-
-What this draft adds is the system: hand-authored entropy with the
-machine demoted to proofreader; deliberately worthless heterogeneous
-hardware as a supply-chain defense (nobody counterfeits junk, nobody
-pre-positions an implant in a random dead thrift-store PC);
-dual-machine byte-identical determinism, honestly bounded — a
-fault detector until the implementations are independent;
-write-once CD-R as immutable software distribution; RAM-only key
-ephemerality; paper as the permanent root of truth for receiving;
-and a vendor model that ships no electronics at all.
+The Glacier Protocol (especially the mandatory rehearsal before
+real funds), SeedSigner and Krux (stateless DIY signing), SeedPicker
+and the printed dice-table tradition, and the community's
+dice-authored key practice — which is exactly what protected people
+on July 30.
 
 ## Credits
 
-v0.3's changes come from post-launch adversarial review (red-team
-audit → adjudication → steelman). Critics are credited here by name
-or handle as their findings land.
+v0.5 is a ground-up minimal rewrite. Critics of v0.3.4 are credited
+in DECISIONS.md by the substance of what they forced us to delete.
 
 ## License
 
-MIT — see LICENSE. Take it, fork it, sell it, break it.
+MIT — see LICENSE. Take it, fork it, break it.
 Attribution appreciated; correction appreciated more.

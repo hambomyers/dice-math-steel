@@ -1,3 +1,7 @@
+# Bytecode — never commit; grep of src/ must not trip over these.
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+
 .DS_Store
