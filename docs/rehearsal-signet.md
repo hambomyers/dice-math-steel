@@ -1,15 +1,23 @@
 # Rehearsal transcript — signet (dry run)
 
-This document proves the v0.5 path was walked once end-to-end on
+This document proves the math path was walked once end-to-end on
 signet semantics. It uses **throwaway rolls** published here so
 reviewers can reproduce. Do not send value to these addresses on
 mainnet.
+
+Current ceremony (see PROTOCOL.md): **one device at birth**, graded
+by Bitcoin Core (`rawtr()` on public data) and a $5 ledger
+round-trip; **witness machine at spend** for byte-identical
+signatures. This transcript's dual-implementation checks are the
+code seat-warmer; a human Core + hardware walk is still pending
+(README STATUS).
 
 ## 0. Tooling check
 
 ```
 $ python3 tests/vectors_test.py
-OK: BIP340 + BIP341 + BIP350 vectors pass on both implementations; births and signatures agree.
+OK pins
+… per-suite OK lines …
 
 $ python3 check_docs.py
 Docs clean: ...
@@ -28,12 +36,11 @@ key_rolls[i] = ((i * 3) % 6) + 1
 pad_rolls[i] = ((i * 5) % 6) + 1
 ```
 
-Both devices received the same sequences (Pico path and Duo path in
-`tests/vectors_test.py::test_birth_agreement` / sign template test
-with `hrp=bcrt` for regtest-shaped addresses; signet would use
-`tb`).
+Entered once (birth path). Both code lineages in
+`tests/vectors_test.py` consume the same sequences
+(`hrp=bcrt` for regtest-shaped addresses; signet would use `tb`).
 
-## 2. Birth agreement
+## 2. Birth (one entry; dual code check)
 
 Both implementations returned the same:
 
@@ -43,13 +50,15 @@ Both implementations returned the same:
 - plate B = k XOR p
 
 Mismatch rule exercised in code: any field inequality fails the
-test harness (stop condition).
+test harness (stop condition). On a live ceremony, Core
+`deriveaddresses "rawtr(Q)"` must also match before steel is
+stamped.
 
 ## 3. Stamp check (logical)
 
 Plate B carries the address. Re-deriving from `k = plate_B XOR
 plate_A` reproduced the same address on both implementations. That
-is the permanent checksum.
+is the permanent checksum — and the typo catch before real funds.
 
 ## 4. Signet spend (template)
 
@@ -73,8 +82,9 @@ Unsigned JSON (public):
 }
 ```
 
-Screen confirmation lines (fee 5000 sats) shown before signing on
-both paths.
+Screen confirmation (destination, amount, fee) runs before signing.
+On a live spend, both the birth device and the witness machine
+must agree.
 
 ## 5. Dual signatures
 
@@ -98,8 +108,9 @@ Reflash before the next ceremony.
 
 ---
 
-**Verdict:** birth agreement, address-as-checksum, screen confirm,
-and dual byte-identical fixed-template signatures are exercised by
-the committed test harness. A chain-broadcast pocket-sat pass on
-public signet remains an operator step; treat it as mandatory
-before mainnet funds (PROTOCOL.md Phase 4).
+**Verdict:** birth agreement across code lineages, address-as-checksum,
+screen confirm, and dual byte-identical fixed-template signatures
+are exercised by the committed test harness. Core `rawtr()`, the
+$5 ledger round-trip, and a chain-broadcast pocket-sat pass on
+public signet remain operator steps — mandatory before mainnet
+funds (PROTOCOL.md Phases 3–4 and 6).

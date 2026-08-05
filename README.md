@@ -106,27 +106,30 @@ landed under 230.
 
 ## Residual trust
 
-Both birth silicon and the spend-day witness are modern boards.
-Bitcoin Core grades the address on public data. The claim is not
+Birth runs on one board; Bitcoin Core grades the address on public
+data; a witness board joins only on spend day. The claim is not
 "trust nothing." The claim is that a successful lie at birth must
 fool the device **and** Core, and a successful lie at spend must
 get two codebases to emit the same false signature the same day —
 and that **operator error remains threat #1**. Spoken fingerprints
 and steel re-derivation exist because tired humans fail hex
-comparison and double-entry.
+comparison.
 
 ## Help wanted
 
 1. **Independent rewrite of implementation #2** (`birth_duo.py`,
    `sign_duo.py`). Same-session dual authorship is a seat-warmer;
    see DECISIONS.md. This is the top ask.
-2. Buildroot image recipe for the Milk-V Duo base model, reproducible
-   from source.
-3. Physical wiring notes and photos for keypad + SSD1306 on both
-   boards (no seller links).
+2. Buildroot image recipe for the Milk-V Duo base model (spend-day
+   witness), reproducible from source.
+3. Physical wiring notes and photos for keypad + SSD1306 on the
+   birth Pico (and the witness Duo when you build it) — no seller
+   links.
 4. Adversarial review of the fixed transaction template and the
    OTP plate encoding format.
 5. Break the dice-bias story (HARDCORE.md §2) with measured math.
+6. Walk the ceremony on physical hardware and falsify the predicted
+   claims (BOM, wall-clock).
 
 ## Prior art, credited gladly
 

@@ -6,8 +6,8 @@ This project's review process is public attack. Here's how to aim it.
 open an issue. Bring your reasoning; expect engagement. Good-faith
 critics get credited in the README whether or not they're right.
 
-**Code changes:** pull requests against `v0.5-minimal` while that
-branch is the active rewrite. Ground rules that will not bend:
+**Code changes:** pull requests against `main`. Ground rules that
+will not bend:
 
 - Standard library only. A dependency is a trusted party.
 - Short enough to read completely. If your PR doubles the line
