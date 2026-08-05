@@ -5,7 +5,7 @@
 *Satoshi's setup, with dice.*
 
 **New here? Read the white paper:** [Dice·Math·Steel —
-a white paper for the kitchen table](docs/whitepaper.html)
+a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html)
 (or view it rendered at dicemathsteel.com once live).
 
 *Dice, steel, and two strangers who must agree.*
