@@ -5,6 +5,7 @@
 
 DICE MATH STEEL
 Nothing believed. Everything agreed.
+Satoshi's setup, with dice.
 
     DICE
      |
@@ -16,9 +17,6 @@ Nothing believed. Everything agreed.
      |
      v
     SPEND
-
-"Dice, steel, and two strangers
-        who must agree."
 
 the full ceremony, the code, and
 the arguments live in the repo:

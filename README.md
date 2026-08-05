@@ -4,12 +4,6 @@
 
 *Satoshi's setup, with dice.*
 
-**New here? Read the white paper:** [Dice·Math·Steel —
-a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html)
-(or view it rendered at dicemathsteel.com once live).
-
-*Dice, steel, and two strangers who must agree.*
-
 *Cold storage with no trusted devices. A rough draft posted to be
 attacked, corrected, and improved — in reply to July 30, 2026, the
 day the most trusted hardware wallet in Bitcoin cost its users ~$38M
@@ -48,7 +42,6 @@ years.*
 ```
  DICE  ·  MATH  ·  STEEL  ·  SPEND
  "Nothing believed. Everything agreed."
- "Satoshi's setup, with dice."
 
  ┌──────────────────────────────────────────────────────────┐
  │ BORN        512 rolls, one device. k and p from physics. │
@@ -76,8 +69,9 @@ years.*
  Multi-key privacy mitigation: HARDCORE.md.
 ```
 
-Ceremony detail: **[PROTOCOL.md](PROTOCOL.md)**. Reversals from the
-prior design: **[DECISIONS.md](DECISIONS.md)**.
+White paper: [Dice·Math·Steel — a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html).
+
+Ceremony: **[PROTOCOL.md](PROTOCOL.md)**. Reversals: **[DECISIONS.md](DECISIONS.md)**.
 
 ## Quick start
 

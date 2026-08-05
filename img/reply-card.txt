@@ -5,20 +5,20 @@
 
 DICE MATH STEEL
 Nothing believed. Everything agreed.
+Satoshi's setup, with dice.
 
-  DICE          512 rolls: 256 key + 256 pad.
+  DICE          512 rolls on one device.
    |            physics authors the secret.
    v
-  TWO BOARDS    Pico + Milk-V Duo (not Duo S).
-  MUST AGREE    two ISAs, two nations, two
-   |            codebases. spoken fingerprint.
+  CHECKED       Core rawtr() on public data.
+   |            $5 round-trip. steel re-derive.
    v
   STEEL         plate A = pad. plate B = XOR
    |            + 1 receive address (checksum)
    |            + 4-word fingerprint.
    v
-  SPEND         fixed template. dual identical
-   |            Schnorr signatures. SD out.
+  SPEND         witness machine joins here.
+   |            dual identical Schnorr sigs.
    v
   REFLASH       hardware amnesiac. hammer is
                 optional ritual.
