@@ -85,6 +85,15 @@
   .device b{display:block;font-size:15px}
   .match{font-family:var(--mono);text-align:center;font-size:12.5px;letter-spacing:.2em;color:var(--die);font-weight:700;margin-top:4px}
 
+
+  /* deep dives */
+  details.dive{border:1px solid var(--line);border-left:3px solid var(--die);background:var(--wash);margin:18px 0;max-width:64ch}
+  details.dive summary{cursor:pointer;list-style:none;padding:12px 14px;font-family:var(--mono);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--die);font-weight:700}
+  details.dive summary::-webkit-details-marker{display:none}
+  details.dive summary::before{content:"\25B8  ";}
+  details.dive[open] summary::before{content:"\25BE  ";}
+  details.dive .body{padding:0 16px 14px;font-size:17px}
+  details.dive .body p{margin:10px 0}
   .tagline-out{margin-top:56px;text-align:center;font-family:var(--mono);font-weight:700;letter-spacing:.24em;font-size:clamp(14px,3.2vw,19px)}
   footer{margin-top:64px;border-top:1px solid var(--ink);padding-top:16px;font-family:var(--mono);font-size:13px;color:var(--soft);line-height:1.9}
 </style>
@@ -167,8 +176,14 @@
     <div class="diecard">roll <b>4 · 5 · 6</b> → write <b>1</b></div>
   </div>
   <p>Roll 256 times: that string of 0s and 1s is your <strong>key</strong> — a number so large that every computer on Earth, guessing until the sun burns out, would never find it. You just made it with your hands. Then roll 256 <em>more</em> times for a second number, the <strong>pad</strong>. It is the scrambler.</p>
+  <details class="dive"><summary>DEEP DIVE · why dice — why not just flip a coin?</summary><div class="body"><p>A coin works; the protocol only needs 256 fair yes-or-nos. But dice are the better instrument, for reasons people have actually measured. A caught coin lands same-side-up about 50.8% of the time — physicists predicted it, then a study of 350,000 real flips confirmed it: the flip remembers a whisper of how it started. (At 256 bits even that bias would leave a thief hopeless — but take free fairness where it is offered.) Casino dice, meanwhile, are the only five-dollar object on Earth machined <em>for</em> fairness — cut to half a thousandth of an inch, sharp-edged, translucent to expose voids, because money rides on them nightly.</p><p>One deliberate waste, confessed: a die could yield 2.58 bits per roll, and we keep only one — because “1-2-3 low, 4-5-6 high” is a glance, and base-six arithmetic is a mistake waiting for a tired hand. We spend entropy to buy simplicity. Dice are cheap; errors are not.</p></div></details>
+
   <p class="aside">Why dice? Randomness is the one thing you can never check by looking at it — a rigged machine's "random" looks identical to real random. So no machine is allowed near this step. Physics rolls; you write.</p>
-</section>
+<details class="dive"><summary>DEEP DIVE · rolling five at a time (and the sorting trap)</summary><div class="body"><p>Throw five dice at once and you harvest five bits per throw — about fifty throws and the key is done. Physics has no objection: colliding dice do not coordinate; if anything they scramble each other harder. Just give them room and violence — casinos make the dice hit the back wall for a reason — and reroll anything cocked or stacked.</p><p>The real trap is <em>reading order</em>. Your key is a sequence, not a pile — and if you choose the order after seeing the faces, your tidy hands will impose patterns. Sorted dice look like ten bits but carry far fewer: entropy quietly thrown away, invisibly, into a key that still looks like perfect static. The fix costs nothing: fix the order <em>before</em> the throw — five colors, always read red-orange-yellow-green-blue, or a tray lane read left to right as they lie. Never touch, never tidy, never sort.</p></div></details>
+
+  <details class="dive"><summary>DEEP DIVE · what if I misread a die?</summary><div class="body"><p>A misread cannot weaken the key. Read a 4 as a 1 and you have simply selected a different one of the 2²⁵⁶ possible keys — every path through the haystack is equally dark. You cannot add randomness to what is already maximal, and you cannot subtract it with a slip: stirring milk that is fully mixed changes nothing. The pencil row IS the key; the dice were only its author.</p><p>The only error that matters is your paper and the machine disagreeing — a mistyped digit births an address your steel cannot open. And the ceremony already hunts exactly that, twice, before a single sat is at risk: re-derive from the stamped steel (must reproduce the stamped address), then the $5 round-trip. In this design a lie and a typo are the same event — a disagreement between two records — and everything built to catch one catches the other.</p></div></details>
+
+  </section>
 
 <section id="s2">
   <h2><span class="no">3.</span>Hide the number</h2>
@@ -192,6 +207,8 @@
   </div>
 
   <p>A thief holding <em>one</em> plate holds pure static. Not "hard to crack" — <strong>nothing there</strong>: every digit on plate B hides a perfect 50/50 coin toss, because the pad bit beneath it was a fair roll. This is the one-time pad — 1940s spy mathematics, never beaten, because there is nothing to beat.</p>
+  <details class="dive"><summary>DEEP DIVE · the static contains every key</summary><div class="body"><p>Here is how completely one plate hides the number. Take plate B alone and ask: which keys could it conceal? Answer: <em>all of them</em> — every one of the 2²⁵⁶ possible keys corresponds to exactly one pad that would produce this exact plate, and every pad is equally likely, because each pad bit was a fair roll. The plate is not a puzzle with one answer; it is a sentence consistent with every answer. That is why this is not “encryption too strong to break” — there is nothing to break. A thief with one plate and infinite computers holds the same information as a thief with none: the number is somewhere in the haystack. He knew that already.</p></div></details>
+
   <p>Recovery is the same game played again: line up the plates, mark same-or-different, and the key reappears. Pencil, paper, ten minutes — the entire instruction your heirs will ever need. But make <strong>two copies of each plate</strong>: losing either half forever is losing the coins.</p>
 </section>
 
