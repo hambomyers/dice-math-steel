@@ -18,25 +18,73 @@
   }
   *{box-sizing:border-box;margin:0}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  body{background:#FFFFFF !important;color:#1B1D20 !important;font-family:var(--serif);font-size:19px;line-height:1.7}
-  .doc{max-width:700px;margin:0 auto;padding:0 22px 110px}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    background:#FFFFFF !important;color:#1B1D20 !important;
+    font-family:var(--serif);
+    font-size:clamp(16.5px, 2.35vw, 19px);
+    line-height:1.7;
+  }
+  .shell{max-width:700px;margin:0 auto;padding:0 16px 96px}
+  .doc{max-width:700px;margin:0 auto}
   a{color:var(--die);text-decoration-thickness:1px;text-underline-offset:3px}
   a:focus-visible,button:focus-visible{outline:3px solid var(--die);outline-offset:2px}
 
+  /* section rail — laptop only */
+  .rail{display:none}
+  .rail .rail-label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--soft);margin-bottom:10px;
+  }
+  .rail ol{list-style:none;padding:0;margin:0}
+  .rail li{margin:0}
+  .rail a{
+    display:block;font-family:var(--mono);font-size:12px;line-height:1.35;
+    letter-spacing:.02em;color:var(--soft);text-decoration:none;
+    padding:7px 0 7px 10px;border-left:2px solid var(--line);
+  }
+  .rail a:hover{color:var(--ink);border-left-color:var(--ink)}
+  .rail a.active{color:var(--die);border-left-color:var(--die);font-weight:700}
+  .rail .top{
+    display:inline-block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--soft);text-decoration:none;
+  }
+  .rail .top:hover{color:var(--die)}
+
+  @media (min-width:1024px){
+    .shell{
+      max-width:940px;
+      display:grid;
+      grid-template-columns:minmax(0,700px) 172px;
+      column-gap:40px;
+      justify-content:center;
+      padding:0 28px 110px;
+    }
+    .doc{max-width:none;width:100%;margin:0}
+    .rail{
+      display:block;
+      position:sticky;
+      top:36px;
+      align-self:start;
+      padding-top:76px;
+    }
+  }
+
   /* title block, whitepaper style */
-  header{padding:76px 0 0;text-align:center;border-bottom:1px solid var(--ink);margin-bottom:8px}
-  h1{font-family:var(--mono);font-weight:700;letter-spacing:.22em;font-size:clamp(20px,4.6vw,30px)}
+  header{padding:clamp(48px,10vw,76px) 0 0;text-align:center;border-bottom:1px solid var(--ink);margin-bottom:8px}
+  h1{font-family:var(--mono);font-weight:700;letter-spacing:.22em;font-size:clamp(18px,4.6vw,30px)}
   h1 .pip{color:var(--die)}
-  .subtitle{margin-top:10px;font-size:17px;font-style:italic;color:var(--soft)}
+  .subtitle{margin-top:10px;font-size:clamp(15.5px,2.4vw,17px);font-style:italic;color:var(--soft)}
   .byline{font-family:var(--mono);font-size:13px;color:var(--soft);margin:18px 0 22px;letter-spacing:.04em}
   .abstract{border-top:1px solid var(--ink);text-align:left;padding:22px 0 26px;margin-top:22px}
   .abstract b{font-family:var(--mono);font-size:13px;letter-spacing:.2em}
-  .abstract p{margin-top:8px;font-size:17.5px}
-  .warn{font-family:var(--mono);font-size:13px;line-height:1.6;border:1.5px solid var(--die);color:var(--die);padding:10px 12px;margin:0 0 26px}
+  .abstract p{margin-top:8px;font-size:clamp(16px,2.2vw,17.5px)}
+  .warn{font-family:var(--mono);font-size:clamp(12px,2vw,13px);line-height:1.6;border:1.5px solid var(--die);color:var(--die);padding:10px 12px;margin:0 0 26px}
 
   /* numbered sections */
-  section{margin-top:64px}
-  h2{font-family:var(--mono);font-weight:700;font-size:clamp(18px,3.2vw,22px);letter-spacing:.04em;margin-bottom:14px}
+  section{margin-top:64px;scroll-margin-top:24px}
+  h2{font-family:var(--mono);font-weight:700;font-size:clamp(17px,3.2vw,22px);letter-spacing:.04em;margin-bottom:14px}
   h2 .no{color:var(--die);margin-right:.6em}
   p{margin:13px 0;max-width:64ch}
   .aside{font-style:italic;color:var(--soft);border-left:2px solid var(--line);padding-left:16px;max-width:58ch}
@@ -44,8 +92,8 @@
   figcaption{font-family:var(--mono);font-size:12px;color:var(--soft);letter-spacing:.14em;text-transform:uppercase;margin-top:8px;text-align:center}
 
   /* figures: quiet framed monospace */
-  .fig{background:var(--wash);border:1px solid var(--line);padding:18px 16px;overflow-x:auto}
-  .fig pre{font-family:var(--mono);font-size:14.5px;line-height:1.6;white-space:pre;color:var(--ink)}
+  .fig{background:var(--wash);border:1px solid var(--line);padding:18px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .fig pre{font-family:var(--mono);font-size:clamp(12.5px,2.8vw,14.5px);line-height:1.6;white-space:pre;color:var(--ink)}
   .fig .r{color:var(--die)}.fig .g{color:var(--ok)}.fig .d{color:var(--soft)}
 
   .diemap{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;font-family:var(--mono)}
@@ -53,27 +101,30 @@
   .diecard b{color:var(--die);font-size:18px}
 
   /* THE CALCULATOR — strict grid so every bit is a perfect column */
-  .demo{border:1px solid var(--ink);padding:22px 18px;margin:26px 0}
+  .demo{border:1px solid var(--ink);padding:clamp(14px,3vw,22px) clamp(12px,2.5vw,18px);margin:26px 0}
   .demo h3{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:4px}
-  .demo .hint{font-size:15.5px;color:var(--soft);margin:4px 0 14px}
-  .calc{font-family:var(--mono);font-size:clamp(15px,3.4vw,20px);overflow-x:auto}
+  .demo .hint{font-size:clamp(14.5px,2.2vw,15.5px);color:var(--soft);margin:4px 0 14px}
+  .calc{font-family:var(--mono);font-size:clamp(14px,3.4vw,20px);overflow-x:auto;-webkit-overflow-scrolling:touch}
   .rowline{display:grid;grid-template-columns:8ch repeat(12,2ch) 1fr;align-items:center;margin:5px 0}
   .rowtag{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding-left:12px;white-space:nowrap}
   .rowtag.priv{color:var(--die)}.rowtag.pub{color:var(--ok)}.rowtag.neu{color:var(--soft)}
   .rowname{font-size:11px;letter-spacing:.14em;color:var(--soft);text-transform:uppercase}
   .bit,button.bit{
-    width:2ch;height:1.7em;line-height:1.7em;text-align:center;padding:0;border:0;
+    width:2ch;min-height:1.7em;line-height:1.7em;text-align:center;padding:0;border:0;
     font:inherit;background:transparent;display:block;
   }
   button.bit{cursor:pointer;color:var(--die);font-weight:700;border-bottom:2px dashed var(--die)}
   button.bit:hover{background:#FBEDEB}
+  @media (max-width:520px){
+    button.bit{min-height:44px;line-height:44px}
+  }
   .keyrow .bit{font-weight:500}
   .plateB .bit{color:var(--blue);font-weight:700}
   .marks .bit{color:var(--soft)}
   .rule{grid-column:2/-1;border-top:1.5px solid var(--ink);height:0;margin:3px 0}
   .rulewrap{display:grid;grid-template-columns:8ch repeat(12,2ch) 1fr}
   .controls{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
-  .controls button{font-family:var(--mono);font-size:13px;letter-spacing:.05em;cursor:pointer;background:var(--ink);color:#fff;border:1.5px solid var(--ink);padding:9px 14px}
+  .controls button{font-family:var(--mono);font-size:13px;letter-spacing:.05em;cursor:pointer;background:var(--ink);color:#fff;border:1.5px solid var(--ink);padding:11px 14px;min-height:44px}
   .controls button.ghost{background:transparent;color:var(--ink)}
   .verdict{font-family:var(--mono);font-size:13.5px;margin-top:12px;min-height:1.4em}
   .verdict.ok{color:var(--ok)}.verdict.bad{color:var(--die)}
@@ -92,16 +143,17 @@
   details.dive summary::-webkit-details-marker{display:none}
   details.dive summary::before{content:"\25B8  ";}
   details.dive[open] summary::before{content:"\25BE  ";}
-  details.dive .body{padding:0 16px 14px;font-size:17px}
+  details.dive .body{padding:0 16px 14px;font-size:clamp(15.5px,2.2vw,17px)}
   details.dive .body p{margin:10px 0}
   .tagline-out{margin-top:56px;text-align:center;font-family:var(--mono);font-weight:700;letter-spacing:.24em;font-size:clamp(14px,3.2vw,19px)}
   footer{margin-top:64px;border-top:1px solid var(--ink);padding-top:16px;font-family:var(--mono);font-size:13px;color:var(--soft);line-height:1.9}
 </style>
 </head>
 <body>
+<div class="shell">
 <div class="doc">
 
-<header>
+<header id="top">
   <h1>DICE <span class="pip">·</span> MATH <span class="pip">·</span> STEEL</h1>
   <p class="subtitle">Satoshi’s setup, with dice — a white paper for the kitchen table</p>
   <p class="byline">hambomyers · v0.5 · dicemathsteel.com</p>
@@ -295,6 +347,23 @@ who takes the coins last?  →  whoever you hand the steel to</pre></div>
 </footer>
 
 </div>
+
+<nav class="rail" aria-label="On this page">
+  <div class="rail-label">On this page</div>
+  <ol>
+    <li><a href="#s0">0 · Whole machine</a></li>
+    <li><a href="#s0b">1 · The number</a></li>
+    <li><a href="#s1">2 · Make</a></li>
+    <li><a href="#s2">3 · Hide</a></li>
+    <li><a href="#s3">4 · Prove</a></li>
+    <li><a href="#s4">5 · Rest</a></li>
+    <li><a href="#s5">6 · Spend</a></li>
+    <li><a href="#s7">7 · Scenarios</a></li>
+    <li><a href="#s6">8 · Why Bitcoin</a></li>
+  </ol>
+  <a class="top" href="#top">↑ Top</a>
+</nav>
+</div>
 <script>
 (function(){
   var N=12,key=[],pad=[];
@@ -325,6 +394,28 @@ who takes the coins last?  →  whoever you hand the steel to</pre></div>
     v.className='verdict '+(ok?'ok':'bad');
   });
   key=rollBits(N);pad=rollBits(N);render();
+
+  /* Sticky rail: highlight the section currently in view (laptop only). */
+  var links=[].slice.call(document.querySelectorAll('.rail a[href^="#s"]'));
+  if(links.length && 'IntersectionObserver' in window){
+    var map={};
+    links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+    var current=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var id=en.target.id;
+        if(!map[id] || current===id) return;
+        if(current && map[current]) map[current].classList.remove('active');
+        map[id].classList.add('active');
+        current=id;
+      });
+    },{rootMargin:'-20% 0px -65% 0px',threshold:0});
+    Object.keys(map).forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) io.observe(el);
+    });
+  }
 })();
 </script>
 </body>
