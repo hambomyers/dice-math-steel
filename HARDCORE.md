@@ -141,15 +141,15 @@ Mitigation: roll **several independent keys** (full 512-roll ceremony
 each). Stamp separate plate pairs. Use a new key when you want an
 unlinkable receive path. No invented derivation. No account trees.
 
-## Appendix E — Third verifier
+## Appendix E — Third verifier (retired 2026-08-05)
 
-A third device that must agree with both lineages.
+**Retired.** Bitcoin Core is now the senior referee at birth
+(`rawtr()` on public data only); see DECISIONS.md. A third
+ceremony board is redundant for that role.
 
-Constraint: it must differ from **both** existing lineages. The Duo
-is already RISC-V / China-origin. A third verifier should be, for
-example, a different-vendor ARM or MIPS part — **not** another
-RISC-V board that collapses the ISA diversity claim.
-
-Same rule as the dual pair: independent code, byte-identical
-address and signatures, spoken fingerprint. Three-way mismatch
-still means stop.
+Historical note (kept for context): a third device that must agree
+with both lineages was once proposed. Constraint then: it must
+differ from **both** existing lineages. The Duo is already RISC-V /
+China-origin. A third verifier would have been, for example, a
+different-vendor ARM or MIPS part — **not** another RISC-V board
+that collapses the ISA diversity claim.

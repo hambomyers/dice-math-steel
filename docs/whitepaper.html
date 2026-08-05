@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Dice · Math · Steel — a white paper for the kitchen table</title>
+<meta name="description" content="Cold storage explained from the ground up: make the number, hide the number, prove the number — trusting nothing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light only;
+    --page:#FFFFFF; --ink:#1B1D20; --soft:#5C6167; --line:#D9DBDE;
+    --die:#C1372E; --blue:#1D5C8F; --ok:#2E6B45; --wash:#F7F8F9;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --serif:'Source Serif 4',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  body{background:#FFFFFF !important;color:#1B1D20 !important;font-family:var(--serif);font-size:19px;line-height:1.7}
+  .doc{max-width:700px;margin:0 auto;padding:0 22px 110px}
+  a{color:var(--die);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--die);outline-offset:2px}
+
+  /* title block, whitepaper style */
+  header{padding:76px 0 0;text-align:center;border-bottom:1px solid var(--ink);margin-bottom:8px}
+  h1{font-family:var(--mono);font-weight:700;letter-spacing:.22em;font-size:clamp(20px,4.6vw,30px)}
+  h1 .pip{color:var(--die)}
+  .subtitle{margin-top:10px;font-size:17px;font-style:italic;color:var(--soft)}
+  .byline{font-family:var(--mono);font-size:13px;color:var(--soft);margin:18px 0 22px;letter-spacing:.04em}
+  .abstract{border-top:1px solid var(--ink);text-align:left;padding:22px 0 26px;margin-top:22px}
+  .abstract b{font-family:var(--mono);font-size:13px;letter-spacing:.2em}
+  .abstract p{margin-top:8px;font-size:17.5px}
+  .warn{font-family:var(--mono);font-size:13px;line-height:1.6;border:1.5px solid var(--die);color:var(--die);padding:10px 12px;margin:0 0 26px}
+
+  /* numbered sections */
+  section{margin-top:64px}
+  h2{font-family:var(--mono);font-weight:700;font-size:clamp(18px,3.2vw,22px);letter-spacing:.04em;margin-bottom:14px}
+  h2 .no{color:var(--die);margin-right:.6em}
+  p{margin:13px 0;max-width:64ch}
+  .aside{font-style:italic;color:var(--soft);border-left:2px solid var(--line);padding-left:16px;max-width:58ch}
+  figure{margin:24px 0}
+  figcaption{font-family:var(--mono);font-size:12px;color:var(--soft);letter-spacing:.14em;text-transform:uppercase;margin-top:8px;text-align:center}
+
+  /* figures: quiet framed monospace */
+  .fig{background:var(--wash);border:1px solid var(--line);padding:18px 16px;overflow-x:auto}
+  .fig pre{font-family:var(--mono);font-size:14.5px;line-height:1.6;white-space:pre;color:var(--ink)}
+  .fig .r{color:var(--die)}.fig .g{color:var(--ok)}.fig .d{color:var(--soft)}
+
+  .diemap{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;font-family:var(--mono)}
+  .diecard{border:1px solid var(--ink);padding:10px 14px;font-size:14.5px}
+  .diecard b{color:var(--die);font-size:18px}
+
+  /* THE CALCULATOR — strict grid so every bit is a perfect column */
+  .demo{border:1px solid var(--ink);padding:22px 18px;margin:26px 0}
+  .demo h3{font-family:var(--mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:4px}
+  .demo .hint{font-size:15.5px;color:var(--soft);margin:4px 0 14px}
+  .calc{font-family:var(--mono);font-size:clamp(15px,3.4vw,20px);overflow-x:auto}
+  .rowline{display:grid;grid-template-columns:8ch repeat(12,2ch) 1fr;align-items:center;margin:5px 0}
+  .rowtag{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding-left:12px;white-space:nowrap}
+  .rowtag.priv{color:var(--die)}.rowtag.pub{color:var(--ok)}.rowtag.neu{color:var(--soft)}
+  .rowname{font-size:11px;letter-spacing:.14em;color:var(--soft);text-transform:uppercase}
+  .bit,button.bit{
+    width:2ch;height:1.7em;line-height:1.7em;text-align:center;padding:0;border:0;
+    font:inherit;background:transparent;display:block;
+  }
+  button.bit{cursor:pointer;color:var(--die);font-weight:700;border-bottom:2px dashed var(--die)}
+  button.bit:hover{background:#FBEDEB}
+  .keyrow .bit{font-weight:500}
+  .plateB .bit{color:var(--blue);font-weight:700}
+  .marks .bit{color:var(--soft)}
+  .rule{grid-column:2/-1;border-top:1.5px solid var(--ink);height:0;margin:3px 0}
+  .rulewrap{display:grid;grid-template-columns:8ch repeat(12,2ch) 1fr}
+  .controls{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .controls button{font-family:var(--mono);font-size:13px;letter-spacing:.05em;cursor:pointer;background:var(--ink);color:#fff;border:1.5px solid var(--ink);padding:9px 14px}
+  .controls button.ghost{background:transparent;color:var(--ink)}
+  .verdict{font-family:var(--mono);font-size:13.5px;margin-top:12px;min-height:1.4em}
+  .verdict.ok{color:var(--ok)}.verdict.bad{color:var(--die)}
+
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+  @media(max-width:560px){.pair{grid-template-columns:1fr}}
+  @media(max-width:520px){.rowtag{display:none}}
+  .device{border:1px solid var(--ink);padding:14px;font-family:var(--mono);font-size:13.5px;line-height:1.65}
+  .device b{display:block;font-size:15px}
+  .match{font-family:var(--mono);text-align:center;font-size:12.5px;letter-spacing:.2em;color:var(--die);font-weight:700;margin-top:4px}
+
+  .tagline-out{margin-top:56px;text-align:center;font-family:var(--mono);font-weight:700;letter-spacing:.24em;font-size:clamp(14px,3.2vw,19px)}
+  footer{margin-top:64px;border-top:1px solid var(--ink);padding-top:16px;font-family:var(--mono);font-size:13px;color:var(--soft);line-height:1.9}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<header>
+  <h1>DICE <span class="pip">·</span> MATH <span class="pip">·</span> STEEL</h1>
+  <p class="subtitle">Satoshi’s setup, with dice — a white paper for the kitchen table</p>
+  <p class="byline">hambomyers · v0.5 · dicemathsteel.com</p>
+  <div class="abstract">
+    <b>ABSTRACT.</b>
+    <p>Your money is guarded by a secret number. Whoever knows the number owns the coins. This paper is one story told five ways: make the number, hide the number, prove the number, rest, and spend — without ever trusting a machine's word for anything.</p>
+  </div>
+</header>
+
+<div class="warn">EXPERIMENTAL — UNREVIEWED. Do not use with real funds. Signet or pocket change only until strangers smarter than us have broken and repaired this. That is not a disclaimer; it is the development model.</div>
+
+<section id="s0">
+  <h2><span class="no">0.</span>The whole machine, on one page</h2>
+  <figure>
+    <div class="fig"><pre>
+ 🎲 256 rolls                🎲 256 more rolls
+   <span class="d">1·2·3 → 0   4·5·6 → 1</span>       <span class="d">same mapping</span>
+   │                         │
+   ▼                         ▼
+ KEY  <span class="r">1 0 1 1 0 … (256)</span>    PAD  <span class="r">0 1 1 0 0 … (256)</span>
+   │                         │
+   │   same-or-different,    │
+   │◀── column by column ────┤
+   │                         ▼
+   │                    ⛓ PLATE A = the pad
+   ▼
+ the answer row ─────▶ ⛓ PLATE B  <span class="d">(+ address, below)</span>
+
+   │  KEY continues into the machine —
+   ▼  down a strictly ONE-WAY road:
+ ┌──────────────────────────────────────┐
+ │  ONE SMALL COMPUTER            <span class="d">($4, no radio)</span>  │
+ │                                              │
+ │  KEY ─▶ curve-multiply ─▶ PUBLIC KEY         │
+ │      <span class="d">(easy forward; reversing it would</span>      │
+ │      <span class="d">take longer than the universe)</span>          │
+ │  PUBLIC KEY ─▶ blend + wrap ─▶ ADDRESS       │
+ │                              <span class="g">"bc1p…"</span>        │
+ └──────────────────────────────────────┘
+   │            homework graded by:
+   │    • <span class="r">Bitcoin Core</span> — Satoshi’s software,
+   │      re-runs the public math: must land
+   │      on the same address
+   │    • the <span class="r">LEDGER</span> — $5 in, $5 back out:
+   │      proof the address obeys YOUR key
+   ▼
+ ADDRESS ─▶ stamped on PLATE B   <span class="d">(forever answer-key)</span>
+         ─▶ shared with the world 📄
+
+   … years pass. the machine sleeps. …
+
+ SPEND DAY: rebuild key (pencil) → sign — witnessed
+ by a second stranger-machine <span class="d">(nonce checked, byte
+ for byte)</span> → verified in public → broadcast.</pre></div>
+    <figcaption>Fig. 1 — the entire system. everything below explains one line of this.</figcaption>
+  </figure>
+</section>
+
+<section id="s0b">
+  <h2><span class="no">1.</span>The number itself</h2>
+  <p>Before the dice, meet the thing they make. Computers store every number as a row of switches — each switch is off or on, written <strong>0</strong> or <strong>1</strong>, and each switch is called a <strong>bit</strong>. Small rows make small numbers: two bits can only say four things (00, 01, 10, 11); ten bits can count to about a thousand.</p>
+  <p>Your key is a row of <strong>256 bits</strong>. That does not sound like much until you feel what doubling does: every added bit doubles the count of possible numbers. By bit 33 you pass every human alive. By bit 90, roughly every grain of sand on Earth. By 256, the count of possible keys is comparable to the number of atoms in the visible universe — <em>squared past</em>, actually. A thief cannot try them all. Nobody can. That is the entire security of Bitcoin: not a lock, a <strong>haystack wider than physics</strong>.</p>
+  <p>Its proper name is the <strong>private key</strong> — just “a 256-bit number,” nothing more exotic. You may have heard of <strong>SHA-256</strong>; that is a different creature which happens to share the number 256: a mathematical blender that grinds any input into a 256-bit fingerprint. Your key is not “a SHA-256 number” — SHA-256 is one of the <em>tools</em> the machine uses on the road from key to address. And the fact that anchors everything: <strong>your key never appears on the blockchain. Ever.</strong> Neither does the pad. The chain only ever sees public artifacts — your address (the key’s one-way public face) and, on spend day, a signature (a proof you know the key, built to reveal nothing about it). The blockchain is a bulletin board of addresses and proofs; the secrets stay at the kitchen table.</p>
+  <p class="aside">So when this paper says “the number,” picture it plainly: a row of 256 zeros-and-ones, written in pencil on a sheet of graph paper at your kitchen table. Everything else — plates, machines, addresses — exists to guard, split, and prove that one handwritten row.</p>
+</section>
+
+<section id="s1">
+  <h2><span class="no">2.</span>Make the number</h2>
+  <p>A die works like a coin:</p>
+  <div class="diemap">
+    <div class="diecard">roll <b>1 · 2 · 3</b> → write <b>0</b></div>
+    <div class="diecard">roll <b>4 · 5 · 6</b> → write <b>1</b></div>
+  </div>
+  <p>Roll 256 times: that string of 0s and 1s is your <strong>key</strong> — a number so large that every computer on Earth, guessing until the sun burns out, would never find it. You just made it with your hands. Then roll 256 <em>more</em> times for a second number, the <strong>pad</strong>. It is the scrambler.</p>
+  <p class="aside">Why dice? Randomness is the one thing you can never check by looking at it — a rigged machine's "random" looks identical to real random. So no machine is allowed near this step. Physics rolls; you write.</p>
+</section>
+
+<section id="s2">
+  <h2><span class="no">3.</span>Hide the number</h2>
+  <p>One rule, applied down each column — <strong>same → 0, different → 1</strong>. Play it with the key and the pad; the answer row is what gets stamped on plate&nbsp;B. Plate&nbsp;A gets the pad itself. Try it below — the red pad bits are yours to flip:</p>
+
+  <div class="demo" id="xordemo">
+    <h3>The crypto calculator</h3>
+    <p class="hint">Below: a toy key of <b>12 bits</b> so it fits your screen — your real one is this row, 256 wide, handwritten from dice. Top row is the key. Red row is the pad (plate A) — tap any red bit to flip it, or roll a fresh pad. Blue row is what the same-or-different rule produces: plate B. Watch it change — then recover the key.</p>
+    <div class="calc" aria-live="polite">
+      <div class="rowline keyrow"><span class="rowname">key</span><span id="keybits" style="display:contents"></span><span class="rowtag priv">PRIVATE!</span></div>
+      <div class="rowline padrow"><span class="rowname">pad · A</span><span id="padbits" style="display:contents"></span><span class="rowtag priv">STEEL · LOC 1</span></div>
+      <div class="rulewrap" aria-hidden="true"><span></span><span class="rule"></span></div>
+      <div class="rowline plateB"><span class="rowname">plate B</span><span id="pbits" style="display:contents"></span><span class="rowtag priv">STEEL · LOC 2</span></div>
+      <div class="rowline marks"><span class="rowname">recover</span><span id="rbits" style="display:contents"></span><span class="rowtag pub">= KEY ✓</span></div>
+    </div>
+    <div class="controls">
+      <button id="roll" type="button">🎲 roll a new pad</button>
+      <button id="check" type="button" class="ghost">recover the key from A + B</button>
+    </div>
+    <div class="verdict" id="verdict" role="status"></div>
+  </div>
+
+  <p>A thief holding <em>one</em> plate holds pure static. Not "hard to crack" — <strong>nothing there</strong>: every digit on plate B hides a perfect 50/50 coin toss, because the pad bit beneath it was a fair roll. This is the one-time pad — 1940s spy mathematics, never beaten, because there is nothing to beat.</p>
+  <p>Recovery is the same game played again: line up the plates, mark same-or-different, and the key reappears. Pencil, paper, ten minutes — the entire instruction your heirs will ever need. But make <strong>two copies of each plate</strong>: losing either half forever is losing the coins.</p>
+</section>
+
+<section id="s3">
+  <h2><span class="no">4.</span>Prove the number</h2>
+  <p>An address is your number’s public face — mathematics turns key → address in one direction only. The whole world can pay the face; only the number behind it can spend. That math is too big for hands, so one small machine performs it. And we trust it <em>not at all</em> — because its homework is graded twice, by older and stranger judges than any gadget:</p>
+  <div class="pair">
+    <div class="device"><b>THE MACHINE — $4</b>a bare little board, no radio by anatomy, firmware you compile yourself. its one job: turn your number into your address.</div>
+    <div class="device"><b>THE JUDGES — $5, once</b><span style="color:var(--die);font-weight:700">Bitcoin Core</span> — Satoshi’s own software, run by anyone, checks the public math lands on the same address. Then the <span style="color:var(--die);font-weight:700">ledger itself</span>: pay the address, spend it back out. Proof, end to end.</div>
+  </div>
+  <p class="match">THE VERIFIER OF LAST RESORT IS BITCOIN ITSELF — NOT US</p>
+  <p>The address is stamped onto plate B as the forever answer-key: any year for the rest of your life, re-run the math, and it must land on that exact address or something is lying. A second stranger-machine still exists in this design — but it waits for spend day, where it has the one job nothing else can do yet: witnessing the signature’s secret ingredient in the minutes before the network confirms.</p>
+  <p class="aside">This is the paper’s quiet thesis: Satoshi’s cold storage was the reference client trusting its random number generator. History punished exactly that trust. Keep his verifier; replace his RNG with dice.</p>
+</section>
+
+<section id="s4">
+  <h2><span class="no">5.</span>Rest</h2>
+  <p>Money arrives <em>at the address</em>, on the public ledger — not "into" any device. Your gear sleeps in a drawer for years. Your fortune is arithmetic, resting in two pieces of steel.</p>
+</section>
+
+<section id="s5">
+  <h2><span class="no">6.</span>Spend</h2>
+  <figure>
+    <div class="fig"><pre>
+1  any online computer writes a note to an SD card:
+   <span class="d">"send these coins there."</span>
+2  rebuild the key from the plates            <span class="d">(pencil)</span>
+3  type key + note into the machine — AND into a
+   second, unrelated machine: the <span class="r">WITNESS</span>
+4  each, alone, rebuilds the exact bytes to be
+   signed, and derives the signature’s secret
+   ingredient — the <span class="r">nonce</span> — by the same fixed
+   recipe from key + message. no randomness.
+   same inputs, same recipe → the two signatures
+   must match <span class="r">byte for byte, or you STOP.</span>
+   <span class="d">what this catches: a corrupted signer’s only
+   weapon is a treacherous nonce an accomplice
+   already knows — a signature that looks valid
+   to everyone but quietly confesses your key.
+   only an unrelated machine following the honest
+   recipe exposes it — by disagreeing.</span>
+5  SD card back to any computer. check it in public.
+   broadcast. power off —
+   <span class="g">the key lived only in RAM, and RAM forgets.</span></pre></div>
+    <figcaption>Fig. 2 — the rare day, done in public. (“witness” here means the witness <em>machine</em>; Bitcoin’s protocol also uses “witness” for a signature field — same word, different job.)</figcaption>
+  </figure>
+</section>
+
+<section id="s7">
+  <h2><span class="no">7.</span>Scenarios, at the kitchen table</h2>
+
+  <p><strong>A burglar steals one plate.</strong> He is holding a photograph of TV static. This is <em>not</em> a treasure map torn in half — torn halves leak. It is the magic-decoder trick: two sheets of random dots that show a message only when stacked. Either sheet alone is just dots. That is not a metaphor for the math; it is the math.</p>
+
+  <p><strong>Your attorney holds plate A.</strong> The oldest arrangement in banking: a safe-deposit box opens with two keys turned together — yours and the banker’s. The attorney is the banker: he safeguards a provably meaningless object under professional duty, can take nothing alone, and spending now requires a visit during business hours. Robbers hate time. “Half of it is at a law office” turns a five-minute crime into a two-day conspiracy. Who holds which plate <em>is</em> your policy — written in steel, invisible to the chain, executable by a family with a pencil. (Digital Bitcoin does the same trick with Taproot: multi-party rules that look like one plain key. Your plates are the analog edition.)</p>
+
+  <p><strong>A house burns down.</strong> Duplicates fix loss — under the spare-car-key law: nobody keeps the spare <em>in the car</em>. The copy of plate A must never live anywhere plate B lives, or whoever holds that place silently holds the whole key. Copies protect against fire only if they never merge the two worlds the split created.</p>
+
+  <p><strong>Someone photographs a plate.</strong> Nothing was “stolen,” yet if plate A becomes effectively public, plate B stops being half a secret and simply <em>is</em> the secret, wearing a costume anyone can remove. Think two-keys-launch-the-missile: you may guard one launch key harder than the other — tape one to the console and you no longer have a two-key system with one weak key; you have a one-key system. The rule in full: <strong>secrecy may be tiered, never waived; and availability is absolute — losing either plate forever loses the coins.</strong></p>
+
+  <p><strong>Decades later, your heirs.</strong> Both plates on a kitchen table, a pencil, same-or-different down 256 columns, ten minutes: the key returns. No computer, no company, no permission — and no vendor that must still be in business. A hardware wallet’s inheritance plan depends on a firm surviving; this one depends on subtraction surviving.</p>
+</section>
+
+<section id="s6">
+  <h2><span class="no">8.</span>Why this is Bitcoin</h2>
+  <p>We tried to delete every trusted party in this design. None of them died — each one became <strong>anyone</strong>:</p>
+  <figure>
+    <div class="fig"><pre>
+who checks the address?    →  the public ledger
+who checks the signing?    →  a second stranger
+                              <span class="d">(future: ANY computer, cutting
+                               the deck into the signature)</span>
+who takes the coins last?  →  whoever you hand the steel to</pre></div>
+    <figcaption>Fig. 3 — the counterparty never dies; it becomes interchangeable</figcaption>
+  </figure>
+  <p>That is not our trick. It is Satoshi's: Bitcoin never eliminated counterparties — it made them plural, anonymous, and unprivileged, so no <em>particular</em> one ever needs believing. This protocol is Bitcoin's own idea, pointed back at Bitcoin's own storage.</p>
+  <div class="tagline-out">NOTHING BELIEVED.<br>EVERYTHING AGREED.</div>
+</section>
+
+<footer>
+  ceremony detail → <a href="https://github.com/hambomyers/dice-math-steel/blob/main/PROTOCOL.md">PROTOCOL.md</a> ·
+  every reversal, with reasons → <a href="https://github.com/hambomyers/dice-math-steel/blob/main/DECISIONS.md">DECISIONS.md</a> ·
+  break it → <a href="https://github.com/hambomyers/dice-math-steel">the repo</a><br>
+  written by a plumber and rental-property guy, not a cryptographer — which is why every claim on this page is checkable.
+</footer>
+
+</div>
+<script>
+(function(){
+  var N=12,key=[],pad=[];
+  var $=function(id){return document.getElementById(id)};
+  function rollBits(n){var a=[];for(var i=0;i<n;i++)a.push(Math.random()<.5?0:1);return a}
+  /* NOTE for repo readers: Math.random() scrambles a TOY 12-bit demo
+     on a web page. The protocol permits no machine randomness for real
+     keys — see PRIME DIRECTIVE 2. Physics authors the real thing. */
+  function span(b,cls){return '<span class="bit'+(cls?' '+cls:'')+'">'+b+'</span>'}
+  function render(){
+    $('keybits').innerHTML=key.map(function(b){return span(b)}).join('');
+    $('padbits').innerHTML=pad.map(function(b,i){return '<button class="bit" type="button" data-i="'+i+'" aria-label="flip pad bit '+(i+1)+'">'+b+'</button>'}).join('');
+    $('pbits').innerHTML=key.map(function(b,i){return span(b^pad[i])}).join('');
+    $('rbits').innerHTML=key.map(function(){return span('·')}).join('');
+    $('verdict').textContent='';$('verdict').className='verdict';
+  }
+  $('xordemo').addEventListener('click',function(e){
+    var t=e.target;
+    if(t.dataset&&t.dataset.i!==undefined){pad[+t.dataset.i]^=1;render();}
+  });
+  $('roll').addEventListener('click',function(){pad=rollBits(N);render();});
+  $('check').addEventListener('click',function(){
+    var rec=key.map(function(b,i){return (b^pad[i])^pad[i]});
+    $('rbits').innerHTML=rec.map(function(b){return span(b)}).join('');
+    var ok=rec.join('')===key.join('');
+    var v=$('verdict');
+    v.textContent=ok?'✓ plate A + plate B = the key, exactly. every time. that is the whole trick.':'✗ mismatch — impossible; if you see this, open an issue.';
+    v.className='verdict '+(ok?'ok':'bad');
+  });
+  key=rollBits(N);pad=rollBits(N);render();
+})();
+</script>
+</body>
+</html>

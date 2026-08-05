@@ -12,29 +12,33 @@ buying anything.*
 
 Buy generic retail parts. This repo never links to a seller.
 
+**Birth day (one device):**
+
 - **Dice:** casino-grade (sharp-edge) dice, any store, chosen that
   day. Two or more dice from different sources is a free upgrade.
-- **Device A:** Raspberry Pi Pico (RP2040). **Not Pico W** — no
-  radios on the ceremony board.
-- **Device B:** Milk-V Duo **base model**.
-
-  > **WARNING — Do not buy the Milk-V Duo S.** The Duo S has WiFi
-  > and Bluetooth. The ceremony requires the base Duo without
-  > radios. Same keypad/OLED wiring as the Pico, plus an SD card
-  > slot and a buildroot Linux image you build from source.
-
-- **Keypads:** matrix keypads for GPIO on both boards (same wiring
-  plan on A and B).
-- **OLEDs:** SSD1306 displays for both boards.
-- **Battery pack** for the Pico (USB is power-only after flash).
-- **SD card** for the Duo (unsigned tx in, signed tx out; public
-  data only).
+- **Birth device:** Raspberry Pi Pico (RP2040). **Not Pico W** — no
+  radios on the ceremony board. Matrix keypad, SSD1306 OLED,
+  battery pack (USB is power-only after flash).
 - **Steel:** stainless plates and a letter/number stamp set,
   hardware store. Two plates: A (pad) and B (XOR + address +
   fingerprint).
+- **Online machine with Bitcoin Core** (already reviewed by the
+  world): used only on **public** data — the x-only public key /
+  address check. It never sees rolls, `k`, or the pad.
 - **A hammer.** Optional catharsis (Phase 7); not load-bearing.
 
-No wire ever connects A and B.
+**Spend day (witness machine — buy when you need to spend, not at
+birth):**
+
+- **Witness device:** Milk-V Duo **base model**, same keypad/OLED
+  wiring as the Pico, plus an SD card slot and a buildroot Linux
+  image you build from source.
+
+  > **WARNING — Do not buy the Milk-V Duo S.** The Duo S has WiFi
+  > and Bluetooth. The witness machine must be the base Duo without
+  > radios.
+
+No wire ever connects the birth device and the witness device.
 
 ## Phase 1 — Test the dice [READY: needs only the dice]
 
@@ -73,41 +77,56 @@ occurs with probability < 2^-127. Same check is not required for
 the pad (the pad is not a scalar); still roll a full 256 bits.
 
 There is no word list in this phase. The private key **is** `k`.
+You enter the rolls **once**, into **one** device.
 
-## Phase 3 — Ceremony (two strangers must agree)
+## Phase 3 — Ceremony (one device + Core as senior referee)
 
-1. **Reflash both devices from this repo** before every ceremony.
+1. **Reflash the birth device from this repo** before the ceremony.
    Hardware is amnesiac, not sacrificial.
-2. Enter the same key rolls and pad rolls into **both** devices
-   (Pico and Duo). No wire between them.
-3. Each device computes: plate A = `p`, plate B = `k XOR p`, the
-   Taproot receive address, and a 4-word fingerprint of that
-   address.
-4. **Speak the fingerprint aloud.** Both devices must match. Then
-   speak or compare the address the same way (short, human
-   channels — not hex-vs-hex eyeballing of long strings alone).
-   Mismatch: stop. Reflash. Re-enter. Do not stamp.
-5. Stamp **plate A** with pad `p` (recorded in the form your stamp
-   set can cut — the devices display the value for stamping).
+2. Enter the key rolls and pad rolls into the **one** birth device
+   (Pico). No second keyboard at birth.
+3. The device displays: plate A = `p`, plate B = `k XOR p`, the
+   Taproot receive address, and a **4-word fingerprint** of that
+   address. Speak the fingerprint aloud while you copy it — short
+   human channels, not hex-vs-hex eyeballing alone.
+4. **Bitcoin Core check (public data only).** On an online machine
+   that never saw your rolls, take the device's x-only **output**
+   public key `Q` (32-byte hex the device shows for this step) and
+   run:
+
+       bitcoin-cli deriveaddresses "rawtr(Q)"
+
+   Replace `Q` with that 32-byte hex (no `0x`). Core must return
+   the **same** bech32m address the device showed. Mismatch: stop.
+   Reflash. Re-enter. Do not stamp. Core is the third lineage —
+   hundreds of authors, 17 years of hostile review — grading the
+   device's homework without ever touching the secret.
+5. Stamp **plate A** with pad `p` (in the form your stamp set can
+   cut — the device displays the value for stamping).
 6. Stamp **plate B** with `k XOR p`, the receive address (the
    permanent checksum), and the 4-word fingerprint.
-7. Prove from steel before destroying paper: re-enter plate values
-   on a fresh reflash, recover `k = plate_B_xor XOR plate_A`,
-   re-derive the address, match the stamp. Only then burn roll
-   sheets.
+7. **Prove from steel before destroying paper:** power off, reflash,
+   re-enter plate values only, recover `k = plate_B_xor XOR
+   plate_A`, re-derive the address, match the stamp **and** the
+   Core `rawtr()` result. Only then burn roll sheets. This catch
+   is for entry typos — threat #1.
 8. Power off. Secrets existed only in RAM. After key entry, the
-   Pico's USB stays power-only; the Duo never carries secrets on
-   SD.
+   Pico's USB stays power-only.
 
 ## Phase 4 — Rehearsal (mandatory before real funds)
 
-Borrowed from the Glacier Protocol, with credit: run a **full
-cycle with pocket sats on the real chain** (or signet first, then
-mainnet dust) before any amount you would hate to lose.
+Borrowed from the Glacier Protocol, with credit.
 
-Deposit a trivial amount to the stamped address. Watch a
-confirmation. Then spend it out through Phase 6. If the rehearsal
-fails, the wallet has not earned real funds.
+1. Send about **$5** (or a throwaway dust amount you can afford to
+   lose) to the stamped address on mainnet — or walk signet first,
+   then mainnet dust. Watch a confirmation. The address must
+   receive; that is the ledger round-trip.
+2. Before any amount you would hate to lose: **re-derive from
+   stamped steel again** on a fresh reflash (Phase 3 step 7). Match
+   address and fingerprint. Typo catch, still.
+3. Then spend the rehearsal amount out through Phase 6 (this is
+   when you first need the witness machine). If the rehearsal
+   fails, the wallet has not earned real funds.
 
 A worked signet transcript lives in
 `docs/rehearsal-signet.md`.
@@ -126,17 +145,21 @@ Heirs must be able to find:
 Rehearse the trail once **without the owner present**. If a
 non-owner cannot finish, fix the instructions — not the math.
 
-## Phase 6 — Spend
+## Phase 6 — Spend (witness machine required)
 
 Template only: **N inputs** (all owned by the one key) → **1
 destination** + optional **1 change** back to the same address.
 
+The second stranger-machine is required **here**, not at birth. It
+witnesses the nonce: both devices must emit byte-identical BIP340
+signatures.
+
 1. Build the unsigned transaction on any online machine as the
    documented JSON (outpoints, amounts, destination, optional
    change). Copy it to the Duo's SD card. Public data only.
-2. On each device, enter `k` recovered from the plates (or still in
-   RAM only during a birth-and-spend rehearsal). Load the unsigned
-   JSON (Duo: SD; Pico: keyed or SD adapter per your build).
+2. On **both** devices (birth Pico and witness Duo), enter `k`
+   recovered from the plates. Load the unsigned JSON (Duo: SD;
+   Pico: keyed or SD adapter per your build).
 3. **Screen confirmation before signing:** destination, amount,
    fee. A tired human must be able to abort here.
 4. Both devices construct the BIP341 key-path sighash and BIP340
@@ -145,7 +168,7 @@ destination** + optional **1 change** back to the same address.
 5. Write the signed raw transaction hex to SD (public). Broadcast
    from any online machine. Power off.
 
-No second wire. No vendor portal.
+No wire between devices. No vendor portal.
 
 ## Phase 7 — Optional catharsis
 

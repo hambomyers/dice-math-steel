@@ -100,4 +100,29 @@ written by the same model in one session. That is not independence.
 True independence requires a second human author. Implementation #2
 (`birth_duo.py`, `sign_duo.py`) is marked **seat-warmer pending
 independent rewrite**. Help-wanted item #1 in the README.
-EOF
+
+## 2026-08-05 — Bitcoin Core enrolled as senior referee
+
+- **Old:** Birth-day verification is two stranger-machines agreeing
+  on address and fingerprint; a third verifier (different ISA /
+  vendor from both lineages) lived in HARDCORE.md Appendix E.
+- **New:** Birth-day verification includes Bitcoin Core re-deriving
+  the address from the public key via a `rawtr()` descriptor
+  (public data only). Core is the third lineage: hundreds of
+  authors, 17 years of hostile review. The third-verifier hardware
+  appendix is retired as redundant.
+- **Reason:** Core already is the senior referee the third-board
+  appendix was trying to approximate. Using it on public data only
+  adds a reviewed lineage without another ceremony keyboard.
+
+## 2026-08-05 — Witness machine deferred to spend day
+
+- **Old:** Birth requires two devices (Pico and Duo) entering the
+  same 512 rolls and agreeing before steel is stamped.
+- **New:** Birth requires **one** device. Its homework is graded by
+  Core plus a $5 ledger round-trip; re-derivation from stamped
+  steel before real funding catches entry typos. The second
+  stranger-machine is purchased and used only for spending, where
+  it witnesses the nonce (byte-identical BIP340 signatures).
+- **Reason:** Halves ceremony hardware and halves the 512-roll
+  double-entry — a direct strike at threat #1, operator error.

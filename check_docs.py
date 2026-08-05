@@ -36,6 +36,7 @@ EXEMPT = {"CHANGELOG.md"}
 LIVE = [
     "README.md", "PROTOCOL.md", "HARDCORE.md", "CONTRIBUTING.md",
     "SECURITY.md", "DECISIONS.md", "docs/rehearsal-signet.md",
+    "docs/whitepaper.html",
     "img/reply-card.txt", "img/poster.txt",
 ]
 

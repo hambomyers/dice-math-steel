@@ -2,6 +2,12 @@
 
 **Nothing believed. Everything agreed.**
 
+*Satoshi's setup, with dice.*
+
+**New here? Read the white paper:** [Dice·Math·Steel —
+a white paper for the kitchen table](docs/whitepaper.html)
+(or view it rendered at dicemathsteel.com once live).
+
 *Dice, steel, and two strangers who must agree.*
 
 *Cold storage with no trusted devices. A rough draft posted to be
@@ -25,30 +31,34 @@ years.*
 ## The four verbs
 
 1. **BORN of dice** — 256 rolls make key `k`, 256 rolls make pad
-   `p`. 512 rolls total. No RNG in the room.
-2. **CHECKED by strangers** — Raspberry Pi Pico and Milk-V Duo
-   (base model, not Duo S) must agree byte-for-byte and
-   fingerprint-for-fingerprint.
+   `p`. 512 rolls total, entered once on one device. No RNG in
+   the room.
+2. **CHECKED by strangers** — the birth device is graded by Bitcoin
+   Core (`rawtr()` on public data) plus a $5 ledger round-trip;
+   steel re-derivation catches typos before real funding. The
+   second stranger-machine witnesses the nonce on spend day.
 3. **KEPT in steel** — plate A holds `p`; plate B holds `k XOR p`
    plus the receive address (checksum) and a 4-word fingerprint.
 4. **SPENT in public** — fixed-template Taproot key-path spend;
-   dual identical Schnorr signatures; broadcast anywhere.
+   dual identical Schnorr signatures (birth device + witness);
+   broadcast anywhere.
 
 ## Four layers
 
 ```
  DICE  ·  MATH  ·  STEEL  ·  SPEND
  "Nothing believed. Everything agreed."
+ "Satoshi's setup, with dice."
 
  ┌──────────────────────────────────────────────────────────┐
- │ BORN        512 rolls. k and p from physics.             │
+ │ BORN        512 rolls, one device. k and p from physics. │
  │             if k is 0 or ≥ n, reroll (< 2^-127).         │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ CHECKED     two boards, two ISAs, two nations,           │
- │             two codebases. address + 4-word fingerprint  │
- │             spoken aloud. mismatch → stop.               │
+ │ CHECKED     Core rawtr() on public key; $5 round-trip;   │
+ │             steel re-derive before real funds.           │
+ │             mismatch → stop.                             │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
@@ -57,8 +67,8 @@ years.*
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ SPENT       N inputs → 1 destination (+ optional change  │
- │             to same address). screen confirm. dual       │
+ │ SPENT       witness machine joins here. N inputs → 1     │
+ │             destination (+ optional change). dual        │
  │             byte-identical BIP340 sigs. SD out.          │
  └──────────────────────────────────────────────────────────┘
 
@@ -91,7 +101,8 @@ are marked predicted.
 | `io_pico.py` (I/O; excluded from crypto budget) | 33 | measured |
 | Ceremony die rolls (key + pad) | 512 | by design |
 | Receive addresses per key | 1 | by design (reuse accepted) |
-| Bill of materials | ~$60 | predicted — falsify this |
+| Ceremony hardware (birth device) | ~$15 | predicted — falsify this |
+| Full build (birth + witness) | ~$40 | predicted — falsify this |
 | Birth ceremony wall-clock | ~45 min | predicted — falsify this |
 | Dual sign agreement (same JSON) | byte-identical | required by tests |
 
@@ -101,12 +112,14 @@ landed under 230.
 
 ## Residual trust
 
-Both sides are modern silicon. The claim is not "trust nothing."
-The claim is that a successful lie requires two companies, two
-nations, two ISAs, and two codebases to emit the same false
-address or the same false signature on the same day — and that
-**operator error remains threat #1**. Spoken fingerprints exist
-because tired humans fail hex comparison.
+Both birth silicon and the spend-day witness are modern boards.
+Bitcoin Core grades the address on public data. The claim is not
+"trust nothing." The claim is that a successful lie at birth must
+fool the device **and** Core, and a successful lie at spend must
+get two codebases to emit the same false signature the same day —
+and that **operator error remains threat #1**. Spoken fingerprints
+and steel re-derivation exist because tired humans fail hex
+comparison and double-entry.
 
 ## Help wanted
 
