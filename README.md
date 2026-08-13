@@ -32,8 +32,10 @@ years.*
    Core (`rawtr()` on public data) plus a $5 ledger round-trip;
    steel re-derivation catches typos before real funding. The
    second stranger-machine witnesses the nonce on spend day.
-3. **KEPT in steel** — plate A holds `p`; plate B holds `k XOR p`
-   plus the receive address (checksum) and a 4-word fingerprint.
+3. **KEPT in steel** — 16×16 plates, notched, ceremony-ID'd,
+   two-pass stamped, both symbols marked. Plate A holds `p`.
+   Plate B holds `k ⊕ p`, the address, and four words under
+   **ADDRESS FINGERPRINT** (public checksum — not the key).
 4. **SPENT in public** — fixed-template Taproot key-path spend;
    dual identical Schnorr signatures (birth device + witness);
    broadcast anywhere.
@@ -56,8 +58,8 @@ years.*
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐
- │ KEPT        plate A = p. plate B = k⊕p + address +       │
- │             fingerprint. one plate alone is worthless.   │
+ │ KEPT        16×16, notch, ID. A = p. B = k⊕p + address + │
+ │             ADDRESS FINGERPRINT. one plate is worthless. │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
  ┌──────────────────────────────────────────────────────────┐

@@ -182,3 +182,19 @@ independent rewrite**. Help-wanted item #1 in the README.
 - **Reason:** At ~120 throws there is essentially no power to
   detect bias small enough to matter. A ritual that manufactures
   false confidence is worse than no test.
+
+## 2026-08-12 — Plate rules: 16×16, two-pass, both symbols
+
+- **Old:** Stamp "the pad" and "k XOR p + address + fingerprint"
+  with no grid, no orientation mark, no ceremony ID, and no
+  stated strike order.
+- **New:** 16×16 with gutters every 4; corner notch; 4-character
+  ceremony ID on both plates; two-pass stamping (all zeros, then
+  all ones); both symbols always marked; no parity, no third
+  symbol; plate B's four words stamped under ADDRESS FINGERPRINT.
+- **Reason:** A 180° rotation is silent and catastrophic. Mixing
+  plates across ceremonies is a live failure. Blanks are not
+  zeros. Strike-order is a microphone. The address already
+  corrects the key, so parity punches would be redundant and
+  would break two-pass. Confusing the fingerprint with a key
+  reading is catastrophic in one direction.

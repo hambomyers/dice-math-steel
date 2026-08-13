@@ -23,8 +23,9 @@ Buy generic retail parts. This repo never links to a seller.
   radios on the ceremony board. Matrix keypad, SSD1306 OLED,
   battery pack (USB is power-only after flash).
 - **Steel:** stainless plates and a letter/number stamp set,
-  hardware store. Two plates: A (pad) and B (XOR + address +
-  fingerprint).
+  hardware store. Two plates (and a copy of each): A (pad) and
+  B (`k ⊕ p` + address + **ADDRESS FINGERPRINT**). Each plate
+  is a 16×16 grid. See **The plate** below.
 - **Online machine with Bitcoin Core** (already reviewed by the
   world): used only on **public** data — the x-only public key /
   address check. It never sees rolls, `k`, or the pad.
@@ -42,6 +43,55 @@ birth):**
   > radios.
 
 No wire ever connects the birth device and the witness device.
+
+## The plate
+
+```
+        0  1  2  3   4  5  6  7   8  9  A  B   C  D  E  F
+      ┌────────────┬────────────┬────────────┬────────────┐
+   0  │            │            │            │            │
+   1  │            │            │            │            │
+   .  │            │            │            │            │
+   F  │            │            │            │            │
+      └────────────┴────────────┴────────────┴────────────┘
+        ⌐ notch bottom-left            ceremony ID: 4 chars
+```
+
+Rules, each with its stated reason:
+
+- **16×16, with row/column labels and a gutter every 4 columns.**
+  Ergonomics, not error correction. Any bit has a speakable
+  address: "row 7, column C." Two people can confirm positions
+  aloud.
+- **No parity marks. No checksums. No third symbol.** The stamped
+  address is already a 256-bit correcting code over the key
+  (`tools/recover.py`). Two symbols is what makes two-pass
+  stamping work.
+- **Two-pass stamping.** Punch every zero in one pass, every one
+  in a second pass. This degrades any strike-order side-channel
+  to a popcount with no positional information. Assume everything
+  in the room is listening, and stamp in an order that makes
+  listening worthless.
+- **Both symbols always marked. Never leave zeros blank.** A
+  blank is ambiguous between "zero" and "worn away." Marking
+  both turns fire and corrosion into an unreadable glyph — an
+  *erasure*, cheaper to recover from than a substitution.
+- **Corner notch on every plate.** A 180° rotation of a 16×16
+  grid is silent and catastrophic. Four punches make it
+  impossible.
+- **4-character ceremony ID on both plates (and both copies).**
+  Pick it *before* stamping; it is not derived from the key.
+  Mixing plate A from one ceremony with plate B from another is
+  a live failure mode.
+- **Two copies of each plate.** Losing either half forever loses
+  the coins. The copy of plate A must never live where plate B
+  lives.
+- **Plate B labels.** Stamp the four spoken words under the
+  heading **ADDRESS FINGERPRINT**. They are a public checksum of
+  the receive address, drawn from `english.txt`. They are *not*
+  the key. Any later optional word-group that *is* the key
+  (see `docs/words-appendix.md`) is labeled **KEY READING** and
+  must never share a plate with the fingerprint.
 
 ## Phase 1 — Inspect the die [READY: eyes and hands]
 
@@ -115,10 +165,15 @@ equipment. More throws; less exposure to per-face bias.
    Reflash. Re-enter. Do not stamp. Core is the third lineage —
    hundreds of authors, 17 years of hostile review — grading the
    device's homework without ever touching the secret.
-5. Stamp **plate A** with pad `p` (in the form your stamp set can
-   cut — the device displays the value for stamping).
-6. Stamp **plate B** with `k XOR p`, the receive address (the
-   permanent checksum), and the 4-word fingerprint.
+5. Stamp **plate A** as a 16×16 grid of pad `p`. Notch. Ceremony
+   ID. Two-pass (all zeros, then all ones). Both symbols marked.
+   Verify against the worksheet twice, out loud, before anything
+   burns.
+6. Stamp **plate B** as a 16×16 grid of `k ⊕ p`, plus the receive
+   address (the permanent checksum) and the four words under the
+   stamped heading **ADDRESS FINGERPRINT**. Same notch, same ID,
+   same two-pass, same both-symbols rule. Speak the fingerprint
+   aloud while you copy it.
 7. **Prove from steel before destroying paper:** power off, reflash,
    re-enter plate values only, recover `k = plate_B_xor XOR
    plate_A`, re-derive the address, match the stamp **and** the
