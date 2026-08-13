@@ -239,3 +239,15 @@ independent rewrite**. Help-wanted item #1 in the README.
   over the key. Parity punches would be redundant and would
   break two-pass stamping. The search has zero degrees of
   freedom: only the true key hits the stamp.
+
+## 2026-08-12 — Four-sentence README
+
+- **Old:** README led with four verbs and a STATUS that called
+  vector-pass "cross-verified by three independent
+  implementations."
+- **New:** README opens with the four-sentence statement. Birth
+  and spend code is labeled UNREVIEWED. Vector-pass is not an
+  audit.
+- **Reason:** If it is not in those four sentences, it is
+  appendix, not protocol. "Verified" was a word we had not
+  earned.

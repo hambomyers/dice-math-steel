@@ -1,6 +1,12 @@
 # Dice Math Steel
 
-**Nothing believed. Everything agreed.**
+> Roll dice to make a 256-bit number.
+> Punch it into steel, split across two places so neither alone means
+> anything.
+> One disbelieved computer turns it into an address —
+> and Bitcoin itself grades the computer's work.
+>
+> **Nothing believed. Everything agreed.**
 
 *Satoshi's setup, with dice.*
 
@@ -15,12 +21,12 @@ years.*
 > have broken and repaired this. That's not a disclaimer, it's the
 > development model.
 
-> **STATUS (pre-hardware):** All math passes the official BIP340/
-> BIP341/BIP350 vectors and was cross-verified by three
-> independent implementations. The code has NOT yet run on
-> physical Pico/Duo hardware, and the ceremony has not yet been
-> walked by a human. Those are the next milestones; predictions
-> in the claims table await falsification.
+> **STATUS (pre-hardware):** Birth and spend code is **UNREVIEWED**.
+> It passes pinned BIP340/341/350 vectors. That is not a third-party
+> audit, and the two Python lineages share an interpreter. The code
+> has not run on physical Pico/Duo hardware. The ceremony has not
+> been walked by a human. Predictions in the claims table await
+> falsification.
 
 ## The four verbs
 
