@@ -28,8 +28,10 @@ generated weak randomness for five years.*
 > been walked by a human. Signet accepted two recovery spends from
 > a throwaway scalar (Core `tr(<WIF>)`, then embit) — see
 > `docs/rehearsal-signet.md`. Pico/Duo have still never produced a
-> network-accepted signature. Predictions in the claims table
-> await falsification.
+> network-accepted signature. **Next sitting:** own-node verify
+> of those txids after IBD, then pin STATUS; checklist at the
+> bottom of `docs/rehearsal-signet.md`. Predictions in the claims
+> table await falsification.
 
 ## The four verbs
 

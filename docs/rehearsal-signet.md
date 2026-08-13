@@ -326,3 +326,69 @@ The Pico/Duo spend ceremony did not produce either of these
 signatures. Two libraries moved signet coins from a raw
 scalar. That is the recovery claim, demonstrated. It is
 not a hardware walk.
+
+## Next sitting — close the loop, then walk devices
+
+Stopped 2026-08-12 (evening, America/New_York). Do this in
+order. Do not touch `src/` or `tests/` for the first three.
+
+Local signet node was still in IBD. Datadir:
+`/tmp/btc/signet` (Bitcoin Core 29.4 at `/tmp/btc/bitcoin-29.4`,
+`-txindex=1`). **`/tmp` does not survive reboot.** If the
+machine was restarted, IBD starts over unless the datadir was
+copied out.
+
+### 1. Own-node verification (the gap)
+
+Both spends were broadcast through a block explorer while
+the local node was syncing. Initial "network accepted" is
+that explorer's word. The protocol's spend path checks and
+broadcasts via one's own node. This rehearsal substituted a
+website for both.
+
+When local IBD finishes (and `getindexinfo` shows
+`txindex.synced: true`):
+
+```
+bitcoin-cli -signet -datadir=/tmp/btc/signet \
+  -rpcuser=dms -rpcpassword=dms \
+  getrawtransaction \
+  829f82cfd2cab9fb2895a28da9dcc056079f64f06d37ceab5f00776bda0fb1a9 \
+  true
+
+bitcoin-cli -signet -datadir=/tmp/btc/signet \
+  -rpcuser=dms -rpcpassword=dms \
+  getrawtransaction \
+  ce2f5b8befc1c5b8968245fb45084af3c546eaa0f8fd3479e79556cdeb3ea466 \
+  true
+```
+
+Record in this file, for each: confirmation height, block
+hash, the command, and the date of the check. Replace
+"unconfirmed when first accepted" — an unconfirmed txid left
+in the permanent record reads as "we did not check back."
+That own-node check closes the explorer gap. Do not soften
+it and do not dramatize it.
+
+### 2. Pin STATUS (worded once, used in two places)
+
+Put this exact block in `README.md` STATUS **and** at the
+top of this file, so they cannot drift. The first half must
+not imply the second.
+
+> **Key format and address derivation are network-demonstrated**
+> — two unrelated codebases (Bitcoin Core 29.4, embit 0.8.0)
+> signed from the raw scalar and signet accepted both spends.
+> **The protocol's devices are not** — no Pico or Duo
+> signature has ever reached a network. UNREVIEWED.
+
+The device walk is the next milestone. Name it as such.
+
+### 3. After that: the device walk
+
+No Pico or Duo signature has reached a network. That is the
+next real ceremony: reflash, enter the throwaway scalar on
+both boards, sign the same unsigned JSON, byte-identical
+sigs (`aux_rand` = 32 zero bytes), broadcast from the
+operator's own node. Until then the recovery path is
+demonstrated and the protocol's devices are not.
