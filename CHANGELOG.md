@@ -57,7 +57,7 @@ Docs and tools only. `src/` and `tests/` unchanged.
   ([505dfc5](https://github.com/hambomyers/dice-math-steel/commit/505dfc5e758242460ac5dd5eeaff367eaa7f28d6))
 - `CREDITS.md` — BIPs, pinned vectors, Core `rawtr()`, Vernam/
   Shannon, BIP39 wordlist origin, Diceware prior art.
-  ([4ddad0f](https://github.com/hambomyers/dice-math-steel/commit/4ddad0f))
+  ([4ddad0f](https://github.com/hambomyers/dice-math-steel/commit/4ddad0f0fba7012c31f5b481fd25f670cadb1170))
 
 ### Removed
 
