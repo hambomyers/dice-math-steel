@@ -126,3 +126,14 @@ independent rewrite**. Help-wanted item #1 in the README.
   it witnesses the nonce (byte-identical BIP340 signatures).
 - **Reason:** Halves ceremony hardware and halves the 512-roll
   double-entry — a direct strike at threat #1, operator error.
+
+## 2026-08-12 — Whitepaper §7: plates encode XOR; they do not compute it
+
+- **Old:** Stacking two random-dot sheets "is not a metaphor for
+  the math; it is the math."
+- **New:** One plate is information-theoretically worthless, like
+  one sheet of visual-crypto dots. The plates *encode* a one-time
+  pad. Recovery is pencil-on-paper. Punched steel stacked in
+  light computes AND, not XOR.
+- **Reason:** The old sentence was false as written. Honesty about
+  the analogy is cheaper than a pretty lie.
