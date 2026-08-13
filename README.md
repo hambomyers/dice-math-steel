@@ -111,7 +111,8 @@ generated weak randomness for five years.*
 Address reuse is accepted. One key, one Taproot address.
 Multi-key privacy mitigation: HARDCORE.md.
 
-White paper: [Dice·Math·Steel — a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html).
+White paper: [Dice·Math·Steel — a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html)
+(rebuilding for v0.6 — see [PROTOCOL.md](PROTOCOL.md) for the current protocol).
 
 Ceremony: **[PROTOCOL.md](PROTOCOL.md)**. Reversals: **[DECISIONS.md](DECISIONS.md)**.
 Credits: **[CREDITS.md](CREDITS.md)**.
