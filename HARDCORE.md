@@ -21,15 +21,37 @@ Two ways to delete the computer from even that:
   the checksum contains no secret.
 
 ## 2. Dice bias (the protocol's most attackable decision)
-v0.2 maps rolls directly to bits, so die bias flows into the key.
-Defenses in the main protocol: casino-grade dice, the 120-roll tally
-test, and the 1-bit-per-roll mapping (bias in a d6 face affects one bit,
-not a base-6 digit). Hardcore upgrades to argue about:
-- **Von Neumann debiasing**: roll pairs, keep 01→0 / 10→1, discard
-  00/11. Provably removes any fixed bias; roughly doubles the rolls.
-- **XOR two independent dice** from different stores per bit.
-- Bring math: how biased must a die be before 128 mapped bits fall
-  below, say, 100 bits of min-entropy? Show your work in the issue.
+
+The 36-cell card is **more** sensitive to a biased die than the
+scheme it replaced. `{1,2,3}→0 / {4,5,6}→1` collapses six faces
+into two, so it only cares about P(low half) vs P(high half);
+per-face bias largely washes out. The 5-bit card uses the full
+structure of both sequential throws, so every per-face deviation
+propagates into the output. Efficiency and bias-robustness trade
+against each other.
+
+The 120-throw aggregate-split tally is **deleted**. At that sample
+size there is essentially no power to detect bias small enough to
+matter. It manufactured false confidence.
+
+What remains: casino-grade stock (sharp edges, flush pips,
+translucent), thrown hard against a backstop, tumbling several
+times. Sequential throws of **one** die remove the
+collision-correlation question that simultaneous dice raise and
+that nobody has measured. They do **not** remove throw-to-throw
+correlation from a consistent throwing style, nor bias from a worn
+or shaved die.
+
+**Paranoid fallback** (printed on the card): ignore columns; use
+only whether the first throw is low or high. One bit per throw,
+256 throws, same card.
+
+Hardcore upgrades to argue about:
+- **Von Neumann debiasing**: throw pairs, keep 01→0 / 10→1, discard
+  00/11. Provably removes any fixed bias; roughly doubles the throws.
+- Bring math: how biased must a die be before 256 mapped bits from
+  the 6×6 card fall below, say, 200 bits of min-entropy? Show your
+  work in the issue.
 
 ## 3. 24-word mode
 Deleted from main to halve the mistake surface. Trivial patch if you
@@ -142,9 +164,10 @@ Mainline deleted BIP39. If you require wallet interop:
 
 v0.5 reuses one address. That links payments permanently.
 
-Mitigation: roll **several independent keys** (full 512-roll ceremony
-each). Stamp separate plate pairs. Use a new key when you want an
-unlinkable receive path. No invented derivation. No account trees.
+Mitigation: author **several independent keys** (full card ceremony
+each — ≈117 throws per number, key then pad). Stamp separate plate
+pairs. Use a new key when you want an unlinkable receive path. No
+invented derivation. No account trees.
 
 ## Appendix E — Third verifier (retired 2026-08-05)
 

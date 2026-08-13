@@ -57,7 +57,7 @@ RETRACTED = [
     ("5\u201310 receiv",
      "v0.3.3 sheet size; v0.5 uses 1 address"),
     ("100+ rolls",
-     "v0.5 ceremony is 512 rolls (256 key + 256 pad)"),
+     "v0.6 expected throws are ≈117 per number on the 6×6 card"),
     ("mandatory by tradition",
      "v0.3: the sledgehammer is optional"),
 ]

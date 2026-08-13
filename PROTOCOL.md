@@ -14,8 +14,11 @@ Buy generic retail parts. This repo never links to a seller.
 
 **Birth day (one device):**
 
-- **Dice:** casino-grade (sharp-edge) dice, any store, chosen that
-  day. Two or more dice from different sources is a free upgrade.
+- **Dice:** **one** casino-grade die (sharp edges, flush pips,
+  translucent), any store, chosen that day. *The author of this
+  protocol must never be your dice vendor.* One die, thrown
+  twice in sequence — not two dice together (collision can
+  correlate).
 - **Birth device:** Raspberry Pi Pico (RP2040). **Not Pico W** — no
   radios on the ceremony board. Matrix keypad, SSD1306 OLED,
   battery pack (USB is power-only after flash).
@@ -40,51 +43,62 @@ birth):**
 
 No wire ever connects the birth device and the witness device.
 
-## Phase 1 — Test the dice [READY: needs only the dice]
+## Phase 1 — Inspect the die [READY: eyes and hands]
 
-Roll each die ~120 times, but tally what the protocol actually
-uses: the {1,2,3} vs {4,5,6} split, not per-face counts. Per-face
-bands can look healthy while hiding a 55/45 lean on the bit
-boundary — and a 55/45 die costs roughly 18 of your 128 bits of
-min-entropy. At ~120 rolls, a split more lopsided than about 70/50
-is suspect — demote that die to non-security duty. This threshold
-catches gross defects, not subtle ones: a genuinely 55/45 die
-passes it most of the time. Bounding bias that small takes roughly
-800 rolls, not 120 — which is why we don't ask you to; more rolls
-only tighten the bound on the aggregate. This is an assurance
-check, not an entropy guarantee; casino-grade dice are doing the
-real work. (The bias trade-off is discussed in HARDCORE.md §2.)
+No tally test. At ~120 throws there is essentially no statistical
+power to detect bias small enough to matter; a ritual that
+manufactures false confidence is worse than no test.
 
-## Phase 2 — Author (roll key + pad)
+Physical inspection only: sharp edges, flush pips, no visible
+wear, translucent casino-grade stock. Optional salt-water float
+test. Bias remaining after that is discussed in HARDCORE.md §2 —
+including that the 36-cell card is *more* sensitive to per-face
+bias than the old half-split mapping.
+
+## Phase 2 — Author (one die, two throws, 6×6 card)
 
 Alone. Curtains drawn. No phones in the room — not silenced,
 absent.
 
-Mapping: **1, 2, or 3 → bit 0. 4, 5, or 6 → bit 1.** One bit per
-roll.
+Print `docs/dice-card.md`. Throw **one die twice in sequence.**
+First throw = **row**. Second throw = **column**. Read that cell.
+Never reverse, never sort, never swap the two throws. Order comes
+from time, not judgement.
 
-```
- KEY   =  256 rolls  →  256-bit integer k
- PAD   =  256 rolls  →  256-bit integer p
-                         ─────────
-                          512 rolls total for the ceremony
-```
+32 of 36 cells carry a unique 5-bit pattern. 4 cells say
+**REROLL** — throw both throws again, fresh. 52 lookups yield 260
+bits; keep the first 256. Expected throws ≈ 117 per number (11%
+rejection). Floor is log₂(6) ≈ 2.585 bits/throw → 99 throws if
+nothing is rejected and you packed perfectly; we do not.
 
-Record rolls on paper as you go. After 256 key rolls, interpret
-the bit string as integer `k` (big-endian). If `k == 0` or
-`k >= n` (secp256k1 order), **reroll the key from scratch**. This
-occurs with probability < 2^-127. Same check is not required for
-the pad (the pad is not a scalar); still roll a full 256 bits.
+Write the 256 bits onto the printed 16×16 worksheet
+(`docs/worksheet.md`). Repeat the whole process for the pad.
 
-There is no word list in this phase. The private key **is** `k`.
-You enter the rolls **once**, into **one** device.
+The private key **is** that 256-bit integer `k`. No words, no
+derivation. You will type those 256 bits (from the worksheet, not
+from the die) into **one** device. `src/` still consumes a
+256-bit integer; the card only changes how a hand produces it.
+
+If the machine later reports `k == 0` or `k ≥ n` (secp256k1
+order), **reroll the key from scratch**. Probability < 2^-127.
+Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
+
+**Paranoid mode** (printed on the card): ignore the columns. Use
+only whether the *first* throw is low (1–3 → 0) or high (4–6 → 1).
+One bit per throw, 256 throws per number, same card, no extra
+equipment. More throws; less exposure to per-face bias.
 
 ## Phase 3 — Ceremony (one device + Core as senior referee)
 
 1. **Reflash the birth device from this repo** before the ceremony.
    Hardware is amnesiac, not sacrificial.
-2. Enter the key rolls and pad rolls into the **one** birth device
-   (Pico). No second keyboard at birth.
+2. Enter the 256-bit key and 256-bit pad from the **worksheet**
+   into the **one** birth device (Pico). No second keyboard at
+   birth. The die does not meet the device. The keypad still
+   speaks faces: for each worksheet bit, press **1** if the bit
+   is 0, **4** if the bit is 1. (`rolls_to_int` maps 1–3 → 0 and
+   4–6 → 1; this is how the worksheet feeds the existing device
+   without a `src/` change.)
 3. The device displays: plate A = `p`, plate B = `k XOR p`, the
    Taproot receive address, and a **4-word fingerprint** of that
    address. Speak the fingerprint aloud while you copy it — short

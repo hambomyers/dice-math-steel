@@ -24,9 +24,10 @@ years.*
 
 ## The four verbs
 
-1. **BORN of dice** — 256 rolls make key `k`, 256 rolls make pad
-   `p`. 512 rolls total, entered once on one device. No RNG in
-   the room.
+1. **BORN of dice** — one die, thrown twice per lookup (row then
+   column) on a 36-cell card. ≈117 throws make key `k`, ≈117 make
+   pad `p`. Worksheet feeds the device a 256-bit integer. No RNG
+   in the room.
 2. **CHECKED by strangers** — the birth device is graded by Bitcoin
    Core (`rawtr()` on public data) plus a $5 ledger round-trip;
    steel re-derivation catches typos before real funding. The
@@ -44,7 +45,7 @@ years.*
  "Nothing believed. Everything agreed."
 
  ┌──────────────────────────────────────────────────────────┐
- │ BORN        512 rolls, one device. k and p from physics. │
+ │ BORN        one die × two throws, 6×6 card. ≈117/number. │
  │             if k is 0 or ≥ n, reroll (< 2^-127).         │
  └────────────────────────────┬─────────────────────────────┘
                               ▼
@@ -93,7 +94,8 @@ are marked predicted.
 | `sign_pico.py` non-comment lines | 180 | measured |
 | `sign_duo.py` non-comment lines | 149 | measured |
 | `io_pico.py` (I/O; excluded from crypto budget) | 33 | measured |
-| Ceremony die rolls (key + pad) | 512 | by design |
+| Expected throws per number (6×6 card, 11% reroll) | ≈117 | by design |
+| Expected throws, key + pad | ≈234 | by design |
 | Receive addresses per key | 1 | by design (reuse accepted) |
 | Ceremony hardware (birth device) | ~$15 | predicted — falsify this |
 | Full build (birth + witness) | ~$40 | predicted — falsify this |

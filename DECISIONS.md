@@ -159,3 +159,26 @@ independent rewrite**. Help-wanted item #1 in the README.
   open issue is a bare-metal C second implementation.
 - **Reason:** Claiming independence we do not have is worse than
   an honest caveat.
+
+## 2026-08-12 — One die, two throws, 6×6 card
+
+- **Old:** 256 rolls mapped `{1,2,3}→0 / {4,5,6}→1` for the key,
+  same again for the pad (512 rolls). Two or more dice allowed.
+- **New:** One die, thrown twice in sequence (row, then column)
+  on a 36-cell card. 32 unique 5-bit cells, 4 REROLL. Expected
+  ≈117 throws per 256-bit number. Worksheet bits enter the
+  existing keypad as 1 (bit 0) or 4 (bit 1). `src/` unchanged.
+- **Reason:** Sequential throws of one die remove an unmeasured
+  collision-correlation. The card is a glance, not base-six in
+  the head. The device still consumes a 256-bit integer.
+
+## 2026-08-12 — Tally test deleted
+
+- **Old:** Phase 1 tallied ~120 rolls on the {1,2,3} vs {4,5,6}
+  split and talked about "128 bits of min-entropy."
+- **New:** Physical inspection only (sharp edges, flush pips, no
+  visible wear, translucent stock; optional salt-water float).
+  No min-entropy number in the ceremony.
+- **Reason:** At ~120 throws there is essentially no power to
+  detect bias small enough to matter. A ritual that manufactures
+  false confidence is worse than no test.

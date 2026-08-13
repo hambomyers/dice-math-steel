@@ -7,8 +7,8 @@ DICE MATH STEEL
 Nothing believed. Everything agreed.
 Satoshi's setup, with dice.
 
-  DICE          512 rolls on one device.
-   |            physics authors the secret.
+  DICE          one die × two throws, 6×6 card.
+   |            ≈117 throws per number. physics.
    v
   CHECKED       Core rawtr() on public data.
    |            $5 round-trip. steel re-derive.
