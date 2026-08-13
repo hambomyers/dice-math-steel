@@ -228,3 +228,14 @@ independent rewrite**. Help-wanted item #1 in the README.
   sheet.
 - **Reason:** Speakable bit addresses. Alignment is printed, not
   guessed. A tired heir can finish.
+
+## 2026-08-12 — Error correction lives in recover.py, not in punches
+
+- **Old:** (none — v0.5 had no Hamming search.)
+- **New:** `tools/recover.py` XORs the plates, imports `p2tr_address`
+  from both `src/` lineages, and searches distance 0/1/2 (3
+  optional) against the stamped address.
+- **Reason:** The address is already a 256-bit correcting code
+  over the key. Parity punches would be redundant and would
+  break two-pass stamping. The search has zero degrees of
+  freedom: only the true key hits the stamp.
