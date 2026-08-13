@@ -331,8 +331,19 @@ signatures.
 3. **Screen confirmation before signing:** destination, amount,
    fee. A tired human must be able to abort here.
 4. Both devices construct the BIP341 key-path sighash and BIP340
-   signature with `aux_rand` = 32 zero bytes. Signatures must be
-   **byte-identical**. Mismatch: stop.
+   signature. **`aux_rand` is 32 zero bytes on both.** That is
+   required, not a default. BIP340's `aux_rand` exists as
+   defense-in-depth against fault and side-channel attacks on
+   the signer. Filling it with zeros makes signing fully
+   deterministic and gives that defense up. This protocol
+   chooses comparability: the second device is there to catch
+   a treacherous nonce — the attack that actually steals coins
+   here — and that check only works if both sides use the same
+   `aux_rand`. A random aux on either side makes every honest
+   pair mismatch, or match by shared-implementation accident,
+   which quietly undoes the independence the two-device check
+   exists to provide. Signatures must be **byte-identical**.
+   Mismatch: stop.
 5. Write the signed raw transaction hex to SD (public). Broadcast
    from any online machine. Power off.
 

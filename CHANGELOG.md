@@ -50,6 +50,9 @@ Docs and tools only. `src/` and `tests/` unchanged.
 - `docs/rehearsal-signet.md` records a 2026-08-12 check of
   which tools recover a raw scalar (Core, Sparrow, Electrum,
   embit).
+- Spend: `aux_rand` is 32 zero bytes on both devices, stated
+  as a trade (comparability over BIP340's aux defense). Both
+  `src/` signers already default to that; not changed here.
   ([e857b24](https://github.com/hambomyers/dice-math-steel/commit/e857b2458ee42bea615e2c4d407ac31f1bc9f7d7))
 
 ### Added

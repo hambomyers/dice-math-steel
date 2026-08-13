@@ -317,6 +317,27 @@ independent rewrite**. Help-wanted item #1 in the README.
   ceremony. Two published prices for one checkable number is
   exactly the class of error this repo forbids.
 
+## 2026-08-12 — `aux_rand` is 32 zero bytes (a trade)
+
+- **Old:** PROTOCOL.md named `aux_rand` = 32 zero bytes at
+  spend, without saying what that buys or what it spends.
+- **New:** Both implementations **must** sign BIP340 with
+  `aux_rand` = 32 zero bytes. Determinism is required for the
+  byte-identical two-device check. This gives up BIP340's
+  aux-as-side-channel-defense. The trade is explicit: a
+  disagreeing second device catches a treacherous nonce, which
+  is the attack that steals coins in this ceremony. Random aux
+  would make honest devices mismatch, or match only because
+  they share an implementation — undoing the check.
+- **Code at this commit:** `birth_pico.schnorr_sign` and
+  `birth_duo.schnorr_sign` already default to 32 zero bytes
+  when `aux_rand` is omitted. `sign_pico` / `sign_duo` comments
+  state the same. No `src/` change in this pass. If a later
+  implementation disagrees with the convention, that is a
+  code task, not a silent patch.
+- **Reason:** An unspecified aux is a specification gap that
+  either halts every spend or hides correlated bugs.
+
 ## 2026-08-12 — Core check uses `tr()`, not `rawtr()`
 
 - **Old:** Birth-day Core check was `deriveaddresses "rawtr(Q)"`
