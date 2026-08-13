@@ -12,6 +12,10 @@ Docs and tools only. `src/` and `tests/` unchanged.
 - README STATUS and the signet transcript now state that no
   signature from this protocol has been accepted by any
   Bitcoin network. Local signing is not a ledger ruling.
+- Signet accepted two recovery spends from a throwaway
+  scalar (Core `tr(<WIF>)`, then embit). Pico/Duo still have
+  not produced a network-accepted signature. Txids in
+  `docs/rehearsal-signet.md`.
 
 - Whitepaper §7 claimed stacking plates *is* the XOR. Stacking
   punched steel in light computes AND, not XOR. The plates encode

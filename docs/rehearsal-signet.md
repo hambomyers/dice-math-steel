@@ -1,17 +1,20 @@
 # Rehearsal transcript — signet (dry run)
 
-No signature produced by this protocol has ever been accepted
-by any Bitcoin network. Local signing is not the claim. The
-thesis is that the ledger is the final referee, and the ledger
-has not ruled. Until a funded round-trip confirms, this
-protocol is verified against pinned test vectors and its own
-arithmetic, and nothing else.
+Signet accepted two spends from this throwaway scalar. The
+ledger has ruled on **recovery from a raw WIF**, not on the
+Pico/Duo ceremony. Bitcoin Core signed the first spend from
+`tr(<WIF>)`; embit signed the second from the same WIF. Both
+returned HTTP 200 from `mempool.space/signet/api/tx` (and the
+Core spend also from `blockstream.info/signet/api/tx`). Local
+`bitcoind` was still in initial block download and rejected
+both with `bad-txns-inputs-missingorspent` — the explorer
+broadcast is what the network saw.
 
-This document records what *has* been walked: throwaway rolls
-published here so reviewers can reproduce, dual-implementation
-agreement in the test harness, and a Core/embit local-sign
-check that did not broadcast. Do not send mainnet value to
-these addresses.
+The Pico and the Duo have still never signed a transaction
+that a Bitcoin network accepted. Hardware is unwalked.
+Birth and spend code remains **UNREVIEWED**.
+
+Do not send mainnet value to these addresses.
 
 Current ceremony (see PROTOCOL.md): **one device at birth**, graded
 by Bitcoin Core (`tr()` on public data) and a $5 ledger
@@ -119,9 +122,9 @@ Reflash before the next ceremony.
 **Verdict (code harness):** birth agreement across code lineages,
 address-as-checksum, screen confirm, and dual byte-identical
 fixed-template signatures are exercised by the committed test
-harness. A pocket-sat round-trip on public signet remains an
-operator step — mandatory before mainnet funds (PROTOCOL.md
-Phases 3–4 and 6).
+harness. A funded signet recovery spend (Core, then embit) is
+in §8. The Pico/Duo ceremony remains an operator step —
+mandatory before mainnet funds (PROTOCOL.md Phases 3–4 and 6).
 
 ## 8. Which tools recover a raw scalar today (2026-08-12)
 
@@ -147,10 +150,10 @@ means the code was read. Mixed rows are labeled as such.
 
 | Tool | Result |
 |---|---|
-| Bitcoin Core 29.4 | **works with caveats** — run |
+| Bitcoin Core 29.4 | **works** — funded signet spend, network accepted |
 | Sparrow 2.5.3 (source `b99b880`) | **untested — source inspection only** |
 | Electrum (`c4cc40f`) | **does not work** — type gate reproduced; wallet not launched |
-| embit 0.8.0 (one-off script) | **works** — run locally; not broadcast |
+| embit 0.8.0 (one-off script) | **works** — funded signet spend, network accepted |
 
 A negative cell is a fact, not a slight.
 
@@ -180,16 +183,35 @@ bitcoin-cli -signet -rpcwallet=sweep2 getaddressinfo "<addr>"
 # ismine: true, solvable: true, desc: tr([…]P)#…
 ```
 
-Sign: `signrawtransactionwithwallet` on a one-input unsigned
-transaction, with the previous output handed in
-(`scriptPubKey` = `5120`∥`Q`, amount 0.001), returned
-`complete: true` and a 64-byte Schnorr witness.
+Faucet (Alt Signet Faucet / coinbin, 2026-08-13) paid two
+unconfirmed outputs to the device address. One batch output
+was RBF'd under us before we could spend it; the stable
+output was:
 
-Broadcast: `sendrawtransaction` returned
-`bad-txns-inputs-missingorspent`. The node was still in
-initial block download and the input was synthetic — there
-was no signet UTXO. Signing from `tr(<WIF>)` worked; a
-funded round-trip was not completed in this sitting.
+```
+txid 55157bbac3ce0161cca46eb915f7fecb0e492418d435d60f28ed432fe62eb046
+vout 2
+value 437520 sats
+scriptPubKey 51208caa9d3d1a7b9568fbeb4b7886f4cf0032e02bf95f867cfceba3baa8bde5d7c3
+```
+
+Local `bitcoind` was still IBD, so the previous output was
+handed to `signrawtransactionwithwallet` (amount 0.00437520).
+`complete: true`. Local `sendrawtransaction` failed
+`bad-txns-inputs-missingorspent`. Broadcast:
+
+```
+curl -X POST -H 'Content-Type: text/plain' --data-binary @core_spend.hex \
+  https://mempool.space/signet/api/tx
+# HTTP 200
+# 829f82cfd2cab9fb2895a28da9dcc056079f64f06d37ceab5f00776bda0fb1a9
+```
+
+Same hex, same txid from `blockstream.info/signet/api/tx`.
+Self-spend back to the device address, 200 sat fee, 437320
+sats out. That is a network-accepted signature from
+`tr(<WIF>)`. Confirmation status at this commit: see the
+txid on signet (unconfirmed when first accepted).
 
 ### Sparrow — Tools → Sweep Private Key
 
@@ -266,18 +288,41 @@ sig = prv.schnorr_sign(sh)
 assert prv.schnorr_verify(sig, sh)
 ```
 
-Address matched the device. Signature verified under the
-tweaked key. (It did not match Core's witness; Core does
-not use this protocol's fixed-zero aux. Recovery only
-needs a valid spend.)
+Address matched the device. A first embit spend of a
+second faucet output failed to broadcast: the parent was
+RBF'd (`bad-txns-inputs-missingorspent`). embit then spent
+the Core change (a UTXO we created, so it could not RBF
+out from under us):
+
+```
+prev  829f82cfd2cab9fb2895a28da9dcc056079f64f06d37ceab5f00776bda0fb1a9:0
+value 437320 sats
+fee   200 sats
+```
+
+`taproot_tweak("")` then `schnorr_sign` on the BIP341
+key-path sighash. Broadcast:
+
+```
+curl -X POST -H 'Content-Type: text/plain' --data-binary @embit_spend.hex \
+  https://mempool.space/signet/api/tx
+# HTTP 200
+# ce2f5b8befc1c5b8968245fb45084af3c546eaa0f8fd3479e79556cdeb3ea466
+```
+
+Witnesses do not match Core's. Core does not use this
+protocol's 32-zero `aux_rand`. Recovery only needs a valid
+spend. The network accepted this one.
 
 ### What this does not say
 
-embit derived and signed from the same WIF today — locally.
-That is one independent library path, not a ledger ruling.
 Sparrow was not tested; its sweep default is P2PKH, which
 is worth knowing even from source. Electrum's type gate
 rejects a raw P2TR scalar. Core's wallet RPC (`active` must
 be false for a single key; import commands have changed
-before) is the operator surface, not the math. No funded
-signet broadcast was completed in this sitting.
+before) is the operator surface, not the math.
+
+The Pico/Duo spend ceremony did not produce either of these
+signatures. Two libraries moved signet coins from a raw
+scalar. That is the recovery claim, demonstrated. It is
+not a hardware walk.

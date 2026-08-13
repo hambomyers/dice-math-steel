@@ -25,10 +25,11 @@ generated weak randomness for five years.*
 > It passes pinned BIP340/341/350 vectors. That is not a third-party
 > audit, and the two Python lineages share an interpreter. The code
 > has not run on physical Pico/Duo hardware. The ceremony has not
-> been walked by a human. **No signature from this protocol has
-> been accepted by any Bitcoin network** — verified against pinned
-> vectors and its own arithmetic, nothing else. Predictions in the
-> claims table await falsification.
+> been walked by a human. Signet accepted two recovery spends from
+> a throwaway scalar (Core `tr(<WIF>)`, then embit) — see
+> `docs/rehearsal-signet.md`. Pico/Duo have still never produced a
+> network-accepted signature. Predictions in the claims table
+> await falsification.
 
 ## The four verbs
 
