@@ -260,3 +260,13 @@ independent rewrite**. Help-wanted item #1 in the README.
   exactly two silicon contacts, both UNREVIEWED.
 - **Reason:** A tired reader should see the whole machine before
   any appendix.
+
+## 2026-08-12 — Words are a reading, optional, 25 long
+
+- **Old:** (v0.5 deleted BIP39; no spoken-key channel remained.)
+- **New:** Optional KEY READING appendix. 25 words, marker `steel`
+  at position one, leftover 3 bits padded. Distinct from plate B's
+  ADDRESS FINGERPRINT. Steel stays binary.
+- **Reason:** 25 is rejected by every BIP39 wallet. Documentation
+  alone would not stop an heir feeding 24 words into an empty
+  wallet. The fingerprint is public; KEY READING is the key.

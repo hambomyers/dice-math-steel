@@ -37,6 +37,7 @@ LIVE = [
     "README.md", "PROTOCOL.md", "HARDCORE.md", "CONTRIBUTING.md",
     "SECURITY.md", "DECISIONS.md", "docs/rehearsal-signet.md",
     "docs/whitepaper.html", "docs/dice-card.md", "docs/worksheet.md",
+    "docs/words-appendix.md",
     "img/reply-card.txt", "img/poster.txt",
 ]
 
@@ -76,7 +77,10 @@ V05_RETRACTED = [
     "PSBT",
     "xpub",
 ]
-V05_EXEMPT = {"DECISIONS.md", "HARDCORE.md", "CHANGELOG.md"}
+V05_EXEMPT = {
+    "DECISIONS.md", "HARDCORE.md", "CHANGELOG.md",
+    "docs/words-appendix.md",  # names BIP39 to forbid it
+}
 
 IMAGE_TWINS = {
     "img/dice-math-steel-reply.png": "img/reply-card.txt",
