@@ -57,6 +57,7 @@ Docs and tools only. `src/` and `tests/` unchanged.
   ([505dfc5](https://github.com/hambomyers/dice-math-steel/commit/505dfc5e758242460ac5dd5eeaff367eaa7f28d6))
 - `CREDITS.md` — BIPs, pinned vectors, Core `rawtr()`, Vernam/
   Shannon, BIP39 wordlist origin, Diceware prior art.
+  ([4ddad0f](https://github.com/hambomyers/dice-math-steel/commit/4ddad0f))
 
 ### Removed
 
@@ -66,8 +67,8 @@ Docs and tools only. `src/` and `tests/` unchanged.
 - Unused BIP39 `table.txt` and `vectors.json` (archived).
   `english.txt` kept — it feeds the address fingerprint.
   ([407c1f1](https://github.com/hambomyers/dice-math-steel/commit/407c1f1799e407329a9cabd3000e33143509a2db))
-- `business-plan-PRIVATE.md` from the live tree (does not belong
-  on a protocol repo).
+- `business-plan-PRIVATE.md` was never in git; deleted from the
+  working tree and gitignored so it cannot be added.
 
 ## v0.3.4 — August 2026
 - Version self-descriptions deleted from PROTOCOL.md and
