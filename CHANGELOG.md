@@ -40,6 +40,9 @@ Docs and tools only. `src/` and `tests/` unchanged.
 - Phase 3 and Phase 6 tagged UNREVIEWED. Every phase has a status.
 - Core birth check is `tr(P)` (internal key), not `rawtr(Q)`.
   Same address; drops Core's documented `rawtr()` caveat.
+- `docs/rehearsal-signet.md` records a 2026-08-12 check of
+  which tools recover a raw scalar (Core, Sparrow, Electrum,
+  embit).
   ([e857b24](https://github.com/hambomyers/dice-math-steel/commit/e857b2458ee42bea615e2c4d407ac31f1bc9f7d7))
 
 ### Added
