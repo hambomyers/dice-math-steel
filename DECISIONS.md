@@ -218,3 +218,13 @@ independent rewrite**. Help-wanted item #1 in the README.
   cryptographic chain and must be hand-checkable.
 - **Reason:** Auditability over 18 fewer throws. Same artifact
   degrades to the old mapping if you ignore the columns.
+
+## 2026-08-12 — Printed 16×16 worksheet is the jig
+
+- **Old:** Record rolls on undifferentiated paper; XOR "the
+  plates."
+- **New:** Three labeled 16×16 grids (pad, xor, key), gutters
+  every 4, ceremony ID, notch reminder, keypad encoding on the
+  sheet.
+- **Reason:** Speakable bit addresses. Alignment is printed, not
+  guessed. A tired heir can finish.
