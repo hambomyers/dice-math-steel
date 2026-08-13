@@ -5,3 +5,6 @@ __pycache__/
 *.pyc
 
 .DS_Store
+
+# Not protocol. Do not re-add.
+business-plan-PRIVATE.md

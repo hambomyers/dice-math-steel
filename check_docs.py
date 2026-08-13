@@ -37,7 +37,7 @@ LIVE = [
     "README.md", "PROTOCOL.md", "HARDCORE.md", "CONTRIBUTING.md",
     "SECURITY.md", "DECISIONS.md", "docs/rehearsal-signet.md",
     "docs/whitepaper.html", "docs/dice-card.md", "docs/worksheet.md",
-    "docs/words-appendix.md",
+    "docs/words-appendix.md", "CREDITS.md",
     "img/reply-card.txt", "img/poster.txt",
 ]
 
@@ -80,6 +80,7 @@ V05_RETRACTED = [
 V05_EXEMPT = {
     "DECISIONS.md", "HARDCORE.md", "CHANGELOG.md",
     "docs/words-appendix.md",  # names BIP39 to forbid it
+    "CREDITS.md",
 }
 
 IMAGE_TWINS = {

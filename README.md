@@ -114,6 +114,7 @@ Multi-key privacy mitigation: HARDCORE.md.
 White paper: [Dice·Math·Steel — a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html).
 
 Ceremony: **[PROTOCOL.md](PROTOCOL.md)**. Reversals: **[DECISIONS.md](DECISIONS.md)**.
+Credits: **[CREDITS.md](CREDITS.md)**.
 
 ## Quick start
 
