@@ -115,11 +115,22 @@ and that **operator error remains threat #1**. Spoken fingerprints
 and steel re-derivation exist because tired humans fail hex
 comparison.
 
+**Shared-interpreter caveat.** Both `src/` lineages are Python
+(MicroPython on the boards, CPython in tests). They share a large
+common trusted base; their bug surfaces are correlated. That
+weakens "independent implementations" more than earlier docs
+admitted. Passing pinned BIP340/341/350 vectors means the code
+matches the spec on the cases the spec enumerates — not that it
+has had a third-party audit, and not that it is free of side
+channels. The largest undone deletion is a bare-metal C second
+implementation that drops the shared interpreter.
+
 ## Help wanted
 
-1. **Independent rewrite of implementation #2** (`birth_duo.py`,
-   `sign_duo.py`). Same-session dual authorship is a seat-warmer;
-   see DECISIONS.md. This is the top ask.
+1. **Bare-metal C second implementation** — delete the shared
+   MicroPython interpreter on one device. Same-session dual
+   Python files remain seat-warmers (DECISIONS.md). This is the
+   top ask.
 2. Buildroot image recipe for the Milk-V Duo base model (spend-day
    witness), reproducible from source.
 3. Physical wiring notes and photos for keypad + SSD1306 on the

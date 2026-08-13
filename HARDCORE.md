@@ -37,12 +37,17 @@ want it: 23 words from the table + 3 final bits, 8-bit checksum.
 Belongs in `experiments` unless someone makes the case 128 bits is
 insufficient (that case must survive contact with physics).
 
-## 4. The Python runtime
-Our ~150 lines sit on millions of unaudited lines of CPython. Main
-protocol answers with dual-machine cross-examination. Hardcore answers
-wanted: a port in something radically smaller (C with no libc? Forth?
-6502 assembly, for the full vintage thesis?) that still passes the
-official vectors byte-for-byte.
+## 4. The Python runtime (shared interpreter)
+Our crypto lines sit on MicroPython/CPython. Dual-device signing
+answers with byte-identical signatures — but if both devices run
+the same interpreter, a bug in that interpreter can lie on both
+sides and still "agree." Passing pinned BIP340/341/350 vectors
+is not a third-party audit.
+
+The deletion that actually buys independence: a bare-metal C
+second implementation on one device. Auditable surface drops from
+hundreds of thousands of lines to roughly two thousand. Pure
+subtraction. Tracked as a GitHub issue.
 
 ## 5. RAM remanence
 The main protocol says the secret dies with the power. Cold-boot

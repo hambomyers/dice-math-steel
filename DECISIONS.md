@@ -149,3 +149,13 @@ independent rewrite**. Help-wanted item #1 in the README.
 - **Reason:** `grep` of `src/` found no `open()` of these three
   files. Archiving a load-bearing wordlist would break the
   fingerprint. Archiving unused BIP39 test/lookup files would not.
+
+## 2026-08-12 — Shared interpreter is not independence
+
+- **Old:** Two codebases on Pico and Duo were described as
+  independent implementations.
+- **New:** Both lineages are Python. A shared interpreter
+  correlates bug surfaces. Vector-pass is not "verified." The
+  open issue is a bare-metal C second implementation.
+- **Reason:** Claiming independence we do not have is worse than
+  an honest caveat.
