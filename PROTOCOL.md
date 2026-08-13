@@ -234,6 +234,40 @@ candidates. Measured on the author's machine at this commit:
 *your* machine and prints the estimate before it starts. Ctrl-C
 is safe; nothing is written until a match is confirmed.
 
+## Why Bitcoin Core, and why a raw number
+
+Core is categorically different from every other dependency here.
+No company, no vendor, no business model, nobody to subpoena or
+bankrupt. Fifteen years of adversarial review, reproducible builds
+signed by independent maintainers, and it *defines* consensus
+rather than interpreting it. It already satisfies this protocol's
+own test: the counterparty is anyone, because anyone can run it,
+read it, or fork it.
+
+A raw 256-bit scalar is the most portable representation that
+exists. A word-list phrase is only meaningful after stretching
+and a derivation tree — extra standards that must all survive
+and all be applied correctly. The scalar is the object those
+standards reduce to. Any competent developer can derive and sign
+from it in forty lines. On standards rot, this design is *more*
+durable than a phrase, not less. (Named comparison with the
+deleted word-list stack: HARDCORE.md § "Why a raw scalar".)
+
+The honest residual risk is different. Core's consensus rules are
+extraordinarily stable; its wallet RPC surface is not. Legacy
+BDB wallets were deprecated and then removed. `importdescriptors`
+replaced `importmulti`. Descriptor syntax has evolved. The
+durable claim is about the mathematics, not about a command line
+surviving thirty years.
+
+So the gap is **not** that the key becomes unrecoverable. It is
+that recovery is an expert operation and an heir may not be an
+expert. That is an operator problem with an operator fix: a
+written recovery document a non-expert can execute, and a
+rehearsal proving they can (Phase 4, Phase 5). Core is not a
+single point of failure. Core's RPC is also not a forever
+guarantee.
+
 ## Phase 4 — Rehearsal [READY: mandatory before real funds]
 
 Borrowed from the Glacier Protocol, with credit.

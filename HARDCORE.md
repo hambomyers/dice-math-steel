@@ -54,6 +54,22 @@ Hardcore upgrades to argue about:
   the 6×6 card fall below, say, 200 bits of min-entropy? Show your
   work in the issue.
 
+## Why a raw scalar (named comparison)
+
+PROTOCOL.md states this in ceremony language. The named stack we
+deleted is the contrast:
+
+A BIP39 mnemonic is only meaningful with PBKDF2, BIP32, and a
+derivation path. Three standards, all required, all applied
+correctly, or the coins sit in a different, empty wallet with no
+error. A 256-bit secp256k1 scalar is the object that stack reduces
+to. On standards rot, the scalar is more durable than the phrase,
+not less.
+
+Core is the recovery referee because it is not a vendor. The
+residual risk is wallet-RPC churn, not consensus. See PROTOCOL.md
+"Why Bitcoin Core, and why a raw number."
+
 ## 3. 24-word mode
 Deleted from main to halve the mistake surface. Trivial patch if you
 want it: 23 words from the table + 3 final bits, 8-bit checksum.
