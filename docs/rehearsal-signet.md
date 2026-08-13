@@ -133,14 +133,18 @@ Do not send mainnet value here. This key is published.
 
 ### Table
 
+Rows mean different things if we do not say how they were
+produced. **Run** means a command was executed. **Source**
+means the code was read. Mixed rows are labeled as such.
+
 | Tool | Result |
 |---|---|
-| Bitcoin Core 29.4 | **works with caveats** |
-| Sparrow 2.5.3 (source `b99b880`) | **works with caveats** |
-| Electrum (`c4cc40f`) | **does not work** |
-| embit 0.8.0 (one-off script) | **works** |
+| Bitcoin Core 29.4 | **works with caveats** — run |
+| Sparrow 2.5.3 (source `b99b880`) | **untested — source inspection only** |
+| Electrum (`c4cc40f`) | **does not work** — type gate reproduced; wallet not launched |
+| embit 0.8.0 (one-off script) | **works** — run locally; not broadcast |
 
-Caveats are below. A negative cell is a fact, not a slight.
+A negative cell is a fact, not a slight.
 
 ### Bitcoin Core — reference path
 
@@ -181,34 +185,42 @@ funded round-trip was not completed in this sitting.
 
 ### Sparrow — Tools → Sweep Private Key
 
-GUI was not clicked (no display on the machine that ran
-this). Read against Sparrow `b99b880` and drongo
-`ScriptType.java`:
+**Untested.** The GUI was not clicked. Nothing was swept.
+What follows is source inspection of Sparrow `b99b880` and
+drongo `ScriptType.java`, not a result.
 
 - The sweep dialog's script-type list is
   `ScriptType.getAddressableScriptTypes(SINGLE_HD)`, which
-  includes Taproot (`P2TR`). Default selection is `P2PKH`.
+  includes Taproot (`P2TR`). Default selection is **P2PKH**.
+  That is a live operator trap: leave the default and the
+  tool looks at a different script than this protocol's
+  output.
 - For `P2TR` + `SINGLE_HD`, `getOutputKey` calls
   `derivedKey.getTweakedOutputKey()` — the BIP341 tweak,
   same object as `tr()`.
 - Create-transaction signs a Schnorr key-path spend when
   the selected type is `P2TR`.
 
-So a P2TR key-path output is in the sweep tool, provided
-the operator **selects Taproot** rather than leaving the
-P2PKH default. This rehearsal did not broadcast a Sparrow
-sweep. Treat that as the caveat, not as a silent no.
+What would settle it: fund a signet P2TR key-path output,
+open Tools → Sweep Private Key, set script type to
+**Taproot**, sweep, and confirm the coins move. Until that
+happens, this row is not a second independent recovery
+path. It is a pointer and a warning about the P2PKH
+default.
 
 ### Electrum — raw scalar
 
-Electrum `c4cc40f`. `WIF_SCRIPT_TYPES` in
-`electrum/bitcoin.py` is `p2pkh`, `p2wpkh`, `p2wpkh-p2sh`,
-`p2sh`, `p2wsh`, `p2wsh-p2sh`. There is no `p2tr`.
+Electrum the application was **not launched** (`electrum-ecc`
+failed to build in this environment). The negative is from
+source at `c4cc40f` plus a reproduced type gate, not from
+clicking Import.
 
-`Imported_KeyStore.import_private_keys` only accepts
-`p2pkh`, `p2wpkh`, `p2wpkh-p2sh`.
+`WIF_SCRIPT_TYPES` in `electrum/bitcoin.py` is `p2pkh`,
+`p2wpkh`, `p2wpkh-p2sh`, `p2sh`, `p2wsh`, `p2wsh-p2sh`.
+There is no `p2tr`. `Imported_KeyStore.import_private_keys`
+only accepts `p2pkh`, `p2wpkh`, `p2wpkh-p2sh`.
 
-Reproduced the deserialize gate:
+Reproduced the deserialize gate (same dict, same split):
 
 ```
 p2tr:<WIF>  →  unknown script type: p2tr
@@ -216,7 +228,8 @@ p2tr:<WIF>  →  unknown script type: p2tr
 
 Electrum's Taproot work (BIP86 HD trees; library-level
 key-path spends) is not a raw-scalar import path. A
-negative result.
+negative result. Launching the GUI would hit the same
+gate; it would not make this row a run.
 
 ### One minimal script — embit 0.8.0
 
@@ -252,11 +265,11 @@ needs a valid spend.)
 
 ### What this does not say
 
-The scalar is not format-locked to Core: embit derived and
-signed from the same WIF today. Sparrow's sweep source
-will look at a P2TR key-path if Taproot is selected; that
-was not clicked. Electrum will not import the scalar as
-P2TR. Core's wallet RPC (`active` must be false for a
-single key; import commands have changed before) is the
-operator surface, not the math. A funded signet
-broadcast remains un-done here.
+embit derived and signed from the same WIF today — locally.
+That is one independent library path, not a ledger ruling.
+Sparrow was not tested; its sweep default is P2PKH, which
+is worth knowing even from source. Electrum's type gate
+rejects a raw P2TR scalar. Core's wallet RPC (`active` must
+be false for a single key; import commands have changed
+before) is the operator surface, not the math. No funded
+signet broadcast was completed in this sitting.

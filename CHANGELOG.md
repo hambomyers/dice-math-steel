@@ -6,6 +6,10 @@ Docs and tools only. `src/` and `tests/` unchanged.
 
 ### Fixed
 
+- Signet recovery table labeled Sparrow as tested. It was
+  source inspection. Row is now untested; Electrum row says
+  the wallet was not launched.
+
 - Whitepaper §7 claimed stacking plates *is* the XOR. Stacking
   punched steel in light computes AND, not XOR. The plates encode
   a one-time pad; recovery is pencil on a worksheet.
