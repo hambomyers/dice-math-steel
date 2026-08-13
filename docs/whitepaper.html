@@ -156,7 +156,7 @@
 <header id="top">
   <h1>DICE <span class="pip">·</span> MATH <span class="pip">·</span> STEEL</h1>
   <p class="subtitle">Satoshi’s setup, with dice — a white paper for the kitchen table</p>
-  <p class="byline">hambomyers · v0.5 · dicemathsteel.com</p>
+  <p class="byline">hambomyers · UNREVIEWED · no believed devices</p>
   <div class="abstract">
     <b>ABSTRACT.</b>
     <p>Your money is guarded by a secret number. Whoever knows the number owns the coins. This paper is one story told five ways: make the number, hide the number, prove the number, rest, and spend — without ever trusting a machine's word for anything.</p>
@@ -169,46 +169,56 @@
   <h2><span class="no">0.</span>The whole machine, on one page</h2>
   <figure>
     <div class="fig"><pre>
- 🎲 one die, twice            🎲 same card, pad
-   <span class="d">throw 1 = row, throw 2 = col</span>  <span class="d">≈117 throws / number</span>
-   │                         │
-   ▼                         ▼
- KEY  <span class="r">1 0 1 1 0 … (256)</span>    PAD  <span class="r">0 1 1 0 0 … (256)</span>
-   │                         │
-   │   same-or-different,    │
-   │◀── column by column ────┤
-   │                         ▼
-   │                    ⛓ PLATE A = the pad
-   ▼
- the answer row ─────▶ ⛓ PLATE B  <span class="d">(+ address, below)</span>
-
-   │  KEY continues into the machine —
-   ▼  down a strictly ONE-WAY road:
- ┌──────────────────────────────────────┐
- │  ONE SMALL COMPUTER            <span class="d">($4, no radio)</span>  │
- │                                              │
- │  KEY ─▶ curve-multiply ─▶ PUBLIC KEY         │
- │      <span class="d">(easy forward; reversing it would</span>      │
- │      <span class="d">take longer than the universe)</span>          │
- │  PUBLIC KEY ─▶ blend + wrap ─▶ ADDRESS       │
- │                              <span class="g">"bc1p…"</span>        │
- └──────────────────────────────────────┘
-   │            homework graded by:
-   │    • <span class="r">Bitcoin Core</span> — Satoshi’s software,
-   │      re-runs the public math: must land
-   │      on the same address
-   │    • the <span class="r">LEDGER</span> — $5 in, $5 back out:
-   │      proof the address obeys YOUR key
-   ▼
- ADDRESS ─▶ stamped on PLATE B   <span class="d">(forever answer-key)</span>
-         ─▶ shared with the world 📄
-
-   … years pass. the machine sleeps. …
-
- SPEND DAY: rebuild key (pencil) → sign — witnessed
- by a second stranger-machine <span class="d">(nonce checked, byte
- for byte)</span> → verified in public → broadcast.</pre></div>
-    <figcaption>Fig. 1 — the entire system. everything below explains one line of this.</figcaption>
+ ┌─ ENTROPY ──────────────┐
+ │ one die. choose first. │
+ │                        │
+ │ STANDARD               │
+ │  two throws / lookup   │
+ │  5 bits · ~117 throws  │
+ │  face-bias reaches out │
+ │                        │
+ │ PARANOID               │
+ │  first throw only      │
+ │  1–3→0  4–6→1          │
+ │  256 throws            │
+ │  six faces collapse    │
+ │                        │
+ │ both: 256 bits, paper  │
+ └────────────────────────┘</pre></div>
+    <figcaption>Fig. 1a — choose the mapping before the first throw</figcaption>
+  </figure>
+  <figure>
+    <div class="fig"><pre>
+ ┌─ STEEL ────────────────┐
+ │ 16×16  labels 0–F      │
+ │ gutter every 4 cols    │
+ │ ⌐ notch   ID: XXXX     │
+ │ both symbols marked    │
+ │ two-pass: 0s, then 1s  │
+ │                        │
+ │ A  pad          loc 1  │
+ │ B  k⊕p + address       │
+ │    ADDRESS FINGERPRINT │
+ │                 loc 2  │
+ │ one plate = static     │
+ └────────────────────────┘</pre></div>
+    <figcaption>Fig. 1b — the plates. never steel to steel</figcaption>
+  </figure>
+  <figure>
+    <div class="fig"><pre>
+ ┌─ SILICON ──────────────┐
+ │ BIRTH     UNREVIEWED   │
+ │ k → k·G → bc1p…        │
+ │ Core rawtr() grades it │
+ │ + $5 ledger round-trip │
+ │ board ~$15 predicted   │
+ │                        │
+ │ SPEND     UNREVIEWED   │
+ │ witness machine        │
+ │ sigs match, or STOP    │
+ │ → verified in public   │
+ └────────────────────────┘</pre></div>
+    <figcaption>Fig. 1c — exactly two contacts. both UNREVIEWED</figcaption>
   </figure>
 </section>
 
@@ -222,13 +232,13 @@
 
 <section id="s1">
   <h2><span class="no">2.</span>Make the number</h2>
-  <p>One die. Throw it twice. First throw is the <strong>row</strong>; second throw is the <strong>column</strong>. Read the cell on a 36-cell card. Never reverse the two throws — order comes from time, not judgement.</p>
+  <p><strong>Choose the mapping before the first throw.</strong> Do not switch mid-number. Both paths produce the same object: 256 bits on a printed worksheet, which is what the device consumes.</p>
   <div class="diemap">
-    <div class="diecard">32 of 36 cells → a unique <b>5-bit</b> pattern</div>
-    <div class="diecard">4 cells → <b>REROLL</b> both throws</div>
+    <div class="diecard"><b>STANDARD</b><br>two throws · 5 bits<br>~117 throws / number</div>
+    <div class="diecard"><b>PARANOID</b><br>first throw only<br>1–3→0 · 4–6→1 · 256 throws</div>
   </div>
-  <p>About 117 throws later you have 256 bits. That string is your <strong>key</strong> — a number so large that every computer on Earth, guessing until the sun burns out, would never find it. You just made it with your hands. Then do the same again for a second number, the <strong>pad</strong>. It is the scrambler. Write both onto a printed 16×16 worksheet. The worksheet, not the die, is what you type into the machine.</p>
-  <details class="dive"><summary>DEEP DIVE · why dice — why not just flip a coin?</summary><div class="body"><p>A coin works; the protocol only needs 256 fair yes-or-nos. But dice are the better instrument, for reasons people have actually measured. A caught coin lands same-side-up about 50.8% of the time — physicists predicted it, then a study of 350,000 real flips confirmed it: the flip remembers a whisper of how it started. (At 256 bits even that bias would leave a thief hopeless — but take free fairness where it is offered.) Casino dice, meanwhile, are the only five-dollar object on Earth machined <em>for</em> fairness — cut to half a thousandth of an inch, sharp-edged, translucent to expose voids, because money rides on them nightly.</p><p>The 6×6 card keeps most of what the die offers (log₂ 6 ≈ 2.585 bits per throw, minus 4/36 rerolls). The cost is bias-robustness: every per-face deviation now reaches the output. The old mapping {1,2,3}→0 / {4,5,6}→1 only cared about the half-split, so per-face bias largely washed out. That mapping is still printed on the card as paranoid mode: same artifact, more throws, less structure used. Efficiency and bias-robustness trade against each other; we do not pretend otherwise.</p></div></details>
+  <p>The trade in one sentence: the standard path exposes every per-face deviation of the die; the paranoid path collapses six outcomes into two and washes most of it out. Standard: first throw is the <strong>row</strong>, second is the <strong>column</strong>, read the 36-cell card (32 patterns, 4 REROLL). Never reverse the two throws — order comes from time, not judgement. Paranoid: ignore the columns; one throw, one bit. Then do the same again for the <strong>pad</strong>. The worksheet, not the die, is what you type into the machine.</p>
+  <details class="dive"><summary>DEEP DIVE · why dice — why not just flip a coin?</summary><div class="body"><p>A coin works; the protocol only needs 256 fair yes-or-nos. But dice are the better instrument, for reasons people have actually measured. A caught coin lands same-side-up about 50.8% of the time — physicists predicted it, then a study of 350,000 real flips confirmed it: the flip remembers a whisper of how it started. (At 256 bits even that bias would leave a thief hopeless — but take free fairness where it is offered.) Casino dice, meanwhile, are the only five-dollar object on Earth machined <em>for</em> fairness — cut to half a thousandth of an inch, sharp-edged, translucent to expose voids, because money rides on them nightly.</p><p>The 6×6 card keeps most of what the die offers (log₂ 6 ≈ 2.585 bits per throw, minus 4/36 rerolls). The cost is bias-robustness: every per-face deviation now reaches the output. The paranoid mapping {1,2,3}→0 / {4,5,6}→1 only cares about the half-split, so per-face bias largely washes out. It is chosen before the first throw, not discovered after. Same card, same worksheet, more throws, less structure used. Efficiency and bias-robustness trade against each other; we do not pretend otherwise.</p></div></details>
 
   <p class="aside">Why dice? Randomness is the one thing you can never check by looking at it — a rigged machine's "random" looks identical to real random. So no machine is allowed near this step. Physics rolls; you write.</p>
 <details class="dive"><summary>DEEP DIVE · why one die, thrown twice — not two dice together</summary><div class="body"><p>Simultaneous dice can collide. Collision might correlate faces; nobody has measured it for this protocol, so we do not ask you to bet on it. Sequential throws of one die remove that question. They do not remove throw-to-throw correlation from a consistent throwing style — throw hard, hit a backstop, let it tumble.</p><p>Never sort, never swap, never “row is the bigger number.” The two throws are ordered by the clock. A 6×6 lookup is a glance at a printed card, not base-six arithmetic in your head.</p></div></details>
@@ -261,14 +271,15 @@
   <p>A thief holding <em>one</em> plate holds pure static. Not "hard to crack" — <strong>nothing there</strong>: every digit on plate B hides a perfect 50/50 coin toss, because the pad bit beneath it was a fair roll. This is the one-time pad — 1940s spy mathematics, never beaten, because there is nothing to beat.</p>
   <details class="dive"><summary>DEEP DIVE · the static contains every key</summary><div class="body"><p>Here is how completely one plate hides the number. Take plate B alone and ask: which keys could it conceal? Answer: <em>all of them</em> — every one of the 2²⁵⁶ possible keys corresponds to exactly one pad that would produce this exact plate, and every pad is equally likely, because each pad bit was a fair roll. The plate is not a puzzle with one answer; it is a sentence consistent with every answer. That is why this is not “encryption too strong to break” — there is nothing to break. A thief with one plate and infinite computers holds the same information as a thief with none: the number is somewhere in the haystack. He knew that already.</p></div></details>
 
-  <p>Recovery is the same game played again — on paper. Transcribe each plate onto a printed 16×16 worksheet, mark same-or-different, and the key reappears. Never steel against steel: stacking punched plates would compute AND, not XOR. Pencil, paper, ten minutes — the entire instruction your heirs will ever need. But make <strong>two copies of each plate</strong>: losing either half forever is losing the coins.</p>
+  <p>Stamp 16×16 grids, not a row of glyphs. Row and column labels 0–F, a gutter every four columns, a corner notch (a 180° rotation is silent and catastrophic), a 4-character ceremony ID on both plates so A from one night cannot marry B from another. Both symbols always marked — a blank is not a zero. Two-pass stamping: every zero, then every one. Plate B also carries the receive address and four words under the heading <strong>ADDRESS FINGERPRINT</strong> — a public checksum of the address, not the key.</p>
+  <p>Recovery is the same game played again — on paper. Transcribe each plate onto a printed 16×16 worksheet, one row at a time through a slotted index card, mark same-or-different, and the key reappears. <strong>Never steel against steel:</strong> stacking punched plates would compute AND, not XOR. The worksheet is the jig. If a glyph is unreadable it is an erasure, not a guess; <code>recover.py</code> will search Hamming distance 1, then 2, then 3 against the stamped address and name the cells it flipped. Look at those punches. If a mark is clean, stop. Beyond three bits you are not recovering: the plate failed, and the other copy is the path. Pencil, paper, ten minutes — the entire instruction your heirs will ever need. But make <strong>two copies of each plate</strong>: losing either half forever is losing the coins.</p>
 </section>
 
 <section id="s3">
   <h2><span class="no">4.</span>Prove the number</h2>
   <p>An address is your number’s public face — mathematics turns key → address in one direction only. The whole world can pay the face; only the number behind it can spend. That math is too big for hands, so one small machine performs it. And we trust it <em>not at all</em> — because its homework is graded twice, by older and stranger judges than any gadget:</p>
   <div class="pair">
-    <div class="device"><b>THE MACHINE — $4</b>a bare little board, no radio by anatomy, firmware you compile yourself. its one job: turn your number into your address.</div>
+    <div class="device"><b>THE MACHINE — ~$15 predicted</b>a bare little board, no radio by anatomy, firmware you compile yourself. its one job: turn your number into your address. (README claims table: falsify this.)</div>
     <div class="device"><b>THE JUDGES — $5, once</b><span style="color:var(--die);font-weight:700">Bitcoin Core</span> — Satoshi’s own software, run by anyone, checks the public math lands on the same address. Then the <span style="color:var(--die);font-weight:700">ledger itself</span>: pay the address, spend it back out. Proof, end to end.</div>
   </div>
   <p class="match">THE VERIFIER OF LAST RESORT IS BITCOIN ITSELF — NOT US</p>
@@ -285,26 +296,20 @@
   <h2><span class="no">6.</span>Spend</h2>
   <figure>
     <div class="fig"><pre>
-1  any online computer writes a note to an SD card:
-   <span class="d">"send these coins there."</span>
-2  rebuild the key from the plates            <span class="d">(pencil)</span>
-3  type key + note into the machine — AND into a
-   second, unrelated machine: the <span class="r">WITNESS</span>
-4  each, alone, rebuilds the exact bytes to be
-   signed, and derives the signature’s secret
-   ingredient — the <span class="r">nonce</span> — by the same fixed
-   recipe from key + message. no randomness.
-   same inputs, same recipe → the two signatures
-   must match <span class="r">byte for byte, or you STOP.</span>
-   <span class="d">what this catches: a corrupted signer’s only
-   weapon is a treacherous nonce an accomplice
-   already knows — a signature that looks valid
-   to everyone but quietly confesses your key.
-   only an unrelated machine following the honest
-   recipe exposes it — by disagreeing.</span>
-5  SD card back to any computer. check it in public.
-   broadcast. power off —
-   <span class="g">the key lived only in RAM, and RAM forgets.</span></pre></div>
+ SPEND  <span class="r">UNREVIEWED</span>
+
+ 1  online PC writes a note
+    to an SD card
+ 2  rebuild k on paper
+    (worksheet jig)
+ 3  type key + note into
+    BOTH machines
+ 4  same recipe, no RNG
+    sigs match <span class="r">byte for
+    byte, or STOP</span>
+ 5  check in public.
+    broadcast. power off
+    <span class="g">key lived in RAM</span></pre></div>
     <figcaption>Fig. 2 — the rare day, done in public. (“witness” here means the witness <em>machine</em>; Bitcoin’s protocol also uses “witness” for a signature field — same word, different job.)</figcaption>
   </figure>
 </section>
@@ -328,11 +333,12 @@
   <p>We tried to delete every trusted party in this design. None of them died — each one became <strong>anyone</strong>:</p>
   <figure>
     <div class="fig"><pre>
-who checks the address?    →  the public ledger
-who checks the signing?    →  a second stranger
-                              <span class="d">(future: ANY computer, cutting
-                               the deck into the signature)</span>
-who takes the coins last?  →  whoever you hand the steel to</pre></div>
+ who checks the address?
+   → the public ledger
+ who checks the signing?
+   → a second stranger
+ who takes the coins last?
+   → whoever holds steel</pre></div>
     <figcaption>Fig. 3 — the counterparty never dies; it becomes interchangeable</figcaption>
   </figure>
   <p>That is not our trick. It is Satoshi's: Bitcoin never eliminated counterparties — it made them plural, anonymous, and unprivileged, so no <em>particular</em> one ever needs believing. This protocol is Bitcoin's own idea, pointed back at Bitcoin's own storage.</p>

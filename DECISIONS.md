@@ -301,3 +301,18 @@ independent rewrite**. Help-wanted item #1 in the README.
 - **Reason:** Devices are used. They are disbelieved and graded.
   Residual trust already said so; the slogan must survive that
   reading.
+
+## 2026-08-12 — Whitepaper brought to PROTOCOL parity
+
+- **Old:** github.io still described one-bit mapping and conceptual
+  plates after `main` had moved to the 6×6 card and 16×16 rules.
+  The README linked that build with no warning. Birth board was
+  "$4" in the paper and "~$15 predicted" in README.
+- **New:** Whitepaper Fig. 1a–c match PROTOCOL: mapping chosen
+  before the first throw, 16×16 plates, UNREVIEWED on birth and
+  spend in the figure, worksheet jig, search limit. Board cost
+  is ~$15 predicted in both places.
+- **Reason:** The front door lagged. A reader tracking the project
+  should know it lagged, and should not be sent to a stale
+  ceremony. Two published prices for one checkable number is
+  exactly the class of error this repo forbids.
