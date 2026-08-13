@@ -228,7 +228,11 @@ not invent a substitute bit by eye.
 
 The search is a convenience, not a guarantee. Beyond three bits
 you are not recovering: the plate failed, and the other copy of
-the plate is the recovery path.
+the plate is the recovery path. Distance 3 is 2,796,417
+candidates. Measured on the author's machine at this commit:
+~5.6 ms per derivation → ~4.4 hours. The tool times a sample on
+*your* machine and prints the estimate before it starts. Ctrl-C
+is safe; nothing is written until a match is confirmed.
 
 ## Phase 4 — Rehearsal [READY: mandatory before real funds]
 

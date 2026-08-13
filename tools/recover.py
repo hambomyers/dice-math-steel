@@ -25,6 +25,7 @@ import io
 import itertools
 import os
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -93,6 +94,35 @@ def bit_cell(bit):
 
 def format_cells(positions):
     return ", ".join(bit_cell(b) for b in positions)
+
+
+def _candidate_count(max_flips):
+    return sum(COMBOS_AT[d] for d in range(0, max_flips + 1))
+
+
+def _fmt_duration(seconds):
+    if seconds < 90:
+        return "~%.0f seconds" % seconds
+    if seconds < 5400:
+        return "~%.0f minutes" % (seconds / 60.0)
+    return "~%.1f hours" % (seconds / 3600.0)
+
+
+def estimate_and_warn(max_flips, hrp, samples=8):
+    """Time real derivations; print the estimate before searching."""
+    n = _candidate_count(max_flips)
+    t0 = time.perf_counter()
+    for i in range(samples):
+        derive_pico(1 + i, hrp)
+    per = (time.perf_counter() - t0) / float(samples)
+    est = per * n
+    print(
+        "distance-%d search: %s candidates, est. %s on this machine."
+        % (max_flips, format(n, ","), _fmt_duration(est))
+    )
+    print("ctrl-C is safe — nothing is written until a match is confirmed.")
+    print("timed %.1f ms/derivation × %s (sample of %d)."
+          % (per * 1000.0, format(n, ","), samples))
 
 
 def _progress(d, seen, total):
@@ -263,6 +293,8 @@ def main(argv):
     stamped = args.address.strip()
     k0 = a ^ b
     print("searching Hamming distance 0..%d against stamped address" % args.max_flips)
+    if _derive is None:
+        estimate_and_warn(args.max_flips, args.hrp)
     hit = search(k0, stamped, args.hrp, args.max_flips)
     if hit is None:
         print_no_match(args.max_flips)
