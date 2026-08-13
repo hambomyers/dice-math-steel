@@ -46,37 +46,70 @@ years.*
    dual identical Schnorr signatures (birth device + witness);
    broadcast anywhere.
 
-## Four layers
+## The machine, on one page
 
 ```
- DICE  ·  MATH  ·  STEEL  ·  SPEND
- "Nothing believed. Everything agreed."
+ ┌─ ENTROPY ────────────────────────────────────────────┐
+ │   ONE die, thrown TWICE in sequence                  │
+ │       first throw = ROW, second throw = COLUMN       │
+ │       (order comes from time, never from sorting)    │
+ │                                                      │
+ │        36 outcomes ──▶ 32 patterns of 5 bits         │
+ │                   └──▶  4 cells say REROLL           │
+ │                                                      │
+ │        52 lookups = 260 bits, keep 256               │
+ │        ≈ 117 throws (11% rejection)                  │
+ │        floor is log₂(6)=2.585 b/throw → 99 throws    │
+ │                                                      │
+ │   ONE CARD. 36 CELLS. HAND-CHECKABLE IN 2 MINUTES:   │
+ │   each of the 32 patterns appears exactly once.      │
+ └──────────────────────────────────────────────────────┘
+                          │
+                          ▼
+       KEY  k = a raw 256-bit secp256k1 scalar
+            written in pencil. no words, no
+            derivation, no checksum.
+                          │
+        ┌─────────────────┴─────────────────┐
+        ▼                                   ▼
+   throw a PAD                         k XOR pad
+   (same card)                              │
+        │                                   ▼
+        ▼                          ┌─────────────┐
+ ┌─────────────┐                   │  PLATE B    │
+ │  PLATE A    │                   │  16 × 16    │
+ │  16 × 16    │                   │  key ⊕ pad  │
+ │  the pad    │                   │  ⌐ notch    │
+ │  ⌐ notch    │                   │  ID: XXXX   │
+ │  ID: XXXX   │                   └──────┬──────┘
+ └─────────────┘                          │ + ADDRESS
+   LOCATION 1                             │ + ADDRESS FINGERPRINT
+                                   LOCATION 2
+                                          ▼
+                                  the forever answer-key
 
- ┌──────────────────────────────────────────────────────────┐
- │ BORN        one die × two throws, 6×6 card. ≈117/number. │
- │             if k is 0 or ≥ n, reroll (< 2^-127).         │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ CHECKED     Core rawtr() on public key; $5 round-trip;   │
- │             steel re-derive before real funds.           │
- │             mismatch → stop.                             │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ KEPT        16×16, notch, ID. A = p. B = k⊕p + address + │
- │             ADDRESS FINGERPRINT. one plate is worthless. │
- └────────────────────────────┬─────────────────────────────┘
-                              ▼
- ┌──────────────────────────────────────────────────────────┐
- │ SPENT       witness machine joins here. N inputs → 1     │
- │             destination (+ optional change). dual        │
- │             byte-identical BIP340 sigs. SD out.          │
- └──────────────────────────────────────────────────────────┘
-
- Address reuse is accepted. One key, one Taproot address.
- Multi-key privacy mitigation: HARDCORE.md.
+ ┌─ SILICON CONTACT: EXACTLY TWICE, BOTH IRREDUCIBLE ───┐
+ │  BIRTH   k ─▶ k·G ─▶ taproot tweak ─▶ bc1p…          │
+ │          graded by Bitcoin Core rawtr()              │
+ │          + a small round-trip on the ledger          │
+ │          UNREVIEWED                                  │
+ │                                                      │
+ │  SPEND   sign ─▶ witnessed by a second, unrelated    │
+ │          machine; deterministic nonces must agree    │
+ │          byte-for-byte, or you STOP                  │
+ │          graded by the verification equation,        │
+ │          checkable on any public computer            │
+ │          UNREVIEWED                                  │
+ │                                                      │
+ │  Between them: years. Dice, pencil, steel, paper.    │
+ │  This is the floor. Bitcoin requires an address to   │
+ │  exist and a signature to be computed. Nothing in    │
+ │  our design adds a third contact.                    │
+ └──────────────────────────────────────────────────────┘
 ```
+
+Address reuse is accepted. One key, one Taproot address.
+Multi-key privacy mitigation: HARDCORE.md.
 
 White paper: [Dice·Math·Steel — a white paper for the kitchen table](https://hambomyers.github.io/dice-math-steel/whitepaper.html).
 

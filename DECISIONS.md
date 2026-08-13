@@ -251,3 +251,12 @@ independent rewrite**. Help-wanted item #1 in the README.
 - **Reason:** If it is not in those four sentences, it is
   appendix, not protocol. "Verified" was a word we had not
   earned.
+
+## 2026-08-12 — One-page machine figure
+
+- **Old:** README "four layers" box (BORN / CHECKED / KEPT /
+  SPENT).
+- **New:** One ASCII page: entropy card, pad split, 16×16 plates,
+  exactly two silicon contacts, both UNREVIEWED.
+- **Reason:** A tired reader should see the whole machine before
+  any appendix.
