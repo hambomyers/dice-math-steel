@@ -137,3 +137,15 @@ independent rewrite**. Help-wanted item #1 in the README.
   light computes AND, not XOR.
 - **Reason:** The old sentence was false as written. Honesty about
   the analogy is cheaper than a pretty lie.
+
+## 2026-08-12 — BIP39 leftovers: archive table and vectors; keep english.txt
+
+- **Old:** `table.txt` and `vectors.json` sat at repo root after
+  the BIP39 stack was retired.
+- **New:** Both files live in `archive/`. `english.txt` stays at
+  root: plate B's 4-word address fingerprint is drawn from that
+  2048-word list. `src/` does not open the file (it takes a
+  wordlist argument); the ceremony still needs the committed list.
+- **Reason:** `grep` of `src/` found no `open()` of these three
+  files. Archiving a load-bearing wordlist would break the
+  fingerprint. Archiving unused BIP39 test/lookup files would not.
