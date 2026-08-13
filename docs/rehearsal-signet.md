@@ -1,9 +1,17 @@
 # Rehearsal transcript — signet (dry run)
 
-This document proves the math path was walked once end-to-end on
-signet semantics. It uses **throwaway rolls** published here so
-reviewers can reproduce. Do not send value to these addresses on
-mainnet.
+No signature produced by this protocol has ever been accepted
+by any Bitcoin network. Local signing is not the claim. The
+thesis is that the ledger is the final referee, and the ledger
+has not ruled. Until a funded round-trip confirms, this
+protocol is verified against pinned test vectors and its own
+arithmetic, and nothing else.
+
+This document records what *has* been walked: throwaway rolls
+published here so reviewers can reproduce, dual-implementation
+agreement in the test harness, and a Core/embit local-sign
+check that did not broadcast. Do not send mainnet value to
+these addresses.
 
 Current ceremony (see PROTOCOL.md): **one device at birth**, graded
 by Bitcoin Core (`tr()` on public data) and a $5 ledger
