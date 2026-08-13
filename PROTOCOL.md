@@ -8,7 +8,7 @@ buying anything.*
 > this until the code has survived public review — and then start
 > small anyway.
 
-## Phase 0 — Sourcing (you buy everything; we sell nothing)
+## Phase 0 — Sourcing [READY: you buy everything; we sell nothing]
 
 Buy generic retail parts. This repo never links to a seller.
 
@@ -105,15 +105,30 @@ test. Bias remaining after that is discussed in HARDCORE.md §2 —
 including that the 36-cell card is *more* sensitive to per-face
 bias than the old half-split mapping.
 
-## Phase 2 — Author (one die, two throws, 6×6 card)
+## Phase 2 — Author [READY: paper only]
 
 Alone. Curtains drawn. No phones in the room — not silenced,
-absent.
+absent. Print `docs/dice-card.md` and `docs/worksheet.md`.
 
-Print `docs/dice-card.md`. Throw **one die twice in sequence.**
-First throw = **row**. Second throw = **column**. Read that cell.
-Never reverse, never sort, never swap the two throws. Order comes
-from time, not judgement.
+**Choose your mapping before the first throw.**
+
+- **Standard:** two throws per lookup, 5 bits per lookup, ~117
+  throws per number. Fewer throws; every per-face deviation of
+  the die propagates into the output.
+- **Paranoid:** first throw only, low (1–3) → 0, high (4–6) → 1,
+  256 throws per number. More throws; per-face bias largely
+  washes out because six outcomes collapse into two.
+
+Both produce the same object: 256 bits on the worksheet, which is
+what the device consumes. Do not switch mid-number. The card is a
+reference, not the home of this choice.
+
+### Standard procedure
+
+Throw **one die twice in sequence.** First throw = **row**.
+Second throw = **column**. Read that cell. Never reverse, never
+sort, never swap the two throws. Order comes from time, not
+judgement.
 
 32 of 36 cells carry a unique 5-bit pattern. 4 cells say
 **REROLL** — throw both throws again, fresh. 52 lookups yield 260
@@ -121,24 +136,28 @@ bits; keep the first 256. Expected throws ≈ 117 per number (11%
 rejection). Floor is log₂(6) ≈ 2.585 bits/throw → 99 throws if
 nothing is rejected and you packed perfectly; we do not.
 
-Write the 256 bits onto the printed 16×16 worksheet
-(`docs/worksheet.md`). Repeat the whole process for the pad.
+Copy five bits at a time onto the worksheet. Repeat the whole
+process for the pad.
+
+### Paranoid procedure
+
+Ignore the columns. Throw once. Write **0** if the face is 1–3,
+**1** if the face is 4–6. One bit per throw, one worksheet cell
+per throw. 256 throws for the key, 256 for the pad. Same card,
+same worksheet, no extra equipment.
+
+### After the bits exist
 
 The private key **is** that 256-bit integer `k`. No words, no
 derivation. You will type those 256 bits (from the worksheet, not
 from the die) into **one** device. `src/` still consumes a
-256-bit integer; the card only changes how a hand produces it.
+256-bit integer; the mapping only changes how a hand produces it.
 
 If the machine later reports `k == 0` or `k ≥ n` (secp256k1
 order), **reroll the key from scratch**. Probability < 2^-127.
 Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
 
-**Paranoid mode** (printed on the card): ignore the columns. Use
-only whether the *first* throw is low (1–3 → 0) or high (4–6 → 1).
-One bit per throw, 256 throws per number, same card, no extra
-equipment. More throws; less exposure to per-face bias.
-
-## Phase 3 — Ceremony (one device + Core as senior referee)
+## Phase 3 — Ceremony [UNREVIEWED — passes pinned BIP340/341/350 vectors; no third-party audit]
 
 1. **Reflash the birth device from this repo** before the ceremony.
    Hardware is amnesiac, not sacrificial.
@@ -203,9 +222,15 @@ AND (light only where both have holes), not XOR. The printed
 
 If a glyph is unreadable, it is an *erasure*, not a guessed bit.
 `recover.py` searches Hamming distance 1, then 2, then 3 against
-the stamped address. Do not invent a substitute bit by eye.
+the stamped address and prints the plate cells it flipped. Go look
+at those punches. If a mark is clean and unambiguous, STOP. Do
+not invent a substitute bit by eye.
 
-## Phase 4 — Rehearsal (mandatory before real funds)
+The search is a convenience, not a guarantee. Beyond three bits
+you are not recovering: the plate failed, and the other copy of
+the plate is the recovery path.
+
+## Phase 4 — Rehearsal [READY: mandatory before real funds]
 
 Borrowed from the Glacier Protocol, with credit.
 
@@ -223,7 +248,7 @@ Borrowed from the Glacier Protocol, with credit.
 A worked signet transcript lives in
 `docs/rehearsal-signet.md`.
 
-## Phase 5 — Heirs
+## Phase 5 — Heirs [READY: instructions]
 
 **Pattern public, arrangement private.**
 
@@ -240,7 +265,7 @@ Heirs must be able to find:
 Rehearse the trail once **without the owner present**. If a
 non-owner cannot finish, fix the instructions — not the math.
 
-## Phase 6 — Spend (witness machine required)
+## Phase 6 — Spend [UNREVIEWED — passes pinned BIP340/341/350 vectors; no third-party audit]
 
 Template only: **N inputs** (all owned by the one key) → **1
 destination** + optional **1 change** back to the same address.
@@ -266,7 +291,7 @@ signatures.
 
 No wire between devices. No vendor portal.
 
-## Phase 7 — Optional catharsis
+## Phase 7 — Optional catharsis [READY: ritual]
 
 The hammer. Clearly labeled **ritual**. The security step was
 reflash-and-power-off. Smashing boards proves nothing to the

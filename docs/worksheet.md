@@ -7,9 +7,15 @@ Ceremony ID (4 chars, same on both plates): ` _ _ _ _ `
 Notch sits bottom-left on every plate. A 180° rotation is silent
 and catastrophic.
 
-> First throw = row. Second throw = column. Never reverse.
-> Copy five bits at a time from the card onto GRID 3 (key), then
-> again onto GRID 1 (pad). Same-or-different fills GRID 2.
+> Mapping is chosen **before the first throw** (PROTOCOL.md
+> Phase 2). Do not switch mid-number.
+>
+> **Standard:** first throw = row, second = column. Copy five bits
+> at a time from the card onto GRID 3 (key), then GRID 1 (pad).
+> **Paranoid:** ignore columns. One throw, one cell: 1–3 → 0,
+> 4–6 → 1. 256 throws per grid. Same worksheet.
+>
+> Same-or-different fills GRID 2.
 
 Keypad (the worksheet feeds the device, not the die):
 **bit 0 → press 1. bit 1 → press 4.**

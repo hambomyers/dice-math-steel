@@ -42,9 +42,10 @@ that nobody has measured. They do **not** remove throw-to-throw
 correlation from a consistent throwing style, nor bias from a worn
 or shaved die.
 
-**Paranoid fallback** (printed on the card): ignore columns; use
-only whether the first throw is low or high. One bit per throw,
-256 throws, same card.
+**Paranoid mapping** (chosen before the first throw; PROTOCOL.md
+Phase 2): ignore columns; use only whether the first throw is
+low or high. One bit per throw, 256 throws, same card. Also
+printed on the card as a reminder, not as the home of the choice.
 
 Hardcore upgrades to argue about:
 - **Von Neumann debiasing**: throw pairs, keep 01→0 / 10→1, discard

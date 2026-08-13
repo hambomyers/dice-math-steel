@@ -1,6 +1,7 @@
 # Contributing
 
-This project's review process is public attack. Here's how to aim it.
+This project's review process is public attack. **Breaking this
+is the contribution.** Here's how to aim it.
 
 **Design-level critique** (trust model, bias math, protocol logic):
 open an issue. Bring your reasoning; expect engagement. Good-faith

@@ -1,5 +1,10 @@
 # Dice Math Steel
 
+> ⚠️ **EXPERIMENTAL — UNREVIEWED — DO NOT USE WITH REAL FUNDS.**
+> Signet or throwaway amounts only until strangers smarter than us
+> have broken and repaired this. That's not a disclaimer, it's the
+> development model.
+
 > Roll dice to make a 256-bit number.
 > Punch it into steel, split across two places so neither alone means
 > anything.
@@ -10,16 +15,11 @@
 
 *Satoshi's setup, with dice.*
 
-*Cold storage with no trusted devices. A rough draft posted to be
-attacked, corrected, and improved — in reply to July 30, 2026, the
-day the most trusted hardware wallet in Bitcoin cost its users ~$38M
-because its firmware silently generated weak randomness for five
-years.*
-
-> ⚠️ **EXPERIMENTAL — UNREVIEWED — DO NOT USE WITH REAL FUNDS.**
-> Signet or throwaway amounts only until strangers smarter than us
-> have broken and repaired this. That's not a disclaimer, it's the
-> development model.
+*Cold storage with no believed devices — every device graded. A
+rough draft posted to be attacked, corrected, and improved — in
+reply to July 30, 2026, the day the most trusted hardware wallet
+in Bitcoin cost its users ~$38M because its firmware silently
+generated weak randomness for five years.*
 
 > **STATUS (pre-hardware):** Birth and spend code is **UNREVIEWED**.
 > It passes pinned BIP340/341/350 vectors. That is not a third-party

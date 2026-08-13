@@ -270,3 +270,34 @@ independent rewrite**. Help-wanted item #1 in the README.
 - **Reason:** 25 is rejected by every BIP39 wallet. Documentation
   alone would not stop an heir feeding 24 words into an empty
   wallet. The fingerprint is public; KEY READING is the key.
+
+## 2026-08-12 — recover.py names the punches it flipped
+
+- **Old:** A match printed distance and `k`. No grid cells.
+- **New:** A match prints `row R col C` for every corrected bit
+  (16×16 labels 0–F). Over-corruption at distance >3 fails clean
+  and names the other plate copy. Search is a convenience, not a
+  guarantee.
+- **Reason:** Without indices a successful recovery is
+  unfalsifiable to the person holding the steel. If a named mark
+  is clean, stop — something else is wrong.
+
+## 2026-08-12 — Paranoid mode is a fork, not a footnote
+
+- **Old:** Five-bit procedure first; paranoid mapping as a
+  postscript "(printed on the card)."
+- **New:** Choose standard (~117 throws, 5-bit) or paranoid (256
+  throws, half-split) before the first throw. Same 256-bit
+  worksheet object. Do not switch mid-number.
+- **Reason:** Bias-robustness is a posture, not a fallback you
+  discover after the 5-bit path is already complete. Efficiency
+  and bias-robustness trade against each other; the operator
+  picks which side they are on.
+
+## 2026-08-12 — "No trusted devices" overclaimed
+
+- **Old:** README: "Cold storage with no trusted devices."
+- **New:** "no believed devices — every device graded."
+- **Reason:** Devices are used. They are disbelieved and graded.
+  Residual trust already said so; the slogan must survive that
+  reading.

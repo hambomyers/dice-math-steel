@@ -20,7 +20,10 @@ Four altered rows would bias every key generated
 from it, invisibly and unpatchably. A 36-cell card
 is auditable by its own reader in two minutes.
 A 2,187-row or 7,776-row table is not. We chose
-auditability over 18 fewer throws.
+auditability over 18 fewer throws. (Diceware — Arnold
+Reinhold, 1995 — is prior art for dice-to-word lookup.
+Those tables are thousands of rows. We cite the idea
+and reject the size.)
 
 Construction (no hidden permutation): number the
 cells 0..35 in row-major order. Cells 0..31 are
