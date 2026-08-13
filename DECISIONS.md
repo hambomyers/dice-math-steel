@@ -198,3 +198,13 @@ independent rewrite**. Help-wanted item #1 in the README.
   corrects the key, so parity punches would be redundant and
   would break two-pass. Confusing the fingerprint with a key
   reading is catastrophic in one direction.
+
+## 2026-08-12 — Recovery: paper jig, never steel to steel
+
+- **Old:** "Line up the plates" / "XOR the plates" as if stacking
+  steel computed the pad.
+- **New:** Transcribe onto a printed 16×16 worksheet, one row at
+  a time through a slotted index card. Same-or-different on
+  paper. Verify against the stamped address before trusting `k`.
+- **Reason:** Punched steel stacked in light computes AND, not
+  XOR. The worksheet is the jig. Operator error is threat #1.

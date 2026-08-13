@@ -174,13 +174,36 @@ equipment. More throws; less exposure to per-face bias.
    stamped heading **ADDRESS FINGERPRINT**. Same notch, same ID,
    same two-pass, same both-symbols rule. Speak the fingerprint
    aloud while you copy it.
-7. **Prove from steel before destroying paper:** power off, reflash,
-   re-enter plate values only, recover `k = plate_B_xor XOR
-   plate_A`, re-derive the address, match the stamp **and** the
-   Core `rawtr()` result. Only then burn roll sheets. This catch
-   is for entry typos — threat #1.
+7. **Prove from steel before destroying paper.** Recover `k` on
+   the printed worksheet (see **Recovery** below) — never steel
+   against steel. Then power off, reflash, enter the recovered
+   256 bits, re-derive the address, match the stamp **and** the
+   Core `rawtr()` result. Only then burn worksheets and roll
+   notes. This catch is for entry typos — threat #1.
 8. Power off. Secrets existed only in RAM. After key entry, the
    Pico's USB stays power-only.
+
+## Recovery — paper is the jig [READY]
+
+**Never align steel to steel.** Stacking punched plates computes
+AND (light only where both have holes), not XOR. The printed
+16×16 worksheet is the jig. `docs/worksheet.md`.
+
+1. Transcribe plate A onto the worksheet, one row at a time,
+   reading through an index card with a slot cut in it.
+2. Transcribe plate B onto the row directly beneath. Confirm
+   the ceremony IDs match and both notches sit the same way.
+3. Same-or-different on paper, where the printed grid guarantees
+   alignment. Write the result in the third grid. That row is
+   `k`.
+4. Verify against the address stamped on plate B before trusting
+   the result — by speaking the **ADDRESS FINGERPRINT**, by
+   `tools/recover.py`, and (before first funding) by re-deriving
+   on a reflashed device.
+
+If a glyph is unreadable, it is an *erasure*, not a guessed bit.
+`recover.py` searches Hamming distance 1, then 2, then 3 against
+the stamped address. Do not invent a substitute bit by eye.
 
 ## Phase 4 — Rehearsal (mandatory before real funds)
 
@@ -206,10 +229,13 @@ A worked signet transcript lives in
 
 Heirs must be able to find:
 
-1. Both plates (A and B),
-2. The one-page instruction: *XOR the plates, import the resulting
-   256-bit key into Bitcoin Core or Electrum as a Taproot key,
-   send.*
+1. Both plates (A and B) — matching ceremony ID, notches the
+   same way,
+2. The one-page instruction: *Never steel to steel. Transcribe
+   both plates onto the printed worksheet. Same-or-different.
+   The result is the key. Confirm the ADDRESS FINGERPRINT.
+   Import that 256-bit integer into Bitcoin Core as a Taproot
+   key, send.*
 
 Rehearse the trail once **without the owner present**. If a
 non-owner cannot finish, fix the instructions — not the math.
@@ -227,8 +253,9 @@ signatures.
    documented JSON (outpoints, amounts, destination, optional
    change). Copy it to the Duo's SD card. Public data only.
 2. On **both** devices (birth Pico and witness Duo), enter `k`
-   recovered from the plates. Load the unsigned JSON (Duo: SD;
-   Pico: keyed or SD adapter per your build).
+   recovered on the worksheet from the plates (Recovery above).
+   Load the unsigned JSON (Duo: SD; Pico: keyed or SD adapter
+   per your build).
 3. **Screen confirmation before signing:** destination, amount,
    fee. A tired human must be able to abort here.
 4. Both devices construct the BIP341 key-path sighash and BIP340
