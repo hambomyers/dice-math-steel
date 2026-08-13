@@ -16,9 +16,7 @@ Docs and tools only. `src/` and `tests/` unchanged.
   scalar (Core `tr(<WIF>)`, then embit). Pico/Duo still have
   not produced a network-accepted signature. Txids in
   `docs/rehearsal-signet.md`.
-- Next sitting written down: own-node `getrawtransaction`
-  after IBD, pin STATUS, then the Pico/Duo walk.
-  (`docs/rehearsal-signet.md` § "Next sitting").
+- Next sitting is issue #5, not a leftover in the transcript.
 
 - Whitepaper §7 claimed stacking plates *is* the XOR. Stacking
   punched steel in light computes AND, not XOR. The plates encode
