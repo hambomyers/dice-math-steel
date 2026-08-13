@@ -189,7 +189,7 @@ invented derivation. No account trees.
 ## Appendix E — Third verifier (retired 2026-08-05)
 
 **Retired.** Bitcoin Core is now the senior referee at birth
-(`rawtr()` on public data only); see DECISIONS.md. A third
+(`tr()` on public data only); see DECISIONS.md. A third
 ceremony board is redundant for that role.
 
 Historical note (kept for context): a third device that must agree

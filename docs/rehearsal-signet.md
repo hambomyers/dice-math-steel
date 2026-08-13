@@ -6,7 +6,7 @@ reviewers can reproduce. Do not send value to these addresses on
 mainnet.
 
 Current ceremony (see PROTOCOL.md): **one device at birth**, graded
-by Bitcoin Core (`rawtr()` on public data) and a $5 ledger
+by Bitcoin Core (`tr()` on public data) and a $5 ledger
 round-trip; **witness machine at spend** for byte-identical
 signatures. This transcript's dual-implementation checks are the
 code seat-warmer; a human Core + hardware walk is still pending
@@ -51,7 +51,7 @@ Both implementations returned the same:
 
 Mismatch rule exercised in code: any field inequality fails the
 test harness (stop condition). On a live ceremony, Core
-`deriveaddresses "rawtr(Q)"` must also match before steel is
+`deriveaddresses "tr(P)#<checksum>"` must also match before steel is
 stamped.
 
 ## 3. Stamp check (logical)
@@ -110,7 +110,7 @@ Reflash before the next ceremony.
 
 **Verdict:** birth agreement across code lineages, address-as-checksum,
 screen confirm, and dual byte-identical fixed-template signatures
-are exercised by the committed test harness. Core `rawtr()`, the
+are exercised by the committed test harness. Core `tr()`, the
 $5 ledger round-trip, and a chain-broadcast pocket-sat pass on
 public signet remain operator steps — mandatory before mainnet
 funds (PROTOCOL.md Phases 3–4 and 6).

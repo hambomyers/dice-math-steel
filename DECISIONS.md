@@ -316,3 +316,25 @@ independent rewrite**. Help-wanted item #1 in the README.
   should know it lagged, and should not be sent to a stale
   ceremony. Two published prices for one checkable number is
   exactly the class of error this repo forbids.
+
+## 2026-08-12 — Core check uses `tr()`, not `rawtr()`
+
+- **Old:** Birth-day Core check was `deriveaddresses "rawtr(Q)"`
+  with the device's x-only **output** public key.
+- **New:** Birth-day Core check is `tr(P)` with the device's
+  x-only **internal** public key (checksum via
+  `getdescriptorinfo`). Recovery imports `tr(<WIF>)`.
+- **Address unchanged.** On signet, Bitcoin Core 29.4 returned
+  the same bech32m string for `tr(<WIF>)`, `tr(P)`, and
+  `rawtr(Q)`, matching the device's `p2tr_address`. Feeding `Q`
+  to `tr()` double-tweaks and disagrees — so the swap is the
+  descriptor string and which hex the operator copies, not the
+  stamped address. Device code is untouched.
+- **Reason:** Core's own `descriptors.md` documents `rawtr(KEY)`
+  downsides, including being unable to prove no hidden script
+  path exists, and to use it at your own risk. Optech notes
+  `rawtr` is for keys used without a tweak, which BIP341 does
+  not recommend. This protocol applies the tweak
+  (`Q = P + H_TapTweak(P)·G`). `tr()` is the BIP341-standard
+  form, can sign rather than only watch, and drops that
+  Core-documented caveat.

@@ -38,11 +38,14 @@ They were not authored here.
 
 Senior referee at birth. On public data only:
 
-    bitcoin-cli deriveaddresses "rawtr(Q)"
+    bitcoin-cli getdescriptorinfo "tr(P)"
+    bitcoin-cli deriveaddresses "tr(P)#<checksum>"
 
-`rawtr()` is Core's descriptor for a Taproot key-path output
+`tr()` is Core's BIP341-standard descriptor for a Taproot
+key-path output
 ([output script descriptors](https://github.com/bitcoin/bitcoin/blob/master/doc/descriptors.md)).
-The chain grades the spend.
+`P` is the device's x-only internal public key. The chain
+grades the spend.
 
 ## One-time pad
 

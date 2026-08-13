@@ -173,17 +173,26 @@ Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
    address. Speak the fingerprint aloud while you copy it — short
    human channels, not hex-vs-hex eyeballing alone.
 4. **Bitcoin Core check (public data only).** On an online machine
-   that never saw your rolls, take the device's x-only **output**
-   public key `Q` (32-byte hex the device shows for this step) and
-   run:
+   that never saw your rolls, take the device's x-only **internal**
+   public key `P` (32-byte hex; this is not the output key `Q`)
+   and run:
 
-       bitcoin-cli deriveaddresses "rawtr(Q)"
+       bitcoin-cli getdescriptorinfo "tr(P)"
 
-   Replace `Q` with that 32-byte hex (no `0x`). Core must return
+   Copy the checksum it prints, then:
+
+       bitcoin-cli deriveaddresses "tr(P)#<checksum>"
+
+   Replace `P` with that 32-byte hex (no `0x`). Core must return
    the **same** bech32m address the device showed. Mismatch: stop.
-   Reflash. Re-enter. Do not stamp. Core is the third lineage —
-   hundreds of authors, 17 years of hostile review — grading the
-   device's homework without ever touching the secret.
+   Reflash. Re-enter. Do not stamp. Do not put `Q` inside `tr()`:
+   that applies the tweak twice and the address will not match.
+   `tr(P)` and `rawtr(Q)` describe the same output; `tr()` is the
+   BIP341-standard form (Core can sign from it, and it does not
+   carry the hidden-script-path caveat Core documents on
+   `rawtr()`). Core is the third lineage — hundreds of authors,
+   17 years of hostile review — grading the device's homework
+   without ever touching the secret.
 5. Stamp **plate A** as a 16×16 grid of pad `p`. Notch. Ceremony
    ID. Two-pass (all zeros, then all ones). Both symbols marked.
    Verify against the worksheet twice, out loud, before anything
@@ -197,7 +206,7 @@ Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
    the printed worksheet (see **Recovery** below) — never steel
    against steel. Then power off, reflash, enter the recovered
    256 bits, re-derive the address, match the stamp **and** the
-   Core `rawtr()` result. Only then burn worksheets and roll
+   Core `tr()` result. Only then burn worksheets and roll
    notes. This catch is for entry typos — threat #1.
 8. Power off. Secrets existed only in RAM. After key entry, the
    Pico's USB stays power-only.

@@ -35,7 +35,7 @@ generated weak randomness for five years.*
    pad `p`. Worksheet feeds the device a 256-bit integer. No RNG
    in the room.
 2. **CHECKED by strangers** — the birth device is graded by Bitcoin
-   Core (`rawtr()` on public data) plus a $5 ledger round-trip;
+   Core (`tr()` on public data) plus a $5 ledger round-trip;
    steel re-derivation catches typos before real funding. The
    second stranger-machine witnesses the nonce on spend day.
 3. **KEPT in steel** — 16×16 plates, notched, ceremony-ID'd,
@@ -90,7 +90,7 @@ generated weak randomness for five years.*
 
  ┌─ SILICON CONTACT: EXACTLY TWICE, BOTH IRREDUCIBLE ───┐
  │  BIRTH   k ─▶ k·G ─▶ taproot tweak ─▶ bc1p…          │
- │          graded by Bitcoin Core rawtr()              │
+ │          graded by Bitcoin Core tr()                 │
  │          + a small round-trip on the ledger          │
  │          UNREVIEWED                                  │
  │                                                      │

@@ -38,6 +38,8 @@ Docs and tools only. `src/` and `tests/` unchanged.
   ([ed31e1e](https://github.com/hambomyers/dice-math-steel/commit/ed31e1e0414d7f12502ef8da6e49c9e07e2d78a9),
   [753c04a](https://github.com/hambomyers/dice-math-steel/commit/753c04ae8275f7c9d1840059045b3c521431fde8))
 - Phase 3 and Phase 6 tagged UNREVIEWED. Every phase has a status.
+- Core birth check is `tr(P)` (internal key), not `rawtr(Q)`.
+  Same address; drops Core's documented `rawtr()` caveat.
   ([e857b24](https://github.com/hambomyers/dice-math-steel/commit/e857b2458ee42bea615e2c4d407ac31f1bc9f7d7))
 
 ### Added
