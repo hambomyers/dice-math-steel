@@ -17,9 +17,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
-import birth_duo as duo
 import birth_pico as pico
-import sign_duo as sign_duo
 import sign_pico as sign_pico
 
 VECTORS = os.path.join(HERE, "vectors")
@@ -157,26 +155,12 @@ def test_bip341_sighash_and_sign():
         idx = sp["given"]["txinIndex"]
         ht = sp["given"]["hashType"]
         priv = int(sp["given"]["internalPrivkey"], 16)
-        for label, sighash_fn, sign_fn in (
-            ("pico", sign_pico.taproot_sighash, sign_pico.sign_input),
-            ("duo", sign_duo.sighash_keypath, None),
-        ):
-            sh = sighash_fn(version, locktime, inputs, outs, idx, ht)
-            if sh.hex() != sp["intermediary"]["sigHash"]:
-                raise AssertionError("%s sighash mismatch idx %s" % (label, idx))
+        sh = sign_pico.taproot_sighash(version, locktime, inputs, outs, idx, ht)
+        if sh.hex() != sp["intermediary"]["sigHash"]:
+            raise AssertionError("pico sighash mismatch idx %s" % idx)
         sig, _ = sign_pico.sign_input(priv, version, locktime, inputs, outs, idx, ht)
-        # duo path
-        tweaked = sign_duo.tweak_secret(priv, None)
-        sh = sign_duo.sighash_keypath(version, locktime, inputs, outs, idx, ht)
-        sig2 = duo.schnorr_sign(tweaked, sh, bytes(32))
-        if ht:
-            sig2 += bytes([ht])
         if sig.hex() != sp["expected"]["witness"][0]:
             raise AssertionError("pico witness mismatch")
-        if sig2.hex() != sp["expected"]["witness"][0]:
-            raise AssertionError("duo witness mismatch")
-        if sig != sig2:
-            raise AssertionError("pico/duo signatures differ")
 
 
 def _bech32m_checksum_ok(mod, addr):
@@ -253,11 +237,9 @@ def test_birth_agreement():
     # deterministic fake rolls (not for real keys) — no RNG module used
     key_rolls = [((i * 7) % 6) + 1 for i in range(256)]
     pad_rolls = [((i * 11) % 6) + 1 for i in range(256)]
-    a = pico.birth(key_rolls, pad_rolls, words, hrp="bc")
-    b = duo.birth(key_rolls, pad_rolls, words, hrp="bc")
-    for k in ("address", "fingerprint", "plate_a", "plate_b", "k", "p"):
-        if a[k] != b[k]:
-            raise AssertionError("birth disagree on %s" % k)
+    # With the Duo deleted, the remaining harness checks the Pico lineage
+    # against the pinned vectors above. Keep this test as a smoke check.
+    pico.birth(key_rolls, pad_rolls, words, hrp="bc")
 
 
 def test_sign_template_agreement():
@@ -285,17 +267,16 @@ def test_sign_template_agreement():
     }
     quiet = _SilentDisplay()
     r1 = sign_pico.sign_tx(k, tx, display=quiet, our_address=addr)
-    r2 = sign_duo.sign_tx(k, tx, ui=quiet, own_address=addr)
-    if r1["signatures"] != r2["signatures"]:
-        raise AssertionError("template signatures differ")
-    if r1["raw_tx_hex"] != r2["raw_tx_hex"]:
-        raise AssertionError("template raw tx differs")
+    # With the Duo deleted, the harness keeps the sign_pico execution as
+    # a smoke check against the fixed-template transaction shape.
+    if not r1.get("raw_tx_hex"):
+        raise AssertionError("pico template signing did not emit raw_tx_hex")
 
 
 def main():
     check_pins()
     print("OK pins")
-    for mod in (pico, duo):
+    for mod in (pico,):
         test_bip340(mod)
         print("OK bip340 (%s)" % mod.__name__)
         test_bip341_tweak(mod)

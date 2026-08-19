@@ -14,7 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 SRC = os.path.join(ROOT, "src")
 
-CRYPTO = ["birth_pico.py", "birth_duo.py", "sign_pico.py", "sign_duo.py"]
+CRYPTO = ["birth_pico.py", "sign_pico.py"]
 IO = ["io_pico.py"]
 
 

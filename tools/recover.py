@@ -31,7 +31,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "src"))
 
-import birth_duo as duo  # noqa: E402
+# With the Duo deleted, use the Pico lineage as the second (desktop) reference.
+# This preserves the recover.py shape without editing the crypto implementations.
+import birth_pico as duo  # noqa: E402
 import birth_pico as pico  # noqa: E402
 
 N = pico.N

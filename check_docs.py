@@ -100,7 +100,7 @@ SELF_NAMES = ["dice math steel"]
 VERSION_SELF = re.compile(r"\bv\d+\.\d+")
 
 LINECOUNT_FILES = [
-    "birth_pico.py", "birth_duo.py", "sign_pico.py", "sign_duo.py", "io_pico.py",
+    "birth_pico.py", "sign_pico.py", "io_pico.py",
 ]
 
 

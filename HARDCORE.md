@@ -157,7 +157,7 @@ predicted on-device — falsify this:**
 |-----------|----------------------------:|------------------------|
 | SHA-256 of 32 bytes | sub-millisecond | native word ops |
 | secp256k1 scalar mul (Jacobian, Pico lineage) | ~tens of ms | 256-bit ints are multi-limb on 32-bit |
-| Full birth (key+pad→address) | < 1 s typical | dominated by two scalar muls |
+| Full birth (key+mask→address) | < 1 s typical | dominated by two scalar muls |
 
 **32-bit small-int analysis:** MicroPython on RP2040 uses arbitrary
 precision; school-calculator BASIC often does not. Any port to a
@@ -182,7 +182,7 @@ Mainline deleted BIP39. If you require wallet interop:
 v0.5 reuses one address. That links payments permanently.
 
 Mitigation: author **several independent keys** (full card ceremony
-each — ≈117 throws per number, key then pad). Stamp separate plate
+each — ≈117 throws per number, key then mask). Stamp separate plate
 pairs. Use a new key when you want an unlinkable receive path. No
 invented derivation. No account trees.
 

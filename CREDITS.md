@@ -52,9 +52,9 @@ grades the spend.
 Plate A holds `p`. Plate B holds `k ⊕ p`. One plate is
 information-theoretically worthless.
 
-- Gilbert Vernam, 1917 — the pad.
+- Gilbert Vernam, 1917 — the one-time pad.
 - Claude Shannon, "Communication Theory of Secrecy Systems"
-  (1949) — perfect secrecy when the pad is uniform, as long as
+  (1949) — perfect secrecy when the one-time pad is uniform, as long as
   the message, and never reused.
 
 The plates *encode* that mathematics. They are not a physical

@@ -2,7 +2,7 @@
 
 Signet accepted two spends from this throwaway scalar. The
 ledger has ruled on **recovery from a raw WIF**, not on the
-Pico/Duo ceremony. Bitcoin Core signed the first spend from
+the birth-device + witness ceremony. Bitcoin Core signed the first spend from
 `tr(<WIF>)`; embit signed the second from the same WIF. Both
 returned HTTP 200 from `mempool.space/signet/api/tx` (and the
 Core spend also from `blockstream.info/signet/api/tx`). Local
@@ -10,7 +10,7 @@ Core spend also from `blockstream.info/signet/api/tx`). Local
 both with `bad-txns-inputs-missingorspent` — the explorer
 broadcast is what the network saw.
 
-The Pico and the Duo have still never signed a transaction
+The birth device and the witness implementation have still never signed a transaction
 that a Bitcoin network accepted. Hardware is unwalked.
 Birth and spend code remains **UNREVIEWED**.
 
@@ -47,17 +47,17 @@ key_rolls[i] = ((i * 3) % 6) + 1
 pad_rolls[i] = ((i * 5) % 6) + 1
 ```
 
-Entered once (birth path). Both code lineages in
+Entered once (birth path). The Pico lineage in
 `tests/vectors_test.py` consume the same sequences
 (`hrp=bcrt` for regtest-shaped addresses; signet would use `tb`).
 
-## 2. Birth (one entry; dual code check)
+## 2. Birth (one entry; deterministic check)
 
-Both implementations returned the same:
+The pinned birth lineage produced the same:
 
 - Taproot address (bech32m, witness v1)
 - 4-word fingerprint
-- plate A = pad integer
+- plate A = mask integer
 - plate B = k XOR p
 
 Mismatch rule exercised in code: any field inequality fails the
@@ -97,13 +97,12 @@ Screen confirmation (destination, amount, fee) runs before signing.
 On a live spend, both the birth device and the witness machine
 must agree.
 
-## 5. Dual signatures
+## 5. Deterministic signatures (historical)
 
-`sign_pico.sign_tx` and `sign_duo.sign_tx` produced **byte-identical**
-signature blobs and **byte-identical** raw transaction hex
-(`tests/vectors_test.py::test_sign_template_agreement`).
-
-BIP340 `aux_rand` was 32 zero bytes on both sides.
+Signing was deterministic under BIP340 `aux_rand` = 32 zero bytes,
+producing **byte-identical** signatures and raw transaction hex
+in the earlier dual-lineage harness. Duo is deleted in v0.7; the
+spend-day witness is now “any unrelated BIP340 implementation”.
 
 ## 6. Broadcast posture
 
@@ -119,11 +118,12 @@ Reflash before the next ceremony.
 
 ---
 
-**Verdict (code harness):** birth agreement across code lineages,
+**Verdict (code harness):** birth agreement in the pinned vectors,
 address-as-checksum, screen confirm, and dual byte-identical
 fixed-template signatures are exercised by the committed test
 harness. A funded signet recovery spend (Core, then embit) is
-in §8. The Pico/Duo ceremony remains an operator step —
+in §8. The birth-device + witness ceremony remains an operator
+step —
 mandatory before mainnet funds (PROTOCOL.md Phases 3–4 and 6).
 
 ## 8. Which tools recover a raw scalar today (2026-08-12)
@@ -322,7 +322,7 @@ rejects a raw P2TR scalar. Core's wallet RPC (`active` must
 be false for a single key; import commands have changed
 before) is the operator surface, not the math.
 
-The Pico/Duo spend ceremony did not produce either of these
+The birth-device + witness spend ceremony did not produce either of these
 signatures. Two libraries moved signet coins from a raw
 scalar. That is the recovery claim, demonstrated. It is
 not a hardware walk.

@@ -23,24 +23,22 @@ Buy generic retail parts. This repo never links to a seller.
   radios on the ceremony board. Matrix keypad, SSD1306 OLED,
   battery pack (USB is power-only after flash).
 - **Steel:** stainless plates and a letter/number stamp set,
-  hardware store. Two plates (and a copy of each): A (pad) and
+  hardware store. Two plates (and a copy of each): A (mask) and
   B (`k ⊕ p` + address + **ADDRESS FINGERPRINT**). Each plate
   is a 16×16 grid. See **The plate** below.
 - **Online machine with Bitcoin Core** (already reviewed by the
   world): used only on **public** data — the x-only public key /
-  address check. It never sees rolls, `k`, or the pad.
+  address check. It never sees rolls, `k`, or the mask.
 - **A hammer.** Optional catharsis (Phase 7); not load-bearing.
 
 **Spend day (witness machine — buy when you need to spend, not at
 birth):**
 
-- **Witness device:** Milk-V Duo **base model**, same keypad/OLED
-  wiring as the Pico, plus an SD card slot and a buildroot Linux
-  image you build from source.
-
-  > **WARNING — Do not buy the Milk-V Duo S.** The Duo S has WiFi
-  > and Bluetooth. The witness machine must be the base Duo without
-  > radios.
+- **Witness implementation:** any unrelated BIP340 implementation
+  you can run at spend time. It must be able to compute the
+  BIP341 key-path sighash and emit a BIP340 key-path signature from
+  the recovered raw secret scalar (32 bytes). The point is
+  comparability, not shared hardware.
 
 No wire ever connects the birth device and the witness device.
 
@@ -84,8 +82,11 @@ Rules, each with its stated reason:
   Mixing plate A from one ceremony with plate B from another is
   a live failure mode.
 - **Two copies of each plate.** Losing either half forever loses
-  the coins. The copy of plate A must never live where plate B
-  lives.
+  the coins. Plate A's secrecy is not load-bearing (assume it
+  might be photographed); what must stay compartmentalized is plate
+  B, since plate B is functionally the key material when plate A is
+  known. Still, do not store plate A and plate B together in the
+  same custody envelope.
 - **Plate B labels.** Stamp the four spoken words under the
   heading **ADDRESS FINGERPRINT**. They are a public checksum of
   the receive address, drawn from `english.txt`. They are *not*
@@ -137,13 +138,13 @@ rejection). Floor is log₂(6) ≈ 2.585 bits/throw → 99 throws if
 nothing is rejected and you packed perfectly; we do not.
 
 Copy five bits at a time onto the worksheet. Repeat the whole
-process for the pad.
+process for the mask.
 
 ### Paranoid procedure
 
 Ignore the columns. Throw once. Write **0** if the face is 1–3,
 **1** if the face is 4–6. One bit per throw, one worksheet cell
-per throw. 256 throws for the key, 256 for the pad. Same card,
+per throw. 256 throws for the key, 256 for the mask. Same card,
 same worksheet, no extra equipment.
 
 ### After the bits exist
@@ -155,13 +156,13 @@ from the die) into **one** device. `src/` still consumes a
 
 If the machine later reports `k == 0` or `k ≥ n` (secp256k1
 order), **reroll the key from scratch**. Probability < 2^-127.
-Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
+Do not "adjust" it. The mask is not a scalar; still fill 256 bits.
 
 ## Phase 3 — Ceremony [UNREVIEWED — passes pinned BIP340/341/350 vectors; no third-party audit]
 
 1. **Reflash the birth device from this repo** before the ceremony.
    Hardware is amnesiac, not sacrificial.
-2. Enter the 256-bit key and 256-bit pad from the **worksheet**
+2. Enter the 256-bit key and 256-bit mask from the **worksheet**
    into the **one** birth device (Pico). No second keyboard at
    birth. The die does not meet the device. The keypad still
    speaks faces: for each worksheet bit, press **1** if the bit
@@ -193,7 +194,7 @@ Do not "adjust" it. The pad is not a scalar; still fill 256 bits.
    `rawtr()`). Core is the third lineage — hundreds of authors,
    17 years of hostile review — grading the device's homework
    without ever touching the secret.
-5. Stamp **plate A** as a 16×16 grid of pad `p`. Notch. Ceremony
+5. Stamp **plate A** as a 16×16 grid of mask `p`. Notch. Ceremony
    ID. Two-pass (all zeros, then all ones). Both symbols marked.
    Verify against the worksheet twice, out loud, before anything
    burns.
@@ -317,21 +318,30 @@ non-owner cannot finish, fix the instructions — not the math.
 Template only: **N inputs** (all owned by the one key) → **1
 destination** + optional **1 change** back to the same address.
 
-The second stranger-machine is required **here**, not at birth. It
-witnesses the nonce: both devices must emit byte-identical BIP340
-signatures.
+The witness implementation is required **here**, not at birth. It
+witnesses the nonce: the birth device and the witness code must
+emit byte-identical BIP340 signatures.
+
+Pick any unrelated implementation you can run at spend time; the
+signet transcript records which tools recover a raw scalar today
+(see `docs/rehearsal-signet.md` §8).
 
 1. Build the unsigned transaction on any online machine as the
    documented JSON (outpoints, amounts, destination, optional
-   change). Copy it to the Duo's SD card. Public data only.
-2. On **both** devices (birth Pico and witness Duo), enter `k`
-   recovered on the worksheet from the plates (Recovery above).
-   Load the unsigned JSON (Duo: SD; Pico: keyed or SD adapter
-   per your build).
+   change). Copy that public JSON to wherever you will run the
+   witness implementation.
+2. On the **birth device**, enter `k` recovered on the worksheet
+   from the plates (Recovery above). Load the unsigned JSON on the
+   birth device (keyed or SD adapter per your build).
+
+   On the witness machine, run your unrelated BIP340 implementation
+   and feed it the same `k` and the same unsigned transaction JSON
+   (public data only).
 3. **Screen confirmation before signing:** destination, amount,
    fee. A tired human must be able to abort here.
-4. Both devices construct the BIP341 key-path sighash and BIP340
-   signature. **`aux_rand` is 32 zero bytes on both.** That is
+4. The birth device and the witness implementation both construct the
+   BIP341 key-path sighash and BIP340 signature. **`aux_rand` is
+   32 zero bytes on both.** That is
    required, not a default. BIP340's `aux_rand` exists as
    defense-in-depth against fault and side-channel attacks on
    the signer. Filling it with zeros makes signing fully
@@ -344,10 +354,11 @@ signatures.
    which quietly undoes the independence the two-device check
    exists to provide. Signatures must be **byte-identical**.
    Mismatch: stop.
-5. Write the signed raw transaction hex to SD (public). Broadcast
-   from any online machine. Power off.
+5. Write the signed raw transaction hex from the birth device to SD
+   (public). Broadcast from any online machine. Power off.
 
-No wire between devices. No vendor portal.
+No wire between the birth device and the witness machine. No vendor
+portal.
 
 ## Phase 7 — Optional catharsis [READY: ritual]
 

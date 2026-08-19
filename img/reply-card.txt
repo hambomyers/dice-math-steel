@@ -13,7 +13,7 @@ Satoshi's setup, with dice.
   CHECKED       Core tr() on public data.
    |            $5 round-trip. steel re-derive.
    v
-  STEEL         plate A = pad. plate B = XOR
+  STEEL         plate A = mask. plate B = XOR
    |            + 1 receive address (checksum)
    |            + 4-word fingerprint.
    v

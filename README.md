@@ -15,7 +15,7 @@
 
 *Satoshi's setup, with dice.*
 
-*Cold storage with no believed devices — every device graded. A
+*Cold storage with no believed device — every device graded. A
 rough draft posted to be attacked, corrected, and improved — in
 reply to July 30, 2026, the day the most trusted hardware wallet
 in Bitcoin cost its users ~$38M because its firmware silently
@@ -23,11 +23,11 @@ generated weak randomness for five years.*
 
 > **STATUS (pre-hardware):** Birth and spend code is **UNREVIEWED**.
 > It passes pinned BIP340/341/350 vectors. That is not a third-party
-> audit, and the two Python lineages share an interpreter. The code
-> has not run on physical Pico/Duo hardware. The ceremony has not
-> been walked by a human. Signet accepted two recovery spends from
-> a throwaway scalar (Core `tr(<WIF>)`, then embit) — see
-> `docs/rehearsal-signet.md`. Pico/Duo have still never produced a
+> audit. The code has not run on physical Pico hardware. The
+> ceremony has not been walked by a human. Signet accepted two
+> recovery spends from a throwaway scalar (Core `tr(<WIF>)`, then
+> embit) — see `docs/rehearsal-signet.md`. The birth device and
+> the witness implementation have still never produced a
 > network-accepted signature. **Next sitting:**
 > [issue #5](https://github.com/hambomyers/dice-math-steel/issues/5).
 > Predictions in the claims table await falsification.
@@ -36,7 +36,7 @@ generated weak randomness for five years.*
 
 1. **BORN of dice** — one die, thrown twice per lookup (row then
    column) on a 36-cell card. ≈117 throws make key `k`, ≈117 make
-   pad `p`. Worksheet feeds the device a 256-bit integer. No RNG
+   mask `p`. Worksheet feeds the device a 256-bit integer. No RNG
    in the room.
 2. **CHECKED by strangers** — the birth device is graded by Bitcoin
    Core (`tr()` on public data) plus a $5 ledger round-trip;
@@ -76,14 +76,14 @@ generated weak randomness for five years.*
                           │
         ┌─────────────────┴─────────────────┐
         ▼                                   ▼
-   throw a PAD                         k XOR pad
+   throw a MASK                        k XOR mask
    (same card)                              │
         │                                   ▼
         ▼                          ┌─────────────┐
  ┌─────────────┐                   │  PLATE B    │
  │  PLATE A    │                   │  16 × 16    │
- │  16 × 16    │                   │  key ⊕ pad  │
- │  the pad    │                   │  ⌐ notch    │
+ │  16 × 16    │                   │  key ⊕ mask │
+ │  the mask   │                   │  ⌐ notch    │
  │  ⌐ notch    │                   │  ID: XXXX   │
  │  ID: XXXX   │                   └──────┬──────┘
  └─────────────┘                          │ + ADDRESS
@@ -136,17 +136,15 @@ are marked predicted.
 | Claim | Value | Status |
 |-------|------:|--------|
 | `birth_pico.py` non-comment lines | 238 | measured (`tools/linecount.py`) |
-| `birth_duo.py` non-comment lines | 232 | measured |
 | `sign_pico.py` non-comment lines | 180 | measured |
-| `sign_duo.py` non-comment lines | 149 | measured |
 | `io_pico.py` (I/O; excluded from crypto budget) | 33 | measured |
 | Expected throws per number (6×6 card, 11% reroll) | ≈117 | by design |
-| Expected throws, key + pad | ≈234 | by design |
+| Expected throws, key + mask | ≈234 | by design |
 | Receive addresses per key | 1 | by design (reuse accepted) |
 | Ceremony hardware (birth device) | ~$15 | predicted — falsify this |
 | Full build (birth + witness) | ~$40 | predicted — falsify this |
 | Birth ceremony wall-clock | ~45 min | predicted — falsify this |
-| Dual sign agreement (same JSON) | byte-identical | required by tests |
+| Dual sign agreement (same JSON) | byte-identical | required by spend-day witness check |
 
 Target budgets in the prompt were ≤150 (birth) and ≤230 (sign).
 Birth landed above 150; the table states the honest count. Sign
@@ -163,31 +161,29 @@ and that **operator error remains threat #1**. Spoken fingerprints
 and steel re-derivation exist because tired humans fail hex
 comparison.
 
-**Shared-interpreter caveat.** Both `src/` lineages are Python
-(MicroPython on the boards, CPython in tests). They share a large
-common trusted base; their bug surfaces are correlated. That
-weakens "independent implementations" more than earlier docs
-admitted. Passing pinned BIP340/341/350 vectors means the code
-matches the spec on the cases the spec enumerates — not that it
-has had a third-party audit, and not that it is free of side
-channels. The largest undone deletion is a bare-metal C second
-implementation that drops the shared interpreter.
+**Witness-independence caveat (post-Duo).** Independence for the
+spend ceremony comes from comparing the birth device's signature
+against an unrelated BIP340 implementation at spend time, not from a
+second same-author lineage. The test harness now runs the Pico
+lineage only; it proves vector compliance, but it does not itself
+prove cross-implementation independence. Passing pinned BIP340/341/350
+vectors is still "matches the spec on enumerated cases" — not a
+third-party audit, and not a blanket side-channel claim. The
+remaining undone work is the physical operator walk plus an
+on-record witness run on code that is genuinely unrelated.
 
 ## Help wanted
 
-1. **Bare-metal C second implementation** — delete the shared
-   MicroPython interpreter on one device. Same-session dual
-   Python files remain seat-warmers (DECISIONS.md). This is the
-   top ask.
-2. Buildroot image recipe for the Milk-V Duo base model (spend-day
-   witness), reproducible from source.
-3. Physical wiring notes and photos for keypad + SSD1306 on the
-   birth Pico (and the witness Duo when you build it) — no seller
-   links.
-4. Adversarial review of the fixed transaction template and the
+1. **Witness run on genuinely unrelated code** — pick a witness
+   implementation path, document how to feed it the recovered `k`
+   and the unsigned transaction JSON, and record the byte-identical
+   signature match.
+2. Physical wiring notes and photos for keypad + SSD1306 on the
+   birth Pico — no witness-specific wiring.
+3. Adversarial review of the fixed transaction template and the
    OTP plate encoding format.
-5. Break the dice-bias story (HARDCORE.md §2) with measured math.
-6. Walk the ceremony on physical hardware and falsify the predicted
+4. Break the dice-bias story (HARDCORE.md §2) with measured math.
+5. Walk the ceremony on physical hardware and falsify the predicted
    claims (BOM, wall-clock).
 
 ## Prior art, credited gladly

@@ -161,7 +161,7 @@
 <header id="top">
   <h1>DICE <span class="pip">·</span> MATH <span class="pip">·</span> STEEL</h1>
   <p class="subtitle">Satoshi’s setup, with dice — a white paper for the kitchen table</p>
-  <p class="byline">hambomyers · UNREVIEWED · no believed devices</p>
+  <p class="byline">hambomyers · UNREVIEWED · no believed device</p>
   <div class="abstract">
     <b>ABSTRACT.</b>
     <p>Your money is guarded by a secret number. Whoever knows the number owns the coins. This paper is one story told five ways: make the number, hide the number, prove the number, rest, and spend — without ever trusting a machine's word for anything.</p>
@@ -201,7 +201,7 @@
  │ both symbols marked    │
  │ two-pass: 0s, then 1s  │
  │                        │
- │ A  pad          loc 1  │
+ │ A  mask         loc 1  │
  │ B  k⊕p + address       │
  │    ADDRESS FINGERPRINT │
  │                 loc 2  │
@@ -231,7 +231,7 @@
   <h2><span class="no">1.</span>The number itself</h2>
   <p>Before the dice, meet the thing they make. Computers store every number as a row of switches — each switch is off or on, written <strong>0</strong> or <strong>1</strong>, and each switch is called a <strong>bit</strong>. Small rows make small numbers: two bits can only say four things (00, 01, 10, 11); ten bits can count to about a thousand.</p>
   <p>Your key is a row of <strong>256 bits</strong>. That does not sound like much until you feel what doubling does: every added bit doubles the count of possible numbers. By bit 33 you pass every human alive. By bit 90, roughly every grain of sand on Earth. By 256, the count of possible keys is comparable to the number of atoms in the visible universe — <em>squared past</em>, actually. A thief cannot try them all. Nobody can. That is the entire security of Bitcoin: not a lock, a <strong>haystack wider than physics</strong>.</p>
-  <p>Its proper name is the <strong>private key</strong> — just “a 256-bit number,” nothing more exotic. You may have heard of <strong>SHA-256</strong>; that is a different creature which happens to share the number 256: a mathematical blender that grinds any input into a 256-bit fingerprint. Your key is not “a SHA-256 number” — SHA-256 is one of the <em>tools</em> the machine uses on the road from key to address. And the fact that anchors everything: <strong>your key never appears on the blockchain. Ever.</strong> Neither does the pad. The chain only ever sees public artifacts — your address (the key’s one-way public face) and, on spend day, a signature (a proof you know the key, built to reveal nothing about it). The blockchain is a bulletin board of addresses and proofs; the secrets stay at the kitchen table.</p>
+  <p>Its proper name is the <strong>private key</strong> — just “a 256-bit number,” nothing more exotic. You may have heard of <strong>SHA-256</strong>; that is a different creature which happens to share the number 256: a mathematical blender that grinds any input into a 256-bit fingerprint. Your key is not “a SHA-256 number” — SHA-256 is one of the <em>tools</em> the machine uses on the road from key to address. And the fact that anchors everything: <strong>your key never appears on the blockchain. Ever.</strong> Neither does the mask. The chain only ever sees public artifacts — your address (the key’s one-way public face) and, on spend day, a signature (a proof you know the key, built to reveal nothing about it). The blockchain is a bulletin board of addresses and proofs; the secrets stay at the kitchen table.</p>
   <p class="aside">So when this paper says “the number,” picture it plainly: a row of 256 zeros-and-ones, written in pencil on a sheet of graph paper at your kitchen table. Everything else — plates, machines, addresses — exists to guard, split, and prove that one handwritten row.</p>
 </section>
 
@@ -242,7 +242,7 @@
     <div class="diecard"><b>STANDARD</b><br>two throws · 5 bits<br>~117 throws / number</div>
     <div class="diecard"><b>PARANOID</b><br>first throw only<br>1–3→0 · 4–6→1 · 256 throws</div>
   </div>
-  <p>The trade in one sentence: the standard path exposes every per-face deviation of the die; the paranoid path collapses six outcomes into two and washes most of it out. Standard: first throw is the <strong>row</strong>, second is the <strong>column</strong>, read the 36-cell card (32 patterns, 4 REROLL). Never reverse the two throws — order comes from time, not judgement. Paranoid: ignore the columns; one throw, one bit. Then do the same again for the <strong>pad</strong>. The worksheet, not the die, is what you type into the machine.</p>
+  <p>The trade in one sentence: the standard path exposes every per-face deviation of the die; the paranoid path collapses six outcomes into two and washes most of it out. Standard: first throw is the <strong>row</strong>, second is the <strong>column</strong>, read the 36-cell card (32 patterns, 4 REROLL). Never reverse the two throws — order comes from time, not judgement. Paranoid: ignore the columns; one throw, one bit. Then do the same again for the <strong>mask</strong>. The worksheet, not the die, is what you type into the machine.</p>
   <details class="dive"><summary>DEEP DIVE · why dice — why not just flip a coin?</summary><div class="body"><p>A coin works; the protocol only needs 256 fair yes-or-nos. But dice are the better instrument, for reasons people have actually measured. A caught coin lands same-side-up about 50.8% of the time — physicists predicted it, then a study of 350,000 real flips confirmed it: the flip remembers a whisper of how it started. (At 256 bits even that bias would leave a thief hopeless — but take free fairness where it is offered.) Casino dice, meanwhile, are the only five-dollar object on Earth machined <em>for</em> fairness — cut to half a thousandth of an inch, sharp-edged, translucent to expose voids, because money rides on them nightly.</p><p>The 6×6 card keeps most of what the die offers (log₂ 6 ≈ 2.585 bits per throw, minus 4/36 rerolls). The cost is bias-robustness: every per-face deviation now reaches the output. The paranoid mapping {1,2,3}→0 / {4,5,6}→1 only cares about the half-split, so per-face bias largely washes out. It is chosen before the first throw, not discovered after. Same card, same worksheet, more throws, less structure used. Efficiency and bias-robustness trade against each other; we do not pretend otherwise.</p></div></details>
 
   <p class="aside">Why dice? Randomness is the one thing you can never check by looking at it — a rigged machine's "random" looks identical to real random. So no machine is allowed near this step. Physics rolls; you write.</p>
@@ -254,27 +254,27 @@
 
 <section id="s2">
   <h2><span class="no">3.</span>Hide the number</h2>
-  <p>One rule, applied down each column — <strong>same → 0, different → 1</strong>. Play it with the key and the pad; the answer row is what gets stamped on plate&nbsp;B. Plate&nbsp;A gets the pad itself. Try it below — the red pad bits are yours to flip:</p>
+  <p>One rule, applied down each column — <strong>same → 0, different → 1</strong>. Play it with the key and the mask; the answer row is what gets stamped on plate&nbsp;B. Plate&nbsp;A gets the mask itself. Try it below — the red mask bits are yours to flip:</p>
 
   <div class="demo" id="xordemo">
     <h3>The crypto calculator</h3>
-    <p class="hint">Below: a toy key of <b>12 bits</b> so it fits your screen — your real one is this row, 256 wide, handwritten from dice. Top row is the key. Red row is the pad (plate A) — tap any red bit to flip it, or roll a fresh pad. Blue row is what the same-or-different rule produces: plate B. Watch it change — then recover the key.</p>
+    <p class="hint">Below: a toy key of <b>12 bits</b> so it fits your screen — your real one is this row, 256 wide, handwritten from dice. Top row is the key. Red row is the mask (plate A) — tap any red bit to flip it, or roll a fresh mask. Blue row is what the same-or-different rule produces: plate B. Watch it change — then recover the key.</p>
     <div class="calc" aria-live="polite">
       <div class="rowline keyrow"><span class="rowname">key</span><span id="keybits" style="display:contents"></span><span class="rowtag priv">PRIVATE!</span></div>
-      <div class="rowline padrow"><span class="rowname">pad · A</span><span id="padbits" style="display:contents"></span><span class="rowtag priv">STEEL · LOC 1</span></div>
+      <div class="rowline maskrow"><span class="rowname">mask · A</span><span id="maskbits" style="display:contents"></span><span class="rowtag priv">STEEL · LOC 1</span></div>
       <div class="rulewrap" aria-hidden="true"><span></span><span class="rule"></span></div>
       <div class="rowline plateB"><span class="rowname">plate B</span><span id="pbits" style="display:contents"></span><span class="rowtag priv">STEEL · LOC 2</span></div>
       <div class="rowline marks"><span class="rowname">recover</span><span id="rbits" style="display:contents"></span><span class="rowtag pub">= KEY ✓</span></div>
     </div>
     <div class="controls">
-      <button id="roll" type="button">🎲 roll a new pad</button>
+      <button id="roll" type="button">🎲 roll a new mask</button>
       <button id="check" type="button" class="ghost">recover the key from A + B</button>
     </div>
     <div class="verdict" id="verdict" role="status"></div>
   </div>
 
-  <p>A thief holding <em>one</em> plate holds pure static. Not "hard to crack" — <strong>nothing there</strong>: every digit on plate B hides a perfect 50/50 coin toss, because the pad bit beneath it was a fair roll. This is the one-time pad — 1940s spy mathematics, never beaten, because there is nothing to beat.</p>
-  <details class="dive"><summary>DEEP DIVE · the static contains every key</summary><div class="body"><p>Here is how completely one plate hides the number. Take plate B alone and ask: which keys could it conceal? Answer: <em>all of them</em> — every one of the 2²⁵⁶ possible keys corresponds to exactly one pad that would produce this exact plate, and every pad is equally likely, because each pad bit was a fair roll. The plate is not a puzzle with one answer; it is a sentence consistent with every answer. That is why this is not “encryption too strong to break” — there is nothing to break. A thief with one plate and infinite computers holds the same information as a thief with none: the number is somewhere in the haystack. He knew that already.</p></div></details>
+  <p>A thief holding <em>one</em> plate holds pure static. Not "hard to crack" — <strong>nothing there</strong>: every digit on plate B hides a perfect 50/50 coin toss, because the mask bit beneath it was a fair roll. This is the one-time pad — 1940s spy mathematics, never beaten, because there is nothing to beat.</p>
+  <details class="dive"><summary>DEEP DIVE · the static contains every key</summary><div class="body"><p>Here is how completely one plate hides the number. Take plate B alone and ask: which keys could it conceal? Answer: <em>all of them</em> — every one of the 2²⁵⁶ possible keys corresponds to exactly one mask that would produce this exact plate, and every mask is equally likely, because each mask bit was a fair roll. The plate is not a puzzle with one answer; it is a sentence consistent with every answer. That is why this is not “encryption too strong to break” — there is nothing to break. A thief with one plate and infinite computers holds the same information as a thief with none: the number is somewhere in the haystack. He knew that already.</p></div></details>
 
   <p>Stamp 16×16 grids, not a row of glyphs. Row and column labels 0–F, a gutter every four columns, a corner notch (a 180° rotation is silent and catastrophic), a 4-character ceremony ID on both plates so A from one night cannot marry B from another. Both symbols always marked — a blank is not a zero. Two-pass stamping: every zero, then every one. Plate B also carries the receive address and four words under the heading <strong>ADDRESS FINGERPRINT</strong> — a public checksum of the address, not the key.</p>
   <p>Recovery is the same game played again — on paper. Transcribe each plate onto a printed 16×16 worksheet, one row at a time through a slotted index card, mark same-or-different, and the key reappears. <strong>Never steel against steel:</strong> stacking punched plates would compute AND, not XOR. The worksheet is the jig. If a glyph is unreadable it is an erasure, not a guess; <code>recover.py</code> will search Hamming distance 1, then 2, then 3 against the stamped address and name the cells it flipped. Look at those punches. If a mark is clean, stop. Beyond three bits you are not recovering: the plate failed, and the other copy is the path. Pencil, paper, ten minutes — the entire instruction your heirs will ever need. But make <strong>two copies of each plate</strong>: losing either half forever is losing the coins.</p>
@@ -324,13 +324,13 @@
 <section id="s7">
   <h2><span class="no">7.</span>Scenarios, at the kitchen table</h2>
 
-  <p><strong>A burglar steals one plate.</strong> He is holding a photograph of TV static. This is <em>not</em> a treasure map torn in half — torn halves leak. Two sheets of random dots that show a message only when stacked is a useful picture of <em>why</em> one plate is worthless: either sheet alone is just dots. The plates <em>encode</em> one-time-pad mathematics; they are not a physical computer for it. Stacking two punched steel plates would compute AND (light only where both have holes), not XOR. Visual cryptography gets XOR-like behaviour from paired subpixels, which punched steel does not have. Recovery is done with a pencil on a printed worksheet — never steel against steel.</p>
+  <p><strong>A burglar steals one plate.</strong> He is holding a photograph of TV static. This is <em>not</em> a treasure map torn in half — torn halves leak. Two sheets of random dots that show a message only when stacked is a useful picture of <em>why</em> one plate is worthless: either sheet alone is just dots. The plates <em>encode</em> one-time pad mathematics; they are not a physical computer for it. Stacking two punched steel plates would compute AND (light only where both have holes), not XOR. Visual cryptography gets XOR-like behaviour from paired subpixels, which punched steel does not have. Recovery is done with a pencil on a printed worksheet — never steel against steel.</p>
 
   <p><strong>Your attorney holds plate A.</strong> The oldest arrangement in banking: a safe-deposit box opens with two keys turned together — yours and the banker’s. The attorney is the banker: he safeguards a provably meaningless object under professional duty, can take nothing alone, and spending now requires a visit during business hours. Robbers hate time. “Half of it is at a law office” turns a five-minute crime into a two-day conspiracy. Who holds which plate <em>is</em> your policy — written in steel, invisible to the chain, executable by a family with a pencil. (Digital Bitcoin does the same trick with Taproot: multi-party rules that look like one plain key. Your plates are the analog edition.)</p>
 
   <p><strong>A house burns down.</strong> Duplicates fix loss — under the spare-car-key law: nobody keeps the spare <em>in the car</em>. The copy of plate A must never live anywhere plate B lives, or whoever holds that place silently holds the whole key. Copies protect against fire only if they never merge the two worlds the split created.</p>
 
-  <p><strong>Someone photographs a plate.</strong> Nothing was “stolen,” yet if plate A becomes effectively public, plate B stops being half a secret and simply <em>is</em> the secret, wearing a costume anyone can remove. Think two-keys-launch-the-missile: you may guard one launch key harder than the other — tape one to the console and you no longer have a two-key system with one weak key; you have a one-key system. The rule in full: <strong>secrecy may be tiered, never waived; and availability is absolute — losing either plate forever loses the coins.</strong></p>
+  <p><strong>Someone photographs a plate.</strong> Nothing was “stolen,” yet if plate A becomes effectively public (photographed), plate B stops being “half” secrecy and becomes functionally sufficient for recovery; so plate B is the object that must remain secret. Think two-keys-launch-the-missile: you may guard one launch key harder than the other — tape one to the console and you no longer have a two-key system with one weak key; you have a one-key system. The rule in full: <strong>secrecy may be tiered, never waived; and availability is absolute — losing either plate forever loses the coins.</strong></p>
 
   <p><strong>Decades later, your heirs.</strong> Both plates on a kitchen table, a printed worksheet as the jig, a pencil, same-or-different down 256 columns, ten minutes: the key returns. No computer required, no company, no permission — and no vendor that must still be in business. A hardware wallet’s inheritance plan depends on a firm surviving; this one depends on subtraction surviving.</p>
 </section>
@@ -379,7 +379,7 @@
 </div>
 <script>
 (function(){
-  var N=12,key=[],pad=[];
+  var N=12,key=[],mask=[];
   var $=function(id){return document.getElementById(id)};
   function rollBits(n){var a=[];for(var i=0;i<n;i++)a.push(Math.random()<.5?0:1);return a}
   /* NOTE for repo readers: Math.random() scrambles a TOY 12-bit demo
@@ -388,25 +388,25 @@
   function span(b,cls){return '<span class="bit'+(cls?' '+cls:'')+'">'+b+'</span>'}
   function render(){
     $('keybits').innerHTML=key.map(function(b){return span(b)}).join('');
-    $('padbits').innerHTML=pad.map(function(b,i){return '<button class="bit" type="button" data-i="'+i+'" aria-label="flip pad bit '+(i+1)+'">'+b+'</button>'}).join('');
-    $('pbits').innerHTML=key.map(function(b,i){return span(b^pad[i])}).join('');
+    $('maskbits').innerHTML=mask.map(function(b,i){return '<button class="bit" type="button" data-i="'+i+'" aria-label="flip mask bit '+(i+1)+'">'+b+'</button>'}).join('');
+    $('pbits').innerHTML=key.map(function(b,i){return span(b^mask[i])}).join('');
     $('rbits').innerHTML=key.map(function(){return span('·')}).join('');
     $('verdict').textContent='';$('verdict').className='verdict';
   }
   $('xordemo').addEventListener('click',function(e){
     var t=e.target;
-    if(t.dataset&&t.dataset.i!==undefined){pad[+t.dataset.i]^=1;render();}
+    if(t.dataset&&t.dataset.i!==undefined){mask[+t.dataset.i]^=1;render();}
   });
-  $('roll').addEventListener('click',function(){pad=rollBits(N);render();});
+  $('roll').addEventListener('click',function(){mask=rollBits(N);render();});
   $('check').addEventListener('click',function(){
-    var rec=key.map(function(b,i){return (b^pad[i])^pad[i]});
+    var rec=key.map(function(b,i){return (b^mask[i])^mask[i]});
     $('rbits').innerHTML=rec.map(function(b){return span(b)}).join('');
     var ok=rec.join('')===key.join('');
     var v=$('verdict');
     v.textContent=ok?'✓ plate A + plate B = the key, exactly. every time. that is the whole trick.':'✗ mismatch — impossible; if you see this, open an issue.';
     v.className='verdict '+(ok?'ok':'bad');
   });
-  key=rollBits(N);pad=rollBits(N);render();
+  key=rollBits(N);mask=rollBits(N);render();
 
   /* Sticky rail: highlight the section currently in view (laptop only). */
   var links=[].slice.call(document.querySelectorAll('.rail a[href^="#s"]'));

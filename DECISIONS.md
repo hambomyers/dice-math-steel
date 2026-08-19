@@ -95,11 +95,14 @@ lost.
 
 ## Implementation independence (mandatory honesty)
 
-Both `src/birth_pico.py` and `src/birth_duo.py` in this branch were
-written by the same model in one session. That is not independence.
-True independence requires a second human author. Implementation #2
-(`birth_duo.py`, `sign_duo.py`) is marked **seat-warmer pending
-independent rewrite**. Help-wanted item #1 in the README.
+Earlier drafts used a second lineage (“Duo”) as a spend-day
+independence mechanism. Duo has since been deleted, because two
+same-author files running the same shared stack are not the
+independence the threat model asks for.
+
+Spend-day independence is now operator-run: compare the birth
+device's signature against the result of an unrelated BIP340
+implementation that you run at spend time, and record the match.
 
 ## 2026-08-05 — Bitcoin Core enrolled as senior referee
 
@@ -152,13 +155,15 @@ independent rewrite**. Help-wanted item #1 in the README.
 
 ## 2026-08-12 — Shared interpreter is not independence
 
-- **Old:** Two codebases on Pico and Duo were described as
-  independent implementations.
-- **New:** Both lineages are Python. A shared interpreter
-  correlates bug surfaces. Vector-pass is not "verified." The
-  open issue is a bare-metal C second implementation.
-- **Reason:** Claiming independence we do not have is worse than
-  an honest caveat.
+- **Old:** A second lineage was treated as independent, and a
+  remaining caveat was that correlated bug surfaces come from a
+  shared interpreter.
+- **New:** Duo is deleted. Spend-day independence comes from the
+  operator running an unrelated BIP340 implementation at spend
+  time and comparing signatures. Vector-pass remains
+  "spec on enumerated cases" (not a third-party audit).
+- **Reason:** Overclaiming independence you do not actually have
+  is worse than a plain caveat.
 
 ## 2026-08-12 — One die, two throws, 6×6 card
 
@@ -329,10 +334,10 @@ independent rewrite**. Help-wanted item #1 in the README.
   is the attack that steals coins in this ceremony. Random aux
   would make honest devices mismatch, or match only because
   they share an implementation — undoing the check.
-- **Code at this commit:** `birth_pico.schnorr_sign` and
-  `birth_duo.schnorr_sign` already default to 32 zero bytes
-  when `aux_rand` is omitted. `sign_pico` / `sign_duo` comments
-  state the same. No `src/` change in this pass. If a later
+- **Code at this commit:** `birth_pico.schnorr_sign` already defaults
+  to 32 zero bytes when `aux_rand` is omitted, and `sign_pico`
+  follows the same convention by comment. Duo files are deleted
+  in v0.7. No `src/` change in this pass. If a later
   implementation disagrees with the convention, that is a
   code task, not a silent patch.
 - **Reason:** An unspecified aux is a specification gap that
@@ -359,3 +364,55 @@ independent rewrite**. Help-wanted item #1 in the README.
   (`Q = P + H_TapTweak(P)·G`). `tr()` is the BIP341-standard
   form, can sign rather than only watch, and drops that
   Core-documented caveat.
+
+---
+
+## 2026-08-19 — The pad/mask stays (decided)
+
+- **Old:** Plate A was treated as redundant ceremony payload, or
+  replaced by a different “readable words” channel with the hope
+  of lowering steel handling.
+- **New:** Plate A stays as the mask `p` (what “pad” used to mean in
+  older drafts). Plate B remains the functionally sufficient
+  custody object for computing the key material used by the chain.
+- **Trade:** more moving steel, but the split preserves the
+  protocol’s recovery physics and prevents a single-channel
+  mistake from becoming a recovery failure.
+- **Reasoning (why this decision is useful):**
+  - **Coercion defense:** revealing only one custody object never
+    yields the whole key; you still need the other object in the
+    recovery procedure.
+  - **Reduced heir burden:** heirs follow a deterministic worksheet
+    process tied to the stamped address/fingerprint, rather than
+    relying on a fragile word-only story.
+  - **Dogfooding:** the codebase, worksheet jig, and recover.py are
+    already built around this split. Keeping it avoids inventing
+    a parallel recovery grammar.
+
+## 2026-08-19 — The Duo is deleted; the witness becomes anyone
+
+- **Old:** spend-day independence required a specific second device
+  (“Duo”), plus matching second-lineage crypto in `src/`.
+- **New:** the Duo lineage is deleted from the live protocol. The
+  witness becomes *any unrelated* BIP340 implementation that can
+  verify/produce key-path signatures using the same convention:
+  `aux_rand` = 32 zero bytes.
+- **Shared-interpreter caveat resolved:** correlated “same
+  session / shared stack” risk is removed by deletion. Remaining
+  independence comes from the operator’s choice of witness code
+  path at spend time.
+
+## 2026-08-19 — Custody physics in the designer’s frame
+
+This is how the split is meant to be reasoned about:
+
+- **Plate A is not load-bearing for secrecy.** Assume it might be
+  photographed; you can still fail safely.
+- **Plate B is functionally the key.** Plate B contains the
+  computational object needed by recovery, plus an address
+  checksum (via the stamped address fingerprint) that must
+  reproduce exactly.
+- **The split provides free backup.** Because each plate alone is
+  insufficient to complete recovery, custody mistakes degrade
+  safely. The operator’s worksheet is the falsifier of “something
+  else is wrong,” not steel-on-steel trust.

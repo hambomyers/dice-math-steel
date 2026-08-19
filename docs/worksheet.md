@@ -11,7 +11,7 @@ and catastrophic.
 > Phase 2). Do not switch mid-number.
 >
 > **Standard:** first throw = row, second = column. Copy five bits
-> at a time from the card onto GRID 3 (key), then GRID 1 (pad).
+> at a time from the card onto GRID 3 (key), then GRID 1 (mask).
 > **Paranoid:** ignore columns. One throw, one cell: 1–3 → 0,
 > 4–6 → 1. 256 throws per grid. Same worksheet.
 >
@@ -24,7 +24,7 @@ Burn this sheet after steel re-derives the stamped address.
 
 ---
 
-## GRID 1 — PLATE A / the pad
+## GRID 1 — PLATE A / the mask
 
 ```
         0  1  2  3   4  5  6  7   8  9  A  B   C  D  E  F
@@ -52,7 +52,7 @@ Burn this sheet after steel re-derives the stamped address.
         ⌐ notch bottom-left
 ```
 
-## GRID 2 — PLATE B / key ⊕ pad
+## GRID 2 — PLATE B / key ⊕ mask
 
 Stamp the receive address and **ADDRESS FINGERPRINT** (four words)
 on plate B. Those words are a public checksum of the address.
